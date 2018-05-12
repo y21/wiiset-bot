@@ -1,4 +1,4 @@
-const flags = [ 'i' ];
+const flags = [ "i" ];
 
 class FlagStore {
     constructor(flags){
@@ -7,7 +7,8 @@ class FlagStore {
     }
 
     static fromString(string){
-        string.match(new RegExp("-flag:(" + flags.join("|") + ")(,(" + flags.join("|") + "))* *$"));
+        const match = string.match(new RegExp("-flag:(" + flags.join("|") + ")(,(" + flags.join("|") + "))* *$", "g"));
+        return match ? match.map(e => e.substr(e.search(":") + 1)) : [];
     }
 
     get flags(){
