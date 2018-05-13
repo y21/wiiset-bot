@@ -21,7 +21,6 @@ client.on("message", message => {
     message.embedColors = embedColors;
     message.Discord = Discord;
     message.prefix = prefix;
-    console.log("./commands/" + message.command + ".js");
 
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.args[0] || message.command)) return;
