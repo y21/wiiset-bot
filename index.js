@@ -13,6 +13,9 @@ for(const util of fs.readdirSync("./utils/")){
     utils[util.substr(0, util.search(".js"))] = require(`./utils/${util}`);
 }
 
+// Anti-Spam
+const messages = new Map();
+
 client.on("message", message => {
     if(message.author.bot) return;
     message.command = message.content.substr(prefix.length, (message.content.indexOf(" ") > -1 ? message.content.indexOf(" ") - prefix.length : message.content.length))
@@ -25,6 +28,10 @@ client.on("message", message => {
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.args[0] || message.command)) return;
     if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
+
+    if(messages.get(message.author.id) !== undefined && Date.now() - messages.get(message.author.id) < 1000) return message.reply("calm down! [Don't spam]");
+    messages.set(message.author.id, Date.now());
+
     if(message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);
 });
