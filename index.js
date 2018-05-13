@@ -15,8 +15,6 @@ for(const util of fs.readdirSync("./utils/")){
 
 client.on("message", message => {
     if(message.author.bot) return;
-    if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
-
     message.command = message.content.substr(prefix.length, (message.content.indexOf(" ") > -1 ? message.content.indexOf(" ") - prefix.length : message.content.length))
     message.args = message.content.split(" ").slice(1);
     message.wiimmfi_api = wiimmfi_api;
@@ -27,6 +25,7 @@ client.on("message", message => {
 
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.args[0] || message.command)) return;
+    if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
     if(message.args.length === 0) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);
 });
