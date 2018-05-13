@@ -1,6 +1,6 @@
 const Discord = require("discord.js"),
     fs = require("fs"),
-    client = new Discord.Client(),
+    client = new Discord.Client({ disableEveryone: true, fetchAllMembers: true }),
     { get } = require("snekfetch"),
     { embedColors, prefix, token } = require("./config.json");
 let { wiimmfi_api, commands, utils } = require("./config.json");
@@ -21,12 +21,12 @@ client.on("message", message => {
     message.embedColors = embedColors;
     message.Discord = Discord;
     message.prefix = prefix;
-
+    console.log("./commands/" + message.command + ".js");
 
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.args[0] || message.command)) return;
     if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
-    if(message.args.length === 0) require(`./commands/${message.command}.js`)(message);
+    if(message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);
 });
 
@@ -40,6 +40,28 @@ client.on('ready', async () => {
     setTimeout(() => utils.updatePresence(wiimmfi_api, client), 30000); // wait 30 seconds until presence change
     setInterval(() => utils.updateData(get), 300000);
     setInterval(() => utils.updatePresence(wiimmfi_api, client), 300000);
+});
+
+client.on("guildCreate", guild => {
+    client.channels.get("445297325095780372").send(new Discord.RichEmbed()
+        .setTitle("A new guild: " + guild.name)
+        .setColor(0xffff00)
+        .setThumbnail(guild.iconURL)
+        .addField("Members", guild.memberCount)
+        .addField("Bots", (guild.members.filter(m => m.user.bot).size / guild.memberCount * 100).toFixed(1) + "%")
+        .setFooter("Amount of guilds: " + client.guilds.size)
+    ).catch(console.log);
+});
+
+client.on("guildDelete", guild => {
+    client.channels.get("445300348903751691").send(new Discord.RichEmbed()
+        .setTitle("We lost a guild: " + guild.name)
+        .setColor(0xff0000)
+        .setThumbnail(guild.iconURL)
+        .addField("Members", guild.memberCount)
+        .addField("Bots", (guild.members.filter(m => m.user.bot).size / guild.memberCount * 100).toFixed(1) + "%")
+        .setFooter("Amount of guilds: " + client.guilds.size)
+    ).catch(console.log);
 });
 
 client.login(token);
