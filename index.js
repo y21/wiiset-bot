@@ -26,7 +26,7 @@ client.on("message", message => {
     message.prefix = prefix;
 
     if(!commands[message.command]) return;
-    if(!commands[message.command].includes(message.args[0] || message.command)) return;
+    if(!commands[message.command].includes(message.command)) return;
     if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
 
     if(messages.get(message.author.id) !== undefined && Date.now() - messages.get(message.author.id) < 1000) return message.reply("calm down! [Don't spam]");
