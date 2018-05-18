@@ -44,7 +44,7 @@ client.on('ready', async () => {
     });
     utils.updatePresence(wiimmfi_api, client);
     setTimeout(() => utils.updatePresence(wiimmfi_api, client), 30000); // wait 30 seconds until presence change
-    setInterval(() => utils.updateData(get), 300000);
+    setInterval(() => utils.updateData(get).then(res => wiimmfi_api=res), 300000);
     setInterval(() => utils.updatePresence(wiimmfi_api, client), 300000);
 });
 
