@@ -8,6 +8,40 @@
   "prefix": "w.",
   "wiimmfi_api": { "text": null, "lastCheck": null },
   "commands": { },
+  "commandDescriptions": [
+    {
+      "command": "list",
+      "value": "Gives the amount of available mario kart wii rooms (worldwide, continental and private)"
+    },
+    {
+      "command": "regions",
+      "value": "Gives the amount of players logged in from different login regions"
+    },
+    {
+      "command": "user",
+      "value": "Gives information about a player (has to be in a room): VR, BR, connection issues etc."
+    },
+    {
+      "command": "users",
+      "value": "Gives a list of players that are in rooms"
+    },
+    {
+      "command": "disclaimer",
+      "value": "Things you should know when using the bot"
+    },
+    {
+      "command": "eval",
+      "value": "Allows to evaluate any JavaScript code with client context. (OWNER ONLY)"
+    },
+    {
+      "command": "help",
+      "value": "A list of commands and information"
+    },
+    {
+      "command": "cat",
+      "value": "Sends a cute cat picture."
+    }
+  ],
   "utils": { },
   "token": "bot token"
 }
