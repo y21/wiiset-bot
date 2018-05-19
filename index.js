@@ -17,7 +17,7 @@ for(const util of fs.readdirSync("./utils/")){
 const messages = new Map();
 
 client.on("message", message => {
-    if(message.author.bot) return;
+    if(message.author.bot || !message.content.startsWith(prefix)) return;
     message.command = message.content.substr(prefix.length, (message.content.indexOf(" ") > -1 ? message.content.indexOf(" ") - prefix.length : message.content.length))
     message.args = message.content.split(" ").slice(1);
     message.wiimmfi_api = wiimmfi_api;
