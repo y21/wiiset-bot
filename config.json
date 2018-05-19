@@ -40,6 +40,10 @@
     {
       "command": "cat",
       "value": "Sends a cute cat picture."
+    },
+    {
+      "command": "lick",
+      "value": "Lick someone's paws."
     }
   ],
   "utils": { },
