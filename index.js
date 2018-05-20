@@ -27,6 +27,7 @@ client.on("message", message => {
     message.embedColors = embedColors;
     message.Discord = Discord;
     message.prefix = prefix;
+    message.connection = sqlite;
 
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.command) && !commands[message.command].includes(message.args[0])) return;
