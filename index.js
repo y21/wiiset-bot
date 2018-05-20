@@ -2,7 +2,8 @@ const Discord = require("discord.js"),
     fs = require("fs"),
     client = new Discord.Client({ disableEveryone: true, fetchAllMembers: true }),
     { get } = require("snekfetch"),
-    { embedColors, prefix, token } = require("./config.json");
+    { embedColors, prefix, token } = require("./config.json"),
+    sqlite = require("sqlite");
 let { wiimmfi_api, commands, utils } = require("./config.json");
 
 for(const dir of fs.readdirSync("./commands/")){
@@ -12,6 +13,8 @@ for(const dir of fs.readdirSync("./commands/")){
 for(const util of fs.readdirSync("./utils/")){
     utils[util.substr(0, util.search(".js"))] = require(`./utils/${util}`);
 }
+
+sqlite.open("./database.sqlite");
 
 // Anti-Spam
 const messages = new Map();
