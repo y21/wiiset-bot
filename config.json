@@ -44,6 +44,10 @@
     {
       "command": "lick",
       "value": "Lick someone's paws."
+    },
+    {
+      "command": "info",
+      "value": "Get information about super smash bros. brawl rooms"
     }
   ],
   "utils": { },
