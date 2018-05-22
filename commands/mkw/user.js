@@ -11,8 +11,17 @@ module.exports = async message => {
         .addField("Login region", request.data.loginRegion || "<:mysterybox:442440471424270339>")
         .addField("Game type", request.data.gameType || "<:mysterybox:442440471424270339>")
         .addField("Connection fail", request.data.connectionFail || "—")
-        .setColor(message.embedColors[Math.floor(Math.random() * message.embedColors.length)])
         .setThumbnail("http://chadsoft.co.uk/wiimmfi/wiimmfi-dark.png")
         .setTimestamp();
+    const cfail = request.data.connectionFail;
+    if(cfail){
+        if(parseInt(cfail) < 1 && parseInt(cfail) > 0) embed.setColor(0x8cff00);
+        else if(parseInt(cfail) >= 1 && parseInt(cfail) < 3) embed.setColor(0xc7ff00);
+        else if(parseInt(cfail) >= 3 && parseInt(cfail) < 6) embed.setColor(0xffcc00);
+        else if(parseInt(cfail) >= 6 && parseInt(cfail) < 10) embed.setColor(0xff7f00);
+        else if(parseInt(cfail) <= 10) embed.setColor(0xff0000);
+    } else {
+        embed.setColor(0x2aff00);
+    }
     message.channel.send(embed);
 };
