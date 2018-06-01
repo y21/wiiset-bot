@@ -1,9 +1,15 @@
-const { get } = require("snekfetch"),
+const { post } = require("snekfetch"),
     { fromString } = require("../../FlagStore");
 
 module.exports = async message => {
-    let request = (await get(`https://wiimmfi.glitch.me/findUser?name=${message.content.split(" ").slice(2).join(" ").substr(0, message.content.indexOf("-flag:") > -1 ? message.content.split(" ").slice(2).join(" ").indexOf("-flag:") - 1 : message.content.split(" ").slice(2).join(" ").length).replace(/ /g, "%20")}${fromString(message.content) ? "&flags=" + fromString(message.content).join(",") : ""}`).catch(console.log)).body;
-    if(request.status === 400) return message.reply("user is not in a room (not found)");
+    let request = (await post(`https://wiimmfi.glitch.me/findUser?name=${fromString(message.content) ? "&flags=" + fromString(message.content).join(",") : ""}`,
+        {
+            data: {
+                "Content-type": "application/x-www-form-urlencoded",
+                name: message.content.split(" ").slice(2).join(" ").substr(0, message.content.indexOf("-flag:") > -1 ? message.content.split(" ").slice(2).join(" ").indexOf("-flag:") - 1 : message.content.split(" ").slice(2).join(" ").length).replace(/ /g, "%20")
+            }
+        }).catch(console.log)).body;
+    if(request.status === 400) return message.reply("user is not in a room (not found). **Note:** the bot will most likely not find users with weird characters in their names.");
     let embed = new message.Discord.RichEmbed()
         .setTitle(`Information about ${message.content.split(" ").slice(2).join(" ").substr(0, message.content.indexOf("-flag:") > -1 ? message.content.split(" ").slice(2).join(" ").indexOf("-flag:") - 1 : message.content.split(" ").slice(2).join(" ").length)}`)
         .addField("VR (versus rating)", request.data.VR || "<:mysterybox:442440471424270339>")
