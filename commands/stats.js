@@ -16,7 +16,7 @@ module.exports = message => {
                 },
                 {
                     name: "Emojis",
-                    value: client.emojis.size
+                    value: `${client.emojis.array().slice(0, 25).join(", ")} ${client.emojis.size > 25 ? "... " + (client.emojis.size - 25) + " more" : ""}`
                 },
                 {
                     name: "Ping",
