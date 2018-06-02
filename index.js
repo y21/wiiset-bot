@@ -50,7 +50,7 @@ client.on("message", message => {
 
 
 client.on('ready', async () => {
-    console.log(`[${new Date().toLocaleString()}] Bot is ready.`);
+    console.log(`[${new Date().toLocaleString()}] Bot is ready (${client.guilds.size} Servers and ${client.users.size} Users.)`);
     utils.updateData(get).then(res => {
         wiimmfi_api = res;
     });
