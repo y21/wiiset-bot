@@ -48,6 +48,10 @@
     {
       "command": "info",
       "value": "Get information about super smash bros. brawl rooms"
+    },
+    {
+       "command": "cmdstats",
+      "value": "Get the amount of every command"
     }
   ],
   "utils": { },
