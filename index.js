@@ -35,7 +35,15 @@ client.on("message", message => {
 
     if(messages.get(message.author.id) !== undefined && Date.now() - messages.get(message.author.id) < 1000) return message.reply("calm down! [Don't spam]");
     messages.set(message.author.id, Date.now());
-
+    sqlite.get("SELECT * FROM commandstats WHERE name='" + message.command + "'").then(result => {
+        if(!result){
+            sqlite.run("INSERT INTO commandstats VALUES ('" + message.command + "', 1)");
+        } else sqlite.run("UPDATE commandstats SET uses=" + (result.uses + 1) + " WHERE name='" + message.command + "'");
+    }).catch(err => {
+        if(err.toString().includes("no such table: commandstats")){
+            sqlite.run("CREATE TABLE commandstats (`name` TEXT, `uses` INTEGER)").catch();
+        }
+    });
     if(message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);
 });
