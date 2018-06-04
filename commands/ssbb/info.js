@@ -7,9 +7,10 @@ module.exports = message => {
             .setTitle("Super Smash Bros. Brawl information")
             .addField("Total profiles", result.body.totalProfiles)
             .addField("Currently online", result.body.online)
+            .addField("Logins in the last 30 minutes", result.body.logins.thirty_minutes)
+            .addField("Logins in the last four hours", result.body.logins.four_hours)
+            .addField("Logins in the last 24 hours", result.body.logins.twentyfour_hours)
             .setColor(message.embedColors[Math.floor(Math.random() * message.embedColors.length)])
-            .setThumbnail('http://chadsoft.co.uk/wiimmfi/wiimmfi-dark.png')
-            .setFooter("Data will be refreshed every 30 seconds")
             .setTimestamp(result.body.lastEdit)
         );
     });
