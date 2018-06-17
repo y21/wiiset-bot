@@ -54,8 +54,12 @@
       "value": "Get the amount of every command"
     },
     {
-        "command": "stats",
-        "value": "General information about the bot"
+      "command": "stats",
+      "value": "General information about the bot"
+    },
+    {
+       "command": "playing",
+      "value": "Get the amount of people who are playing a specific game"
     }
   ],
   "utils": { },
