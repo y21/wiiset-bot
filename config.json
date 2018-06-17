@@ -52,6 +52,10 @@
     {
        "command": "cmdstats",
       "value": "Get the amount of every command"
+    },
+    {
+        "command": "stats",
+        "value": "General information about the bot"
     }
   ],
   "utils": { },
