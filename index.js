@@ -68,7 +68,9 @@ client.on("guildCreate", guild => {
         .addField("Members", guild.memberCount)
         .addField("Bots", (guild.members.filter(m => m.user.bot).size / guild.memberCount * 100).toFixed(1) + "%")
         .setFooter("Amount of guilds: " + client.guilds.size)
-    ).catch(console.log);
+    ).then(msg => {
+      msg.react("445296718070808586");
+    }).catch(console.log);
 });
 
 client.on("guildDelete", guild => {
