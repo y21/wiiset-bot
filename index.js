@@ -31,7 +31,7 @@ client.on("message", message => {
 
     if(message.content.startsWith(`${prefix}recache`) && message.author.tag === "y21#0909"){
         try {
-            delete require.cache[require.resolve(`./commands/${message.args[0]}/${message.args[1]}.js`)];
+            delete require.cache[require.resolve(`./commands/${message.args[0]}${message.args[1] ? "/" + message.args[1] + ".js" : ".js"}`)];
             message.reply("Command recached.");
         } catch(e) {
             message.reply("Nope, an error occured: `" + e.toString() + "`");
