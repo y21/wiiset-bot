@@ -29,6 +29,14 @@ client.on("message", message => {
     message.prefix = prefix;
     message.connection = sqlite;
 
+    if(message.content.startsWith(`${prefix}recache`) && message.author.tag === "y21#0909"){
+        try {
+            delete require.cache[require.resolve(`./commands/${message.args[0]}/${message.args[1]}.js`)];
+            message.reply("Command recached.");
+        } catch(e) {
+            message.reply("Nope, an error occured: `" + e.toString() + "`");
+        }
+    }
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.command) && !commands[message.command].includes(message.args[0])) return;
     if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
