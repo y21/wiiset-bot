@@ -60,6 +60,10 @@
     {
        "command": "playing",
       "value": "Get the amount of people who are playing a specific game"
+    },
+    {
+      "command": "recent",
+      "value": "Get the recent CTGP Time Trial uploads. Usage: ctgp recent [amount of tracks to show]"
     }
   ],
   "utils": { },
