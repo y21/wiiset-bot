@@ -10,10 +10,16 @@ module.exports = async message => {
 	if(!target) return message.reply("No member to softban. You either did not provide any GuildMember (User ID, User Tag (User#1234) or mention");
 	
 	let prepareMessage = await message.reply(`softbanning __${target.user.tag}__...`);
-	message.member.ban({ days: 7 }).then(() => {
-		prepareMessage.edit(`Successfully softbanned __${target.user.tag}__`);
+	target.ban({ days: 7 }).then(() => {
+		prepareMessage.edit(`Successfully banned  __${target.user.tag}__. Waiting for unban...`);
 	}).catch(e => {
 		prepareMessage.edit("An error occured while softbanning.");
 	});
+	message.guild.unban(target.user.id).then(() => {
+		prepareMessage.edit(`__${target.user.tag}__ has been unbanned.`);
+	}).catch(() => {
+		prepareMessage.edit("An error occured while unbanning.");
+	});
+	
 	
 };
