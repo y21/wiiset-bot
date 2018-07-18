@@ -3,7 +3,8 @@ const Discord = require("discord.js"),
     client = new Discord.Client({ disableEveryone: true, fetchAllMembers: true }),
     { get } = require("snekfetch"),
     { embedColors, prefix, token } = require("./config.json"),
-    sqlite = require("sqlite");
+    sqlite = require("sqlite"),
+	{ fromString } = require("./FlagStore");
 let { wiimmfi_api, commands, utils } = require("./config.json");
 
 for(const dir of fs.readdirSync("./commands/")){
@@ -28,6 +29,7 @@ client.on("message", message => {
     message.Discord = Discord;
     message.prefix = prefix;
     message.connection = sqlite;
+	message.flags = fromString(message.content);
 
     if(message.content.startsWith(`${prefix}recache`) && message.author.tag === "y21#0909"){
         try {
@@ -40,7 +42,7 @@ client.on("message", message => {
     if(!commands[message.command]) return;
     if(!commands[message.command].includes(message.command) && !commands[message.command].includes(message.args[0])) return;
     if(!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
-
+	
     if(messages.get(message.author.id) !== undefined && Date.now() - messages.get(message.author.id) < 1000) return message.reply("calm down! [Don't spam]");
     messages.set(message.author.id, Date.now());
     sqlite.get("SELECT * FROM commandstats WHERE name='" + message.command + "'").then(result => {
@@ -52,6 +54,7 @@ client.on("message", message => {
             sqlite.run("CREATE TABLE commandstats (`name` TEXT, `uses` INTEGER)").catch();
         }
     });
+	if(message.flags.includes("del")) message.delete().catch(console.log);
     if(message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);
 });
