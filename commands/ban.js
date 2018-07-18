@@ -10,7 +10,7 @@ module.exports = async message => {
 		} else target = message.mentions.members.first();
 		if(!target) return message.reply("No member to ban. You either did not provide any GuildMember (User ID, User Tag (User#1234) or mention");
 		
-		message.reply(`Do you really want to ban __${target.user.tag}__? Reply with either __y__es or __n__o within the next 25 seconds.`, {
+	message.reply(`Do you really want to ban __${target.user.tag}__? Reply with either __y__es or __n__o within the next 25 seconds.\n\nReason: ${message.args.slice(1).join(" ") || "- none -"}`, {
 			disableEveryone: true
 		});
 		
@@ -23,10 +23,10 @@ module.exports = async message => {
 		
 		collector.on("collect", m => {
 			if(m.content === "y" || m.content === "yes"){
-				target.ban({ days: 7, reason: "Ban requested by " + message.author.tag }).then(() => {
+				target.ban({ days: 7, reason: "Ban requested by " + message.author.tag + " | Reason: " + (message.args.slice(1).join(" ") || "- none -")}).then(() => {
 					message.channel.send(`__${target.user.tag}__ has been banned.`);
-				}).catch(() => {
-					message.reply("could not ban the targeted user.");
+				}).catch(err => {
+					message.reply("could not ban the targeted user. `" + err.toString() + "`");
 				});
 			} else {
 				message.reply("Ban aborted.");
