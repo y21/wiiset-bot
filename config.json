@@ -64,7 +64,11 @@
     {
       "command": "recent",
       "value": "Get the recent CTGP Time Trial uploads. Usage: ctgp recent [amount of tracks to show]"
-    }
+    },
+	{
+      "command": "ban",
+	  "value": "Bans a GuildMember. (Target can be expressed by passing a user ID, a user tag (User#1234) or by mentioning them"
+	}
   ],
   "utils": { },
   "token": "bot token"
