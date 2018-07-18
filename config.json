@@ -68,6 +68,10 @@
 	{
       "command": "ban",
 	  "value": "Bans a GuildMember. (Target can be expressed by passing a user ID, a user tag (User#1234) or by mentioning them"
+	},
+	{
+		"command": "softban",
+		"value": "Softbans a GuildMember. (Bans and unbans a member. Its purpose is to delete all recent messages."
 	}
   ],
   "utils": { },
