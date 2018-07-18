@@ -6,7 +6,7 @@ module.exports = async message => {
 		let target;
 		
 		if(message.mentions.members.size === 0){
-			target = message.guild.member(message.client.users.find(val => val.id === message.args[0] || val.tag === message.args[0]));
+			target = message.guild.member(message.client.users.find(val => val.id === message.args[1] || val.tag === message.args[1]));
 		} else target = message.mentions.members.first();
 		if(!target) return message.reply("No member to ban. You either did not provide any GuildMember (User ID, User Tag (User#1234) or mention");
 		
