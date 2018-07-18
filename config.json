@@ -72,6 +72,10 @@
 	{
 		"command": "softban",
 		"value": "Softbans a GuildMember. (Bans and unbans a member. Its purpose is to delete all recent messages."
+	},
+	{
+		"command": "unban",
+		"value": "Unbans a specific user. User can be specified by using its ID."
 	}
   ],
   "utils": { },
