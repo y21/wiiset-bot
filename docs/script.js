@@ -37,7 +37,7 @@ texts = {
 			<td>del</td>
 			<td>any command</td>
 			<td>The <u>del</u>(ete) flag deletes a command (the message from the message author, respectively)</td>
-			<td><span class="red"><b>Unavailable</b></span></td>
+			<td><span class="green"><b>Stable</b></span></td>
 		</tr>
 		<tr>
 			<td>s</td>
