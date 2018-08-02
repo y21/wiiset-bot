@@ -67,12 +67,29 @@ footer {
 	padding: 5 0 0 30;
 	color: black;
 }
-
 .quote {
-	border-left: 3px solid #3A539B;
+	border-left: 5px solid #3A539B;
 	padding-left: 15px;
+	margin: 15 0 15 0;
 }
-
+td, th {
+	color: black;
+	width: 150px;
+	text-align: center;
+}
+th {
+	border-bottom: 1px solid black;
+}
+table {
+	border: 1px solid black;
+	padding: 5px;
+}
+.green {
+	color: green;
+}
+.red {
+	color: red;
+}
 codeblock {
 	background-color: #2C3E50;
 	color: white;
@@ -81,7 +98,10 @@ codeblock {
 	width: 250px;
 	font-family: Consolas, Arial;
 }
-
+.rlink {
+	color: black;
+	text-decoration: underline;
+}
 @keyframes darkify {
 	to {
 		background-color: #3A539B;
