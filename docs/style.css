@@ -67,6 +67,21 @@ footer {
 	padding: 5 0 0 30;
 	color: black;
 }
+
+.quote {
+	border-left: 3px solid #3A539B;
+	padding-left: 15px;
+}
+
+codeblock {
+	background-color: #2C3E50;
+	color: white;
+	display: block;
+	padding: 10px;
+	width: 250px;
+	font-family: Consolas, Arial;
+}
+
 @keyframes darkify {
 	to {
 		background-color: #3A539B;
