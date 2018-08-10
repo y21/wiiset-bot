@@ -2,7 +2,7 @@ module.exports = message => {
     if (message.author.id === "312715611413413889") {
 		try {
 			const before = Date.now();
-			const evaluation = eval(message.args.join(" "));
+			const evaluation = eval(message.args.join(" ").replace(/```.*/g, ""));
 			message.channel.send({ embed: {
 				title: "Evaluation",
 				color: 0x00FF00,
