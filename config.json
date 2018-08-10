@@ -1,83 +1,41 @@
 {
-  "embedColors": [
-    "#3498db",
-    "#2ecc71",
-    "#e74c3c",
-    "#9b59b6"
-  ],
-  "prefix": "w.",
-  "wiimmfi_api": { "text": null, "lastCheck": null },
-  "commands": { },
-  "commandDescriptions": [
-    {
-      "command": "list",
-      "value": "Gives the amount of available mario kart wii rooms (worldwide, continental and private)"
-    },
-    {
-      "command": "regions",
-      "value": "Gives the amount of players logged in from different login regions"
-    },
-    {
-      "command": "user",
-      "value": "Gives information about a player (has to be in a room): VR, BR, connection issues etc."
-    },
-    {
-      "command": "users",
-      "value": "Gives a list of players that are in rooms"
-    },
-    {
-      "command": "disclaimer",
-      "value": "Things you should know when using the bot"
-    },
-    {
-      "command": "eval",
-      "value": "Allows to evaluate any JavaScript code with client context. (OWNER ONLY)"
-    },
-    {
-      "command": "help",
-      "value": "A list of commands and information"
-    },
-    {
-      "command": "cat",
-      "value": "Sends a cute cat picture."
-    },
-    {
-      "command": "lick",
-      "value": "Lick someone's paws."
-    },
-    {
-      "command": "info",
-      "value": "Get information about super smash bros. brawl rooms"
-    },
-    {
-       "command": "cmdstats",
-      "value": "Get the amount of every command"
-    },
-    {
-      "command": "stats",
-      "value": "General information about the bot"
-    },
-    {
-       "command": "playing",
-      "value": "Get the amount of people who are playing a specific game"
-    },
-    {
-      "command": "recent",
-      "value": "Get the recent CTGP Time Trial uploads. Usage: ctgp recent [amount of tracks to show]"
-    },
-	{
-      "command": "ban",
-	  "value": "Bans a GuildMember. (Target can be expressed by passing a user ID, a user tag (User#1234) or by mentioning them"
-	},
-	{
-		"command": "softban",
-		"value": "Softbans a GuildMember. (Bans and unbans a member. Its purpose is to delete all recent messages."
-	},
-	{
-		"command": "unban",
-		"value": "Unbans a specific user. User can be specified by using its ID."
-	}
-  ],
-  "utils": { },
-  "token": "bot token"
+   "embedColors": [
+      "#3498db",
+      "#2ecc71",
+      "#e74c3c",
+      "#9b59b6"
+   ],
+   "prefix": "w.",
+   "wiimmfi_api": {
+      "text": null,
+      "lastCheck": null
+   },
+   "commands": {},
+   "commandDescriptions": {
+      "cat": "Sends a cute cat picture",
+      "cmdstats": "Get the amount of uses of every command",
+      "disclaimer": "Some basic information about the bot",
+      "eval": "Evaluate JavaScript code with client context (Owner-only)",
+      "help": "A list of commands",
+      "lick": "Lick someone's paws",
+      "playing": "Get the amount of users who are playing a specific game",
+      "stats": "General information about the bot",
+      "ctgp/recent": "Get the recent top CTGP Time Trial uploads. Usage: ctgp recent [amount of tracks to show]",
+      "ctgp/stats": "CTGP statistics such as uploaded ghosts, leaderboards etc.",
+      "mkw/list": "Gives the amount of available mario kart wii rooms (worldwide, continental and private)",
+      "mkw/regions": "Gives the amount of players logged in from different login regions",
+      "mkw/user": "Gives information about a player (has to be in a room): VR, BR, connection issues etc.",
+      "mkw/users": "Gives a list of players that are in rooms",
+      "mod/ban": "Bans a GuildMember. (Target can be expressed by passing a user ID, a user tag (User#1234) or by mentioning them",
+      "mod/softban": "Softbans a GuildMember. (Bans and unbans a member. Its purpose is to delete all recent messages.",
+      "mod/unban": "Unbans a specific user. User can be specified by using its ID.",
+      "ssbb/info": "Get information about super smash bros. brawl rooms",
+      "tag/create": "Creates a tag",
+      "tag/delete": "Deletes a tag",
+      "tag/list": "Gives a list with most-used tags",
+      "tag/transfer": "(deactivated) Transfer a tag to another user",
+      "tag/view": "View a specific tag"
+   },
+   "utils": {},
+   "token": "token"
 }
