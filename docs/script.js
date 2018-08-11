@@ -45,6 +45,12 @@ texts = {
 			<td>The <u>s</u>(ilent) flag executes a command without sending the message (only useful in rare cases)</td>
 			<td><span class="red"><b>Unavailable</b></span></td>
 		</tr>
+		<tr>
+			<td>nc</td>
+			<td>bash (owner-only)</td>
+			<td>The nc (abbreviation for NoCodeblock) sends STDOUT/STDERR outside of a codeblock. When executing the bash command without that flag, the output will be printed in a codeblock with language "js".</td>
+			<td><span class="green"><b>Stable</b></span></td>
+		</tr>
 	</table>
 	<h2>Table legend</h2>
 	If you don't really know what that table or a specific row/column means, this section might be useful for you.<br/><br/>
