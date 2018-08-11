@@ -1,6 +1,7 @@
 const elements = {
 	about: document.getElementById("sel-about"),
-	flags: document.getElementById("sel-flags")
+	flags: document.getElementById("sel-flags"),
+	tags: document.getElementById("sel-tags")
 },
 texts = {
 	about: `There are still people out there who are playing Wii games such as Mario Kart Wii and enjoy it, including me! Luckily Wiimm, Leseratte and other people made a Nintendo WFC replacement called Wiimmfi, which allows us to play Wii games with friends all around the world even though the Nintendo servers shut down in 2014.
@@ -63,7 +64,18 @@ texts = {
 	<codeblock>
 	w.mkw user 21 -flag:i
 	</codeblock>
-	This command would search for a user in Mario Kart Wii where its Mii name <b>includes</b> 21 (in this example). If I would be in a room and my Mii name is y21, it would find me, because y21 includes "21".`
+	This command would search for a user in Mario Kart Wii where its Mii name <b>includes</b> 21 (in this example). If I would be in a room and my Mii name is y21, it would find me, because y21 includes "21".`,
+	tags: `Tags are basically something where you can store text in. It does not sound very useful and also maybe a bit dumb, but it actually is useful for some cases, e.g. an image (image URL, attachments wont work for now) that explains something. You could just execute that tag whenever you need it and it tells you its content. You can imagine it as a public clipboard.<br/>
+	<h2>Can I edit those tags? Or at least deleting them?</h2>
+	Editing tags is not possible yet, but you can re-create them by deleting it (tag owners can delete their tags using the command <span class="inline-code">w.tag delete &lt;tag-name&gt;</span>) and creating another tag with the same name. Warning: The usage counter for that particular tag will be resetted to 0.<br/>
+	<h2>Is it possible to transfer my tags to other people?</h2>
+	No. Quoting from <a class="rlink" href="https://github.com/y21/wiiset-bot/pull/2">pull request #3</a>
+	<div class="quote">The command tag/transfer is deactivated for now because (quoting from file comments) "People could create disturbing tags and transfer them to others so that it looks like they created it."</div>
+	<h2>Yeah cool, but how do I create them?</h2>
+	To create a tag you execute the command Tag/Create (<span class="inline-code">w.tag create &lt;tag-name&gt; &lt;tag-content&gt;)</span>. If a tag content reaches 1900 characters, it will cut everything else out. Also make sure not to use special characters in the name. Only <span class="inline-code">A-Za-z0-9_-</span> [\w-] (3 to 16 characters) is allowed for tag names.
+	Note: For now it is not possible to use flags and tag commands at the same time, in other words: <span class="inline-code">w.tag create test test2 -flag:del</span> will delete the command message, but the tag content would end with -flag:del.
+	<h2>All tag commands</h2>
+	<table>`
 },
 textElement = document.getElementById("text"),
 headingElement = document.getElementById("heading-ct");
@@ -84,6 +96,15 @@ function removeSelection(elements, blacklist) {
 		}
 	}
 }
+
+elements.tags.addEventListener("click", function() {
+	if (!elements.tags.className.includes("selected")) {
+		elements.tags.className += " selected";
+	}
+	setContent(texts.tags.replace(/\n/g, "<br/>"), "Tags");
+	document.title = "Wiiset Discord Bot | Tags";
+	removeSelection(Object.entries(elements), "tags");
+});
 
 elements.about.addEventListener("click", function () {
 	if (!elements.about.className.includes("selected")) {
