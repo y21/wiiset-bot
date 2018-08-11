@@ -1,5 +1,5 @@
 # wiiset-bot
-The wiiset discord bot
+The Wiiset Discord Bot
 
 [![Discord Bots](https://discordbots.org/api/widget/440210686954569739.svg)](https://discordbots.org/bot/440210686954569739)
 
