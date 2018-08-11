@@ -1,4 +1,4 @@
-const flags = [ "i", "del" ];
+const flags = [ "i", "del", "nc" ];
 
 class FlagStore {
     constructor(flags){
@@ -20,5 +20,6 @@ class FlagStore {
         this._flags = value;
     }
 }
+FlagStore.flags = flags;
 
 module.exports = FlagStore;
