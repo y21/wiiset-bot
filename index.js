@@ -29,7 +29,9 @@ client.on("message", message => {
     message.args = message.content.replace(new RegExp(new RegExp("-flag:(" + FlagStore.flags.join("|") + ")(,(" + FlagStore.flags.join("|") + "))* *$", "g")), "").split(" ").slice(1);
     message.wiimmfi_api = wiimmfi_api;
     message.embedColors = embedColors;
-    message.Discord = Discord;
+    message.Discord = {
+        RichEmbed: Discord.RichEmbed
+    };
     message.prefix = prefix;
     message.connection = sqlite;
     message.flags = fromString(message.content);
