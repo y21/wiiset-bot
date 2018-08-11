@@ -71,6 +71,7 @@ footer {
 	border-left: 5px solid #3A539B;
 	padding-left: 15px;
 	margin: 15 0 15 0;
+	font-family: Consolas, Arial;
 }
 td, th {
 	color: black;
@@ -101,6 +102,11 @@ codeblock {
 .rlink {
 	color: black;
 	text-decoration: underline;
+}
+.inline-code {
+	padding: 3.5px;
+	background-color: #2C3E50;
+	color: white;
 }
 @keyframes darkify {
 	to {
