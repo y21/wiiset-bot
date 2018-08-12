@@ -1,5 +1,3 @@
-// Not finished yet.
-
 const { readdirSync } = require("fs");
 let langs = readdirSync("./lang/");
 langs = langs.map(lang => lang.substr(0, lang.indexOf(".json")));
@@ -9,15 +7,27 @@ module.exports = message => {
 	if(message.guild.owner.user.id !== message.author.id) return message.reply("only the guild owner can set the guild language.");
 	return message.connection.prepare("SELECT * FROM languages WHERE guild = ?").then(prepared => {
 		prepared.get([ message.guild.id ]).then(res => {
-			if(typeof res !== "undefined" && message.args.length === 0) return message.reply("Local language is set to `" + res.lang + "`");
-			if(!flags.includes(message.args[0])) return message.reply("Language not found. Make sure to set it to one of them: " + flags.join(", "));
+			if(typeof res !== "undefined" && message.args.length === 1) return message.reply("Local language is set to `" + res.lang + "`");
+			if(!langs.includes(message.args[1])) return message.reply("Language not found. Make sure to set it to one of them: " + langs.join(", "));
 			if(res) {
 				message.connection.prepare("UPDATE languages SET lang = ? WHERE guild = ?").then(prepared2 => {
-					prepared2.run([message.args[0], message.guild.id]).then(() => {
-						message.reply(`Local language set to ${message.args[0]}`);
+					prepared2.run([message.args[1], message.guild.id]).then(() => {
+						message.reply(`Local language set to ${message.args[1]}`);
+					}).catch(() => {
+						message.reply("An internal error occured while trying to set the language.");
 					});
 				});
-			} 
+			} else {
+				message.connection.prepare("INSERT INTO languages (guild, lang) VALUES (?, ?)").then(prepared2 => {
+					prepared2.run([message.guild.id, message.args[1]]).then(() => {
+						message.reply(`Local language set to ${message.args[1]}`);
+					}).catch(() => {
+						message.reply("An internal error occured while trying to set the language.");
+					});
+				});
+			}
+		}).catch(error => {
+			message.reply("An error occured: " + error.toString());
 		});
 	});
 }
