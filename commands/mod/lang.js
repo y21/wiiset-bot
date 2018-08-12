@@ -1,7 +1,8 @@
 // Not finished yet.
 
 const { readdirSync } = require("fs");
-const langs = readdirSync("./lang/");
+let langs = readdirSync("./lang/");
+langs = langs.map(lang => lang.substr(0, lang.indexOf(".json")));
 
 module.exports = message => {
 	if(!message.guild) return message.reply("This command is only available in guilds.");
