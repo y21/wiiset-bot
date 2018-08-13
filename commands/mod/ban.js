@@ -27,7 +27,7 @@ module.exports = async message => {
 					message.reply((message.translations.commands.guild_only || "Translation error") + " `" + err.toString() + "`");
 				});
 			} else {
-				message.reply("Ban aborted.");
+				message.reply(message.translations.commands.ban_aborted || "Translation error");
 			}
 		});
 	} catch(err) {
