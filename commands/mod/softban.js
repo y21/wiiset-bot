@@ -1,24 +1,24 @@
 module.exports = async message => {
-	if(!message.guild) return message.reply("this command is only available in servers");
-	if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply("you do not have enough permissions to ban members. (`BAN_MEMBERS`)");
+	if(!message.guild) return message.reply(message.translations.commands.guild_only || "Translation error");
+	if(!message.member.hasPermission("BAN_MEMBERS")) return message.reply((message.translations.commands.no_permissions || "Translation error").replace(/\{perm\}/g, "BAN_MEMBERS"));
 		
 	let target;
 		
 	if(message.mentions.members.size === 0){
 		target = message.guild.member(message.client.users.find(val => val.id === message.args[1] || val.tag === message.args[1]));
 	} else target = message.mentions.members.first();
-	if(!target) return message.reply("No member to softban. You either did not provide any GuildMember (User ID, User Tag (User#1234) or mention");
+	if(!target) return message.reply(message.translations.commands.no_member_softban || "Translation error");
 	
 	let prepareMessage = await message.reply(`softbanning __${target.user.tag}__...`);
 	target.ban({ days: 7 }).then(() => {
-		prepareMessage.edit(`Successfully banned  __${target.user.tag}__. Waiting for unban...`);
+		prepareMessage.edit((message.translations.commands.softbanned || "Translation error").replace(/\{target\}/g, target.user.tag));
 	}).catch(e => {
-		prepareMessage.edit("An error occured while softbanning.");
+		prepareMessage.edit(message.translations.commands.softban_error || "Translation error");
 	});
 	message.guild.unban(target.user.id).then(() => {
-		prepareMessage.edit(`__${target.user.tag}__ has been unbanned.`);
+		prepareMessage.edit((message.translations.commands.unbanned || "Translation error").replace(/\{target\}/g, target.user.tag));
 	}).catch(() => {
-		prepareMessage.edit("An error occured while unbanning.");
+		prepareMessage.edit(message.translations.commands.unban_error || "Translation error");
 	});
 	
 	
