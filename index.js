@@ -8,7 +8,8 @@ const Discord = require("discord.js"),
     sqlite = require("sqlite"),
     FlagStore = require("./FlagStore"),
     { fromString } = FlagStore;
-let { wiimmfi_api, commands, utils } = require("./config.json");
+let { wiimmfi_api, commands, utils, production } = require("./config.json"),
+    translations = { };
 
 for (const dir of fs.readdirSync("./commands/")) {
     commands[dir.indexOf(".js") > -1 ? dir.substr(0, dir.search(".js")) : dir] = !dir.endsWith('.js') ? fs.readdirSync(`./commands/${dir}/`).map(file => file.substr(0, file.indexOf(".js"))) : [dir.substr(0, dir.indexOf(".js"))];
@@ -18,12 +19,17 @@ for (const util of fs.readdirSync("./utils/")) {
     utils[util.substr(0, util.search(".js"))] = require(`./utils/${util}`);
 }
 
+for(const lang of fs.readdirSync("./lang/")) {
+    translations[lang.substr(0, lang.indexOf(".json"))] = require(`./lang/${lang}`);
+}
+
 sqlite.open("./database.sqlite");
 
 // Anti-Spam
 const messages = new Map();
 
-client.on("message", message => {
+client.on("message", async message => {
+    if(production && message.author.id !== "312715611413413889") return;
     if (message.author.bot || !message.content.startsWith(prefix)) return;
     message.command = message.content.substr(prefix.length, (message.content.indexOf(" ") > -1 ? message.content.indexOf(" ") - prefix.length : message.content.length))
     message.args = message.content.replace(new RegExp(new RegExp("-flag:(" + FlagStore.flags.join("|") + ")(,(" + FlagStore.flags.join("|") + "))* *$", "g")), "").split(" ").slice(1);
@@ -65,6 +71,9 @@ client.on("message", message => {
             sqlite.run("CREATE TABLE commandstats (`name` TEXT, `uses` INTEGER)").catch();
         }
     });
+    let language = await message.connection.get("SELECT * FROM languages WHERE guild=" + message.guild.id);
+    if(!language) message.translations = translations.en;
+    else message.translations = translations[language.lang] || { commands: { } };
     if (message.flags.includes("del")) message.delete().catch(console.log);
     if (message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);

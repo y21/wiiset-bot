@@ -6,9 +6,9 @@ module.exports = async message => {
     let request = await get("http://wiimmfi.glitch.me/users"),
         counts = [ 0, 10, 1 ],
         embed = new RichEmbed()
-        .setTitle("Online users - page 1")
+        .setTitle((message.translations.commands.mkw_online_users || "Translation error").replace(/\{page\}/g, 1))
         .setDescription("```https\n" + request.body.slice(counts[0], counts[1]).join("\n") + "\n```")
-        .setFooter("Total players: " + request.body.length);
+        .setFooter((message.translations.commands.mkw_total_players || "Translation error").replace(/\{players\}/g, request.body.length));
         let m = await message.channel.send(embed);
         m.react("⬅").then(m => {
             m.message.react("➡").catch();

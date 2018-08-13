@@ -8,7 +8,7 @@ module.exports = message => {
             connection.prepare("UPDATE tags SET uses=? WHERE name=?").then(prepared2 => {
                 prepared2.run([res.uses + 1, message.args[1]]);
             });
-            message.channel.send(res.content.substr(0, 1900) + "\n\n__Tag owner (ID):__ " + res.author, {
+            message.channel.send(res.content.substr(0, 1900) + (message.translations.commands.tag_footer || "Translation error").replace(/\{owner\}/g, res.author), {
                 disableEveryone: true
             });
         });

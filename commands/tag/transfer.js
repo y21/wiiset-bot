@@ -3,26 +3,25 @@ module.exports = async message => {
 	// People could create disturbing tags
 	// And transfer them to others 
 	// So that it looks like they created it.
-	return message.reply("This command is not available for now.");
-	if(message.args.length < 3) return message.reply(`Not enough parameters. Syntax: ${message.prefix}tag transfer <tag-name> <new-owner>`);
+	return message.reply(message.translations.commands.unavailable_command || "Translation error");
+	if(message.args.length < 3) return message.reply((message.translations.commands.tag_nparams_transfer || "Translation error").replace(/\{prefix\}/g, message.prefix));
 	let target;
 	try {
 		target = await message.client.fetchUser(message.args[2]);
 	} catch(error) {
-		return message.reply("User not found. Make sure to provide a **User ID**.");
+		return message.reply(message.translations.commands.tag_user_not_found || "Translation error");
 	}
-	if(!target) return message.reply("User not found. Make sure to provide a **User ID**!");
+	if(!target) return message.reply(message.translations.commands.tag_user_not_found || "Translation error");
 	const { connection } = message;
 	connection.prepare("UPDATE tags SET author=? WHERE author=? AND name=?").then(prepared => {
 		prepared.run([ message.args[2], message.author.id, message.args[1] ]).then(res => {
 			if(res.changes === 0) {
-				message.reply("Tag could not be transfered.");
+				message.reply(message.translations.commands.tag_transfer_error || "Translation error");
 			} else {
 				message.channel.send(target.toString(), { embed: {
 					title: "Tag transfer",
-					description: `__${message.author.tag}__ wants to transfer the tag *${message.args[1]}* to you. \nWrite **y**es to accept it or **n**o to decline it.`
+					description: (message.translations.commands.tag_transfer_request || "Translation error").replace(/\{owner\}/g, message.author.tag).replace(/\{tagname\}/g, message.args[1])
 				}});
-				
 			}
 		});
 	});

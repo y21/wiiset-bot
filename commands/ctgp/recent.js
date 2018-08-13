@@ -3,7 +3,7 @@ module.exports = async message => {
     copy.recentRecords = copy.recentRecords.slice(0, (parseInt(message.args[1]) || 10));
     message.channel.send({
         embed: {
-            title: "CTGP Time Trials - Recent uploaded ghosts",
+            title: message.translations.commands.ctgp_recent_uploads || "Translation error",
             fields: copy.recentRecords.map(val => {
                 return {
                     name: val.player || "???",

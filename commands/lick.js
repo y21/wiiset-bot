@@ -12,8 +12,8 @@ module.exports = message => {
             new RichEmbed()
                 .setAuthor(message.mentions.users.first().tag, message.mentions.users.first().avatarURL, message.mentions.users.first().avatarURL)
                 .setColor(0x77b254)
-                .addField("Lick User", ":white_check_mark: Paws successfully licked.")
-                .addField("Total licks", `**${message.mentions.users.first().username}**'s paws got licked ${licks} times.`)
+                .addField("Lick User", message.translations.commands.lick_user || "Translation error")
+                .addField("Total licks", (message.translations.commands.total_licks || "Translation error").replace(/\{amount\}/g, licks).replace(/\{user\}/g, message.mentions.users.first().username))
                 .setFooter(`Licked by ${message.author.tag}`, message.author.avatarURL)
         );
     }).catch(err => {
