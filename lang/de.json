@@ -28,7 +28,7 @@
     "refresh_footer": "Daten werden alle 5 Minuten aktualisiert.",
     "mkw_top_regions": "Mario Kart Wii Top Regionen",
     "mkw_region_players": "Aktuell sind {players} in 4 verschiedenen Login Regionen online.",
-    "mkw_user_not_found": "Angegebener User wurde nicht gefunden. **Beachte:** Wiiset wird höchstwahrscheinlich keine User finden, dessen Mii Namen Zeichen enthalten, die nicht auf einer normalen Tastatur sind (zum Beispiel \⭐. Wenn Du dir sicher bist, dass Du in einem Raum bist und dein Mii einen normalen Namen hat, versuche den Mii namen von <https://wiimmfi.de/mkw/list> zu kopieren und diesen zu benutzen.",
+    "mkw_user_not_found": "Angegebener User wurde nicht gefunden. **Beachte:** Wiiset wird höchstwahrscheinlich keine User finden, dessen Mii Namen Zeichen enthalten, die nicht auf einer normalen Tastatur sind (zum Beispiel ⭐. Wenn Du dir sicher bist, dass Du in einem Raum bist und dein Mii einen normalen Namen hat, versuche den Mii namen von <https://wiimmfi.de/mkw/list> zu kopieren und diesen zu benutzen.",
     "mkw_information_about": "Informationen über den Spieler {player}",
     "mkw_game_type": "Spiel-Typ",
     "mkw_conn_fail": "Verbindungsfehler",
