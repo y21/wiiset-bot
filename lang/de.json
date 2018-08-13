@@ -13,7 +13,7 @@
     "nodejs_ver": "NodeJS Version",
     "ban_confirmation": "Bist Du dir sicher, dass du __{target}__ vom Server bannen willst? Antworte entweder mit __y__ (ja) oder __n__ (nein) in den nächsten 25 Sekunden.",
     "guild_only": "Dieser Befehl ist nur in Server ausführbar.",
-    "no_permissions": "Du hast nicht genügend Berechtigungen, um {action}. (`{perm}`)",
+    "no_permissions": "Du hast nicht genügend Berechtigungen. (`{perm}`)",
     "no_member_softban": "User konnte nicht gebannt werden. Anscheinend hast Du keinen User in deiner Nachricht erwähnt. Bitte gebe als Parameter eine User ID, einen User Tag (User#1234) oder eine Mention.",
     "banned": "__{target}__ wurde erfolgreich gebannt. Warte auf Entbannung...",
     "softban_error": "Ein Fehler ist beim Bannen aufgetreten.",
