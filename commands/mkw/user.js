@@ -2,14 +2,14 @@ const { post } = require("snekfetch"),
     { fromString } = require("../../FlagStore");
 
 module.exports = async message => {
-    let request = (await post(`https://wiimmfi.glitch.me/findUser?name=${fromString(message.content) ? "&flags=" + fromString(message.content).join(",") : ""}`,
+    let request = ((await post(`https://wiimmfi.glitch.me/findUser?name=${fromString(message.content) ? "&flags=" + fromString(message.content).join(",") : ""}`,
         {
             data: {
                 "Content-type": "application/x-www-form-urlencoded",
                 name: message.content.split(" ").slice(2).join(" ").substr(0, message.content.indexOf("-flag:") > -1 ? message.content.split(" ").slice(2).join(" ").indexOf("-flag:") - 1 : message.content.split(" ").slice(2).join(" ").length).replace(/ /g, "%20")
             }
-        }).catch(console.log)).body;
-    if(request.status === 400) return message.reply(message.connection.translations.commands.mkw_user_not_found || "Translation error");
+        }).catch(console.log)) || { body: { status: 400 } }).body;
+    if(request.status === 400) return message.reply(message.translations.commands.mkw_user_not_found || "Translation error");
     let embed = new message.Discord.RichEmbed()
         .setTitle((message.translations.commands.mkw_information_about || "Translation error").replace(/\{player\}/g, message.content.split(" ").slice(2).join(" ").substr(0, message.content.indexOf("-flag:") > -1 ? message.content.split(" ").slice(2).join(" ").indexOf("-flag:") - 1 : message.content.split(" ").slice(2).join(" ").length)))
         .addField("VR (versus rating)", request.data.VR || "<:mysterybox:442440471424270339>")
