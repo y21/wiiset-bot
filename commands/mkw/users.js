@@ -3,7 +3,7 @@ const { RichEmbed } = require("discord.js");
 
 module.exports = async message => {
     const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-    let request = await get("http://wiimmfi.glitch.me/users"),
+    let request = await get("http://wiimmfi.glitch.me/mkw/users"),
         counts = [ 0, 10, 1 ],
         embed = new RichEmbed()
         .setTitle((message.translations.commands.mkw_online_users || "Translation error").replace(/\{page\}/g, 1))

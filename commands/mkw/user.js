@@ -2,7 +2,7 @@ const { post } = require("snekfetch"),
     { fromString } = require("../../FlagStore");
 
 module.exports = async message => {
-    let request = ((await post(`https://wiimmfi.glitch.me/findUser?name=${fromString(message.content) ? "&flags=" + fromString(message.content).join(",") : ""}`,
+    let request = ((await post(`https://wiimmfi.glitch.me/mkw/findUser?name=${fromString(message.content) ? "&flags=" + fromString(message.content).join(",") : ""}`,
         {
             data: {
                 "Content-type": "application/x-www-form-urlencoded",
