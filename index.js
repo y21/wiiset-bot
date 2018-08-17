@@ -3,7 +3,7 @@ const Discord = require("discord.js"),
     client = new Discord.Client({
         disableEveryone: true
     }),
-    { get } = require("snekfetch"),
+    fetch = require("node-fetch"),
     { embedColors, prefix, token } = require("./config.json"),
     sqlite = require("sqlite"),
     FlagStore = require("./FlagStore"),
@@ -83,12 +83,12 @@ client.on("message", async message => {
 
 client.on('ready', async() => {
     console.log(`[${new Date().toLocaleString()}] Bot is ready (${client.guilds.size} Servers and ${client.users.size} Users.)`);
-    utils.updateData(get).then(res => {
+    utils.updateData(fetch).then(res => {
         wiimmfi_api = res;
     });
     utils.updatePresence(wiimmfi_api, client);
     setTimeout(() => utils.updatePresence(wiimmfi_api, client), 30000); // wait 30 seconds until presence change
-    setInterval(() => utils.updateData(get).then(res => wiimmfi_api = res), 300000);
+    setInterval(() => utils.updateData(fetch).then(res => wiimmfi_api = res), 300000);
     setInterval(() => utils.updatePresence(wiimmfi_api, client), 300000);
 });
 

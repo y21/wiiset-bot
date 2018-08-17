@@ -1,13 +1,16 @@
-module.exports = async (get) => {
+module.exports = async (fetch) => {
     let wiimmfi_api = { };
-    wiimmfi_api.text = JSON.parse((await get('https://wiimmfi.glitch.me/mkw/amount')).raw.toString());
-    wiimmfi_api.text.regions = JSON.parse((await get('https://wiimmfi.glitch.me/mkw/regions')).raw.toString());
-    wiimmfi_api.text.ssbb = JSON.parse((await get("https://wiimmfi.glitch.me/ssbb/amount")).raw.toString());
+    let currentRequest = await fetch("https://wiimmfi.glitch.me/mkw/amount");
+    wiimmfi_api.text = await currentRequest.json();
+    currentRequest = await fetch("https://wiimmfi.glitch.me/mkw/regions");
+    wiimmfi_api.text.regions = await currentRequest.json();
+    currentRequest = await fetch("https://wiimmfi.glitch.me/ssbb/amount");
+    wiimmfi_api.text.ssbb = await currentRequest.json();
+    currentRequest = await fetch("http://tt.chadsoft.co.uk/index.json");
     wiimmfi_api.ctgp = {
-        recent: await get("http://tt.chadsoft.co.uk/index.json")
-    };
-    if (!wiimmfi_api.ctgp.recent.body.startsWith("{")) wiimmfi_api.ctgp.recent.body = wiimmfi_api.ctgp.recent.body.substr(1);
-    wiimmfi_api.ctgp.recent = JSON.parse(wiimmfi_api.ctgp.recent.body);
+        recent: await currentRequest.text()
+    }
+    if(!wiimmfi_api.ctgp.recent.startsWith("{")) wiimmfi_api.ctgp.recent = JSON.parse(wiimmfi_api.ctgp.recent.substr(1));
     wiimmfi_api.lastCheck = Date.now();
     return wiimmfi_api;
 };
