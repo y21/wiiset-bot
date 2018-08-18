@@ -5,10 +5,11 @@ const fetch = require("node-fetch"),
 
 module.exports = async message => {
     parameters.append("name", message.args.slice(1));
-    let request = await fetch(`https://wiimmfi.glitch.me/mkw/findUser/${fromString(message.content).length > 0 ? fromString(message.content).join(",") : ""}`, {
+    let request = await fetch(`https://wiimmfi.glitch.me/mkw/findUser${fromString(message.content).length > 0 ? "?flags=" + fromString(message.content).join(",") : ""}`, {
         method: "POST",
         body: parameters
     });
+  console.log(`https://wiimmfi.glitch.me/mkw/findUser${fromString(message.content).length > 0 ? "?flags=" + fromString(message.content).join(",") : ""}`);
     request = await request.json();
     if(request.status === 400) return message.reply(message.translations.commands.mkw_user_not_found || "Translation error");
     let embed = new message.Discord.RichEmbed()
