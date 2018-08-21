@@ -8,7 +8,7 @@ module.exports = async message => {
 		// Add so-called "general" category
 		categories.unshift("general");
 		let embed = {
-			title: "Help | General | Page 1",
+			title: "Help | General | Page 0",
 			color: 0xFFFFFF,
 			fields: commands.filter(val => !val.includes("/") && val.constructor.name !== "Array").map(val => { return {
 				name: `${prefix + val}`,
@@ -16,7 +16,7 @@ module.exports = async message => {
 			}})
 		};
 		let msg = await message.channel.send({embed: embed}),
-		counter = 1;
+		counter = 0;
 		msg.react("⬅").then(m => {
             msg.react("➡").catch();
         }).catch();
