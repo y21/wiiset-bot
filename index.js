@@ -23,7 +23,14 @@ for(const lang of fs.readdirSync("./lang/")) {
     translations[lang.substr(0, lang.indexOf(".json"))] = require(`./lang/${lang}`);
 }
 
-sqlite.open("./database.sqlite");
+// Create tables in case they don't exist
+(async () => {
+  await sqlite.open("./database.sqlite");
+  await sqlite.run("CREATE TABLE IF NOT EXISTS commandstats (`name` TEXT, `uses` INTEGER)");
+  await sqlite.run("CREATE TABLE IF NOT EXISTS licks (`id` TEXT, `amount` INTEGER)");
+  await sqlite.run("CREATE TABLE IF NOT EXISTS tags (`name` TEXT, `author` TEXT, `content` TEXT, `createdAt` TEXT, `uses` INTEGER)");
+  await sqlite.run("CREATE TABLE IF NOT EXISTS language (`guild` TEXT, `lang` TEXT)");
+})();
 
 // Anti-Spam
 const messages = new Map();
@@ -116,4 +123,5 @@ client.on("guildDelete", guild => {
     ).catch(console.log);
 });
 
+client.on("error", console.log);
 client.login(token);
