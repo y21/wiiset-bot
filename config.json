@@ -12,6 +12,7 @@
    },
    "commands": {},
    "commandDescriptions": {
+      "bash": "Executes a bash command(Owner-only)",
       "cat": "Sends a cute cat picture",
       "cmdstats": "Get the amount of uses of every command",
       "disclaimer": "Some basic information about the bot",
@@ -19,6 +20,7 @@
       "help": "A list of commands",
       "lick": "Lick someone's paws",
       "playing": "Get the amount of users who are playing a specific game",
+      "rex": "Executes code in a specific language (arg 1 = language, arg 2 = code)",
       "stats": "General information about the bot",
       "ctgp/recent": "Get the recent top CTGP Time Trial uploads. Usage: ctgp recent [amount of tracks to show]",
       "ctgp/stats": "CTGP statistics such as uploaded ghosts, leaderboards etc.",
