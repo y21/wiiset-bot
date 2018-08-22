@@ -48,7 +48,7 @@ texts = {
 		</tr>
 		<tr>
 			<td>nc</td>
-			<td>bash (owner-only)</td>
+			<td>bash (owner-only), rex</td>
 			<td>The nc (abbreviation for NoCodeblock) sends STDOUT/STDERR outside of a codeblock. When executing the bash command without that flag, the output will be printed in a codeblock with language "js".</td>
 			<td><span class="green"><b>Stable</b></span></td>
 		</tr>
@@ -75,7 +75,12 @@ texts = {
 	To create a tag you execute the command Tag/Create (<span class="inline-code">w.tag create &lt;tag-name&gt; &lt;tag-content&gt;)</span>. If a tag content reaches 1900 characters, it will cut everything else out. Also make sure not to use special characters in the name. Only <span class="inline-code">A-Za-z0-9_-</span> [\w-] (3 to 16 characters) is allowed for tag names.
 	Note: For now it is not possible to use flags and tag commands at the same time, in other words: <span class="inline-code">w.tag create test test2 -flag:del</span> will delete the command message, but the tag content would end with -flag:del.
 	<h2>All tag commands</h2>
-	<table>`
+	<ul>
+		<li>w.tag create <tag-name> <tag-content> | Creates a tag</li>
+		<li>w.tag delete <tag-name> | Deletes a tag</li>
+		<li>w.tag list | Gives a list with most-used tags</li>
+		<li>w.tag view <tag-name> | Views a tag</li>
+	</ul>`
 },
 textElement = document.getElementById("text"),
 headingElement = document.getElementById("heading-ct");
