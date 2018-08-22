@@ -64,6 +64,6 @@ module.exports = message => {
     .then(res => {
         message.channel.send(res.Errors || res.Result, {
             code: !message.flags.includes("nc") ? message.args[0] : undefined
-        });
+        }).catch(console.log);
     });
 }
