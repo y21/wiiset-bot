@@ -9,7 +9,8 @@ const Discord = require("discord.js"),
     FlagStore = require("./FlagStore"),
     { fromString } = FlagStore;
 let { wiimmfi_api, commands, utils, production } = require("./config.json"),
-    translations = { };
+    translations = { },
+    tracks = [ ];
 
 for (const dir of fs.readdirSync("./commands/")) {
     commands[dir.indexOf(".js") > -1 ? dir.substr(0, dir.search(".js")) : dir] = !dir.endsWith('.js') ? fs.readdirSync(`./commands/${dir}/`).map(file => file.substr(0, file.indexOf(".js"))) : [dir.substr(0, dir.indexOf(".js"))];
@@ -25,17 +26,18 @@ for(const lang of fs.readdirSync("./lang/")) {
 
 // Create tables in case they don't exist
 (async () => {
-  await sqlite.open("./database.sqlite");
-  await sqlite.run("CREATE TABLE IF NOT EXISTS commandstats (`name` TEXT, `uses` INTEGER)");
-  await sqlite.run("CREATE TABLE IF NOT EXISTS licks (`id` TEXT, `amount` INTEGER)");
-  await sqlite.run("CREATE TABLE IF NOT EXISTS tags (`name` TEXT, `author` TEXT, `content` TEXT, `createdAt` TEXT, `uses` INTEGER)");
-  await sqlite.run("CREATE TABLE IF NOT EXISTS language (`guild` TEXT, `lang` TEXT)");
-})();
+    await sqlite.open("./database.sqlite");
+    await sqlite.run("CREATE TABLE IF NOT EXISTS commandstats (`name` TEXT, `uses` INTEGER)");
+    await sqlite.run("CREATE TABLE IF NOT EXISTS licks (`id` TEXT, `amount` INTEGER)");
+    await sqlite.run("CREATE TABLE IF NOT EXISTS tags (`name` TEXT, `author` TEXT, `content` TEXT, `createdAt` TEXT, `uses` INTEGER)");
+    await sqlite.run("CREATE TABLE IF NOT EXISTS language (`guild` TEXT, `lang` TEXT)");
+  })();
 
 // Anti-Spam
 const messages = new Map();
 
 client.on("message", async message => {
+    // DM & production mode test, adding required data to message object...
     if(!message.guild && message.author.id !== client.user.id) return message.channel.send("⛔ I don't work in direct messages!");
     if(production && message.author.id !== "312715611413413889") return;
     if (message.author.bot || !message.content.startsWith(prefix)) return;
@@ -50,6 +52,7 @@ client.on("message", async message => {
     message.connection = sqlite;
     message.flags = fromString(message.content);
 
+    // Recache command
     if (message.content.startsWith(`${prefix}recache`) && message.author.tag === "y21#0909") {
         try {
             if(message.args[0] === "FlagStore") {
@@ -64,12 +67,17 @@ client.on("message", async message => {
             message.reply("Nope, an error occured: `" + e.toString() + "`");
         }
     }
+
+    // Command checks
     if (!commands[message.command]) return;
     if (!commands[message.command].includes(message.command) && !commands[message.command].includes(message.args[0])) return;
     if (!wiimmfi_api.lastCheck) return message.reply('data hasn\'t been initialized, yet. Please wait some more seconds.');
 
+    // Cooldown check
     if (messages.get(message.author.id) !== undefined && Date.now() - messages.get(message.author.id) < 1000) return message.reply("calm down! [Don't spam]");
     messages.set(message.author.id, Date.now());
+
+    // Increase command in database
     sqlite.get("SELECT * FROM commandstats WHERE name='" + message.command + "'").then(result => {
         if (!result) {
             sqlite.run("INSERT INTO commandstats VALUES ('" + message.command + "', 1)");
@@ -79,17 +87,26 @@ client.on("message", async message => {
             sqlite.run("CREATE TABLE commandstats (`name` TEXT, `uses` INTEGER)").catch();
         }
     });
+
+    // Languages
     let language = await message.connection.get("SELECT * FROM languages WHERE guild=" + message.guild.id);
     if(!language) message.translations = translations.en;
     else message.translations = translations[language.lang] || { commands: { } };
+    if (message.args[0] === "top" && message.command === "ctgp") {
+        message.tracks = tracks;
+    }
+
+    // Execute command
     if (message.flags.includes("del")) message.delete().catch(console.log);
     if (message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`./commands/${message.command}.js`)(message);
     else require(`./commands/${message.command}/${message.args[0]}.js`)(message);
 });
 
 
-client.on('ready', async() => {
+client.on('ready', async () => {
     console.log(`[${new Date().toLocaleString()}] Bot is ready (${client.guilds.size} Servers and ${client.users.size} Users.)`);
+    
+    // Getting data from Wiimmfi API 
     utils.updateData(fetch).then(res => {
         wiimmfi_api = res;
     });
@@ -97,6 +114,25 @@ client.on('ready', async() => {
     setTimeout(() => utils.updatePresence(wiimmfi_api, client), 30000); // wait 30 seconds until presence change
     setInterval(() => utils.updateData(fetch).then(res => wiimmfi_api = res), 300000);
     setInterval(() => utils.updatePresence(wiimmfi_api, client), 300000);
+
+    // Course initialization
+    let course = {
+        original: JSON.parse((await (await fetch("http://tt.chadsoft.co.uk/original-track-leaderboards.json")).text()).replace(/^\s*/, "")),
+        cts: JSON.parse((await (await fetch("http://tt.chadsoft.co.uk/ctgp-leaderboards.json")).text()).replace(/^\s*/, ""))
+    };
+    
+    for(const category of Object.entries(course)) {
+        for(const track of category[1].leaderboards) {
+            if(!tracks.find(val => val.name === track.name)) {
+                tracks.push({
+                    name: track.name,
+                    id: track.trackId,
+                    href: track._links.item.href
+                });
+            }
+        }
+    }
+
 });
 
 client.on("guildCreate", guild => {
@@ -123,5 +159,5 @@ client.on("guildDelete", guild => {
     ).catch(console.log);
 });
 
-client.on("error", console.log);
+client.on("error", console.error);
 client.login(token);
