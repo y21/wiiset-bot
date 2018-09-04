@@ -5,16 +5,23 @@ const countryCodes = require("../../countryCodes.json");
 
 module.exports = async message => {
     try {
-        const timestamp = Date.now();
-        if (message.args.length < 2) return message.reply("No course name provided.");
-        const track = message.tracks.find(val => val.name === message.args.slice(1).join(" "));
+        let limit = 10;
+        if (message.flags.includes("l")) {
+            limit = parseInt(message.args[1]);
+            if (limit === NaN || limit > 10 || limit < 1) limit = 10;
+        } else {
+            message.args.splice(1, 0, "10");
+        }
+        if (message.args.length < 3) return message.reply("No course name provided.");
+        const track = message.tracks.find(val => val.name === message.args.slice(2).join(" ").replace(/ *$/, ""));
         if (track === undefined) return message.reply("Course was not found.");
+        const timestamp = Date.now();
         let result = JSON.parse((await (await fetch(`http://tt.chadsoft.co.uk${track.href}`)).text()).replace(/^\s+/, ""));
         let counter = 0;
         message.channel.send("Took " + ((Date.now() - timestamp) / 1000).toFixed(1) + " seconds to fetch...", { embed: {
             color: (message.member || { displayColor: 0x00FF00 }).displayColor,
             title: "Top 10 ghosts for " + track.name,
-            fields: result.ghosts.slice(0, 10).map(val => { return {
+            fields: result.ghosts.slice(0, limit).map(val => { return {
                 name: "#" + (++counter) + ": " + val.player,
                 value: "Time: `" + val.finishTimeSimple + "`\n"
                     + "Country: " + countryCodes[val.country] || "???"
