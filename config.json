@@ -26,6 +26,7 @@
       "ctgp/stats": "CTGP statistics such as uploaded ghosts, leaderboards etc.",
       "ctgp/user": "Get statistics about a specific user from the Time Trial API (chadsoft.co.uk)",
       "ctgp/top": "Get top 10 results of a specific track by providing its name",
+      "ctgp/setpid": "Sets the personal profile ID (allows users to use mentions in w.ctgp user)",
       "mkw/list": "Gives the amount of available mario kart wii rooms (worldwide, continental and private)",
       "mkw/regions": "Gives the amount of players logged in from different login regions",
       "mkw/user": "Gives information about a player (has to be in a room): VR, BR, connection issues etc.",
