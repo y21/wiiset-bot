@@ -34,4 +34,8 @@ module.exports = async message => {
             m.edit(embed);
             reaction.remove(message.author);
         });
+    
+        collector.on("end", () => {
+            collector.stop();
+        });
 };
