@@ -13,7 +13,7 @@ module.exports = async message => {
             pid = message.args[1];
         } else {
             let prepared = await message.connection.prepare("SELECT * FROM pids WHERE user=?");
-            pid = await prepared.get([message.author.id]);
+            pid = await prepared.get([message.mentions.users.first().id]);
             if (!pid) return message.reply("Mentioned user did not add a Profile ID yet.");
             pid = pid.pid;
         }
