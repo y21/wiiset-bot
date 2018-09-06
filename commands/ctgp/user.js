@@ -6,9 +6,18 @@ module.exports = async message => {
     try {
         if (message.args.length == 1) return message.reply("No player ID provided. To get someone's player ID, you visit their profile by using the search bar at <http://chadsoft.co.uk/time-trials/players.html>. The player ID should be displayed on their profile.");
         if (message.args.length < 2) return message.reply("No player ID provided."); // TODO: if profile id of author is saved in db, use that
+        let pid;
+        
         if (message.mentions.users.size === 0) {
             if (!/[A-Z0-9]+/.test(message.args[1])) return message.reply("invalid player ID format.");
-            let request = await fetch(`http://tt.chadsoft.co.uk/players/${message.args[1].substr(0, 2)}/${message.args[1].substr(2)}.json`);
+            pid = message.args[1];
+        } else {
+            let prepared = await message.connection.prepare("SELECT * FROM pids WHERE user=?");
+            pid = await prepared.get([message.author.id]);
+            if (!pid) return message.reply("Mentioned user did not add a Profile ID yet.");
+            pid = pid.pid;
+        }
+            let request = await fetch(`http://tt.chadsoft.co.uk/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
             let result = await request.text();
             if (request.headers.raw()["content-type"][0] !== "application/json") return message.reply("An invalid profile ID was provided. "); // if result is not an object
             result = JSON.parse(result.replace(/^\s*/g, ""));
@@ -50,10 +59,8 @@ module.exports = async message => {
                     ]
                 }
             });
-        } else {
-            // TODO: let users store their profile id into a database and use mentions instead
-        }
     } catch (e) {
         message.reply("An error occured while executing the command.");
+        console.log(e)
     }
 }
