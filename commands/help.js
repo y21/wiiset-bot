@@ -3,7 +3,7 @@ const { readdirSync } = require("fs"),
 
 module.exports = async message => {
 	const commandCategories = {
-		1: undefined,
+		1: "Information",
 		2: "general",
 		3: "ctgp",
 		4: "mkw",
