@@ -41,7 +41,7 @@ module.exports = async message => {
 	await msg.react("⬅");
 	await msg.react("➡");
 	
-	const collector = msg.createReactionCollector((reaction, user) => reaction.emoji.name === "➡" || reaction.emoji.name === "⬅", {
+	const collector = msg.createReactionCollector((reaction, user) => user.id === message.author.id && (reaction.emoji.name === "➡" || reaction.emoji.name === "⬅"), {
 		time: 180000
 	});
 
