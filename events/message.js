@@ -21,12 +21,12 @@ module.exports = async data => {
     if (message.content.startsWith(`${prefix}recache`) && message.author.tag === "y21#0909") {
         try {
             if(message.args[0] === "FlagStore") {
-                for(const flag of require("./FlagStore").flags) {
+                for(const flag of require("../FlagStore").flags) {
                     if (!FlagStore.flags.includes(flag)) FlagStore.flags.push(flag);
                 }
                 return;
             }
-            delete require.cache[require.resolve(`./commands/${message.args[0]}${message.args[1] ? "/" + message.args[1] + ".js" : ".js"}`)];
+            delete require.cache[require.resolve(`../commands/${message.args[0]}${message.args[1] ? "/" + message.args[1] + ".js" : ".js"}`)];
             message.reply("Command recached.");
         } catch (e) {
             message.reply("Nope, an error occured: `" + e.toString() + "`");
