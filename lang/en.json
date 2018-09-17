@@ -12,6 +12,7 @@
     "uptime": "Uptime",
     "nodejs_ver": "NodeJS version",
     "ban_confirmation": "Do you really want to ban __{target}__? Reply with either __y__es or __n__o within the next 25 seconds.\n\nReason: {reason}",
+    "kick_confirmation": "Do you really want to kick __{target}__? Reply with either __y__es or __n__o within the next 25 seconds.\n\nReason: {reason}"
     "guild_only": "this command is only available in servers",
     "no_permissions": "you do not have enough permissions. (`{perm}`)",
     "no_member_softban": "No member to softban. You either did not provide any GuildMember (User ID, User Tag (User#1234) or mention",
