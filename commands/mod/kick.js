@@ -10,7 +10,7 @@ module.exports = async message => {
 		} else target = message.mentions.members.first();
 		if(!target) return message.reply(message.translations.commands.no_member_softban || "Translation error");
 		
-		message.reply((message.translations.commands.kick_confirmation || "Translation error").replace(/\{target\}/g, target.user.tag));
+		message.reply((message.translations.commands.kick_confirmation || "Translation error").replace(/\{target\}/g, target.user.tag).replace(/\{reason\}/, (message.args.slice(2).join(" ") || "- none -")));
 		
 		const collector = message.channel.createMessageCollector(m => {
 			return m.author.id === message.author.id && (m.content === "y" || m.content === "yes" || m.content === "n" || m.content === "no");
