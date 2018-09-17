@@ -24,7 +24,7 @@ module.exports = async message => {
 				target.ban({ days: 7, reason: "Ban requested by " + message.author.tag + " | Reason: " + (message.args.slice(2).join(" ") || "- none -")}).then(() => {
 					message.channel.send((message.translations.commands.banned || "Translation error").replace(/\{target\}/g, target.user.tag));
 				}).catch(err => {
-					message.reply((message.translations.commands.guild_only || "Translation error") + " `" + err.toString() + "`");
+					message.reply((message.translations.commands.ban_error || "Translation error") + " `" + err.toString() + "`");
 				});
 			} else {
 				message.reply(message.translations.commands.ban_aborted || "Translation error");
