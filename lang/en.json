@@ -18,6 +18,8 @@
     "no_member_unban": "No member to unban. You did not provide a User ID.",
     "banned": "Successfully banned __{target}__.",
     "ban_aborted": "Ban aborted.",
+    "kicked": "Successfully kicked __{target}__.",
+    "kick_aborted": "Kick aborted.",
     "softbanned": "Successfully banned __{target}__. Waiting for unban...",
     "softban_error": "An error occured while softbanning.",
     "unbanned": "__{target}__ has been unbanned.",
