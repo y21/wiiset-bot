@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const { getByTag } = require("../../utils/UserResolver");
 
 module.exports = async message => {
     try {
@@ -7,8 +8,14 @@ module.exports = async message => {
         let pid, page = 1, counts = [ 0, 5 ];
 
         if (message.mentions.users.size === 0) {
-            if (!/[A-Z0-9]+/.test(message.args[1])) return message.reply("invalid player ID format.");
-            pid = message.args[1];
+			if (/^.+#\d{4}$/.test(message.args[1])) {
+				if (!getByTag(message.client.users, message.args[1])) return message.reply("User not found.");
+				let prepared = await message.connection.prepare("SELECT * FROM pids WHERE user=?");
+				pid = await prepared.get([getByTag(message.client.users, message.args[1]).id]);
+				if (!pid) return message.reply("User did not add a Profile ID yet.");
+				pid = pid.pid;
+			} else if (!/^[A-Z0-9]+$/.test(message.args[1])) return message.reply("Invalid Profile ID provided.");
+			if (pid === undefined) pid = message.args[1];
         } else {
             let prepared = await message.connection.prepare("SELECT * FROM pids WHERE user=?");
             pid = await prepared.get([message.mentions.users.first().id]);
