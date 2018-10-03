@@ -13,7 +13,7 @@ module.exports = async message => {
             message.args.splice(1, 0, "10");
         }
         if (message.args.length < 3) return message.reply("No course name provided.");
-        const track = message.tracks.find(val => val.name === message.args.slice(2).join(" ").replace(/ *$/, ""));
+        const track = message.tracks.find(val => val.name.toLowerCase() === message.args.slice(2).join(" ").replace(/ *$/, "").toLowerCase());
         if (track === undefined) return message.reply("Course was not found.");
         const timestamp = Date.now();
         let result = JSON.parse((await (await fetch(`http://tt.chadsoft.co.uk${track.href}`)).text()).replace(/^\s+/, ""));
