@@ -62,7 +62,10 @@ module.exports = async message => {
 					value: commandDescriptions[page === 2 ? file.substr(0, file.indexOf(".js")) : commandCategories[page] + "/" + file.substr(0, file.indexOf(".js"))] || "Command description not found."
 				}
 			}),
-			color: message.member.displayColor || 0x000000
+			color: message.member.displayColor || 0x000000,
+			footer: {
+				text: `${[undefined, ...Object.values(commands)][page - 1].length} commands in this category`
+			}
 		}}).then(async () => {
 			await reaction.remove(message.author).catch();
 		}).catch();
