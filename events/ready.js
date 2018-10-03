@@ -24,8 +24,5 @@ module.exports = async data => {
                 }
             }
         }
-        a({
-            tracks, wiimmfi_api
-        });
     });
 };
