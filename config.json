@@ -34,6 +34,7 @@
       "mkw/user": "Gives information about a player (has to be in a room): VR, BR, connection issues etc.",
       "mkw/users": "Gives a list of players that are in rooms",
       "mkw/bans": "Gives a list of latest Wiimmfi bans. A limit *can* be provided, but it's optional.",
+      "mkw/room": "Interactive embed which shows information about players in a room and room statistics. Parameter is either the room id or name",
       "mod/kick": "Kicks a GuildMember. (Target can be expressed by passing a user ID, a user tag (User#1234) or by mentioning them",
       "mod/ban": "Bans a GuildMember. (Target can be expressed by passing a user ID, a user tag (User#1234) or by mentioning them",
       "mod/softban": "Softbans a GuildMember. (Bans and unbans a member. Its purpose is to delete all recent messages.",
