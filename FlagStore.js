@@ -1,4 +1,4 @@
-const flags = [ "i", "del", "nc", "l" ];
+const flags = [ "i", "del", "nc", "l", "user" ];
 
 class FlagStore {
     constructor(flags){
