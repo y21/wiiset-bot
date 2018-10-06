@@ -7,8 +7,8 @@ class FlagStore {
     }
 
     static fromString(string){
-        const match = string.match(new RegExp("-flag:(" + flags.join("|") + ")(,(" + flags.join("|") + "))* *$", "g"));
-        return match ? match.map(e => e.substr(e.search(":") + 1)) : [];
+        const match = string.match(new RegExp("-(-|flag:)((" + flags.join("|") + ")(=.{1,64})?,?)+", "g"));
+		return match !== null ? match[0].replace(/^(--|-flag:)/g, "").split(",").filter(v => v !== "") : [];
     }
 
     get flags(){
