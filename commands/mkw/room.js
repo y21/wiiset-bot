@@ -11,7 +11,7 @@ module.exports = async message => {
     let json = await request.json();
 	let target;
 	if (message.flags.find(v => /^user=.+$/.test(v))) {
-		target = json.find(v => v.members.some(vv => vv.names[0] === /^user=(.+)$/.exec(message.flags.find(vvv => vvv.startsWith("user=")))[1]));
+		target = json.filter(v => v.type === "room").find(v => v.members.some(vv => vv.names[0] === /^user=(.+)$/.exec(message.flags.find(vvv => vvv.startsWith("user=")))[1]));
 	} else target = json.filter(v => v.type === "room").find(v => v.room_id === message.args[1] || v.room_name === message.args[1]);
     if (typeof target === "undefined") return message.reply("room not found.");
     const roomStatsEmbed = {
