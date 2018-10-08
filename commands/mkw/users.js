@@ -1,15 +1,16 @@
 const fetch = require("node-fetch"),
     { RichEmbed } = require("discord.js");
 
-module.exports = async message => {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
-    let request = await fetch("http://wiimmfi.glitch.me/mkw/users");
-    request = await request.json();
-    let counts = [ 0, 10, 1 ],
-        embed = new RichEmbed()
-        .setTitle((message.translations.commands.mkw_online_users || "Translation error").replace(/\{page\}/g, 1))
-        .setDescription("```https\n" + request.slice(counts[0], counts[1]).join("\n") + "\n```")
-        .setFooter((message.translations.commands.mkw_total_players || "Translation error").replace(/\{players\}/g, request.length));
+module.exports = class UsersCommand {
+    static async run(message) {
+        const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
+        let request = await fetch("http://wiimmfi.glitch.me/mkw/users");
+        request = await request.json();
+        let counts = [ 0, 10, 1 ],
+            embed = new RichEmbed()
+                .setTitle((message.translations.commands.mkw_online_users || "Translation error").replace(/\{page\}/g, 1))
+                .setDescription("```https\n" + request.slice(counts[0], counts[1]).join("\n") + "\n```")
+                .setFooter((message.translations.commands.mkw_total_players || "Translation error").replace(/\{players\}/g, request.length));
         let m = await message.channel.send(embed);
         m.react("⬅").then(m => {
             m.message.react("➡").catch();
@@ -34,8 +35,9 @@ module.exports = async message => {
             m.edit(embed);
             reaction.remove(message.author);
         });
-    
+
         collector.on("end", () => {
             collector.stop();
         });
+    }
 };

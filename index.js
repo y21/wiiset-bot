@@ -54,7 +54,7 @@ base.client.on("messageUpdate", (undefined, message) => require("./events/messag
 
 base.client.on('ready', () => {
     setTimeout(() => base.config.utils.updatePresence(base.config.wiimmfi_api, base.client), 30000); // wait 30 seconds until presence change
-    setInterval(() => base.config.utils.updateData(fetch).then(res => base.config.wiimmfi_api = res), 300000);
+    setInterval(() => base.config.utils.updateData(base.fetch).then(res => base.config.wiimmfi_api = res), 300000);
     setInterval(() => base.config.utils.updatePresence(base.wiimmfi_api, base.client), 300000);
 
     require("./events/ready.js")({

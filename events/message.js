@@ -63,6 +63,6 @@ module.exports = async data => {
 
     // Execute command
     if (message.flags.includes("del")) message.delete().catch(console.log);
-    if (message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`../commands/${message.command}.js`)(message);
-    else require(`../commands/${message.command}/${message.args[0]}.js`)(message);
+    if (message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`../commands/${message.command}.js`).run(message);
+    else require(`../commands/${message.command}/${message.args[0]}.js`).run(message);
 };
