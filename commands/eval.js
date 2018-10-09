@@ -44,6 +44,7 @@ module.exports = class EvalCommand {
             value: (Date.now() - oldts) + " Milliseconds"
         });
 
+        if (message.flags.includes("s")) return;
         message.channel.send({
             embed
         });
