@@ -7,7 +7,7 @@ module.exports = async data => {
     if(production && message.author.id !== "312715611413413889") return;
     if (message.author.bot || !message.content.startsWith(prefix)) return;
     message.command = message.content.substr(prefix.length, (message.content.indexOf(" ") > -1 ? message.content.indexOf(" ") - prefix.length : message.content.length))
-    message.args = message.content.replace(new RegExp("-(-|flag:)((" + FlagStore.flags.join("|") + ")(=.{1,64})?,?)+$", "g"), "").split(" ").slice(1);
+    message.args = message.content.replace(new RegExp("-(-|flag:)((\\w+)(=.{1,64})?,?)+$", "g"), "").split(" ").slice(1);
     message.wiimmfi_api = wiimmfi_api;
     message.embedColors = embedColors;
     message.Discord = {
