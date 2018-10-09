@@ -5,7 +5,7 @@ module.exports = class GhostsCommand {
     static async run(message) {
         try {
             if (message.args.length == 1) return message.reply("No player ID provided. To get someone's player ID, you visit their profile by using the search bar at <http://chadsoft.co.uk/time-trials/players.html>. The player ID should be displayed on their profile.");
-            if (message.args.length < 2) return message.reply("No player ID provided."); // TODO: if profile id of author is saved in db, use that
+            if (message.args.length < 2) return message.reply("No player ID provided.");
             let pid, page = 1, counts = [ 0, 5 ];
 
             if (message.mentions.users.size === 0) {
@@ -28,6 +28,9 @@ module.exports = class GhostsCommand {
             if (request.headers.raw()["content-type"][0] !== "application/json") return message.reply("An invalid profile ID was provided. "); // if result is not an object
             result = JSON.parse(result.replace(/^\s*/g, ""));
 
+            if (message.flags.some(v => v.startsWith("track="))) {
+                result.ghosts = result.ghosts.filter(v => v.trackName === message.flags.find(v => v.startsWith("track=")).split("=")[1])
+            }
 
             const msg = await message.channel.send({
                 embed: {
