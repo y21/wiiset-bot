@@ -26,11 +26,11 @@ module.exports = class RoomCommand {
                 },
                     {
                         name: "Highest VR",
-                        value: target.members.sort((a, b) => a.ev < b.ev)[0].ev || "-"
+                        value: target.members.sort((a, b) => a.ev < b.ev)[0].ev == -1 ? "-" : target.members.sort((a, b) => a.ev < b.ev)[0].ev
                     },
                     {
                         name: "Lowest VR",
-                        value: target.members.sort((a, b) => a.ev > b.ev)[0].ev || "-"
+                        value: target.members.sort((a, b) => a.ev > b.ev)[0].ev == -1 ? "-" : target.members.sort((a, b) => a.ev > b.ev)[0].ev
                     }
                 ],
                 footer: {
