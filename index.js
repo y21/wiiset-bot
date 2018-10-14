@@ -17,6 +17,11 @@ base.initializeCommands().then(() => {
     });
 });
 
+let messagelogs = [];
+
+setInterval(() => {
+    messagelogs = messagelogs.filter(v => Date.now() - v.set < 300000);
+}, 300000);
 
 // Events
 base.client.on("message", m => require("./events/message.js")({
@@ -32,7 +37,8 @@ base.client.on("message", m => require("./events/message.js")({
     messages: base.messages,
     sqlite: base.sqlite,
     translations: base.translations,
-    tracks: base.tracks
+    tracks: base.tracks,
+    messagelogs
 }));
 
 base.client.on("messageUpdate", (undefined, message) => require("./events/message.js")({
@@ -48,7 +54,12 @@ base.client.on("messageUpdate", (undefined, message) => require("./events/messag
     messages: base.messages,
     sqlite: base.sqlite,
     translations: base.translations,
-    tracks: base.tracks
+    tracks: base.tracks,
+    messagelogs
+}));
+
+base.client.on("messageDelete", (message) => require("./events/messageDelete.js")({
+    message, messagelogs
 }));
 
 base.client.on('ready', () => {
