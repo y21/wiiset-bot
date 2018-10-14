@@ -1,5 +1,5 @@
 module.exports = class BashCommand {
-	static run(messsage) {
+	static run(message) {
         if (message.author.id !== "312715611413413889") return;
         const { execSync } = require("child_process");
         try {
