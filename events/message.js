@@ -1,7 +1,7 @@
 const fs = require("fs");
 
 module.exports = async data => {
-    const { production, prefix, message, Discord, embedColors, wiimmfi_api, fromString, FlagStore, commands, messages, sqlite, translations, tracks } = data;
+    const { production, prefix, message, Discord, embedColors, wiimmfi_api, fromString, FlagStore, commands, messages, sqlite, translations, tracks, messagelogs } = data;
     // DM & production mode test, adding required data to message object...
     if(!message.guild && message.author.id !== client.user.id) return message.channel.send("⛔ I don't work in direct messages!");
     if(production && message.author.id !== "312715611413413889") return;
@@ -61,8 +61,56 @@ module.exports = async data => {
         message.tracks = tracks;
     }
 
+    // ---
+
+
+    let _message = Object.assign({}, message);
+    _message.client = message.client;
+    _message.guild = message.guild;
+    _message.channel = Object.assign({}, message.channel);
+    _message.channel.send = async (...args) => {
+        let m;
+        if (typeof messagelogs.find(v => v.mid === message.id) !== "undefined") {
+            await message.channel.messages.get(messagelogs.find(v => v.mid === message.id).rid).delete();
+        }
+        m = await message.channel.send(...args);
+        if (typeof messagelogs.find(v => v.mid === message.id) !== "undefined") {
+            messagelogs[messagelogs.findIndex(v => v.mid === message.id)] = {
+                mid: message.id,
+                rid: m.id
+            };
+        } else {
+            messagelogs.push({
+                mid: message.id,
+                rid: m.id,
+                set: Date.now()
+            });
+        }
+        return m;
+    };
+    _message.reply = async (...args) => {
+        let m;
+        if (typeof messagelogs.find(v => v.mid === message.id) !== "undefined") {
+            await message.channel.messages.get(messagelogs.find(v => v.mid === message.id).rid).delete();
+        }
+        m = await message.reply(...args);
+        if (typeof messagelogs.find(v => v.mid === message.id) !== "undefined") {
+            messagelogs[messagelogs.findIndex(v => v.mid === message.id)] = {
+                mid: message.id,
+                rid: m.id
+            };
+        } else {
+            messagelogs.push({
+                mid: message.id,
+                rid: m.id,
+                set: Date.now()
+            });
+        }
+        return m;
+    };
+
     // Execute command
     if (message.flags.includes("del")) message.delete().catch(console.log);
-    if (message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`../commands/${message.command}.js`).run(message);
-    else require(`../commands/${message.command}/${message.args[0]}.js`).run(message);
+    if (message.args.length === 0 || fs.existsSync("./commands/" + message.command + ".js")) require(`../commands/${message.command}.js`).run(_message);
+    else require(`../commands/${message.command}/${message.args[0]}.js`).run(_message);
 };
