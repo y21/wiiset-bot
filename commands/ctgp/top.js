@@ -7,6 +7,7 @@ module.exports = class TopCommand {
     static async run(message) {
         try {
             let limit = 10;
+			let engineClass = message.flags.includes("200cc");
             if (message.flags.includes("l")) {
                 limit = parseInt(message.args[1]);
                 if (limit === NaN || limit > 10 || limit < 1) limit = 10;
@@ -17,7 +18,7 @@ module.exports = class TopCommand {
             const track = message.tracks.find(val => val.name.toLowerCase() === message.args.slice(2).join(" ").replace(/ *$/, "").toLowerCase());
             if (track === undefined) return message.reply("Course was not found.");
             const timestamp = Date.now();
-            let result = JSON.parse((await (await fetch(`http://tt.chadsoft.co.uk${track.href}`)).text()).replace(/^\s+/, ""));
+            let result = JSON.parse((await (await fetch(`http://tt.chadsoft.co.uk${track.href.replace(/00\.json$/, engineClass ? "04.json" : "00.json")}`)).text()).replace(/^\s+/, ""));
             let counter = 0;
             message.channel.send("Took " + ((Date.now() - timestamp) / 1000).toFixed(1) + " seconds to fetch...", { embed: {
                     color: (message.member || { displayColor: 0x00FF00 }).displayColor,
