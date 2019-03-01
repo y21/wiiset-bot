@@ -50,7 +50,7 @@ module.exports = class UserCommand {
                         "Country: " + (countryCodes[result.country] || "unknown"),
                     fields: [{
                         name: "Stars",
-                        value: `${result.stars.bronze} Bronze\n${result.stars.silver} Silver\n${result.stars.gold} Gold`
+                        value: `${result.stars.bronze - result.stars.silver - result.stars.gold} Bronze\n${result.stars.silver - result.stars.gold} Silver\n${result.stars.gold} Gold`
                     },
                         {
                             name: "Last 5 out of " + (result.miiNames.length < 5 ? "<5" : result.miiNames.length - 5) + " Mii names",
