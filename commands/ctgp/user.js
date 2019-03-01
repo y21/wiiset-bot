@@ -29,18 +29,12 @@ module.exports = class UserCommand {
             let result = await request.text();
             if (request.headers.raw()["content-type"][0] !== "application/json") return message.reply("An invalid profile ID was provided. "); // if result is not an object
             result = JSON.parse(result.replace(/^\s*/g, ""));
+            let bronzeStars = result.stars.bronze - result.stars.silver - result.stars.gold;
+            let silverStars = result.stars.silver - result.stars.gold;
             let embedColor;
-            switch (Object.entries(result.stars).sort((a, b) => a[1] < b[1])[0][0]) {
-                case "bronze":
-                    embedColor = 0xCD7F32;
-                    break;
-                case "silver":
-                    embedColor = 0xC0C0C0;
-                    break;
-                case "gold":
-                    embedColor = 0xD4AF37;
-                    break;
-            }
+            if (result.stars.gold >= silverStars) embedColor = 0xD4AF37;
+            else if (silverStars >= bronzeStars) embedColor = 0xC0C0C0;
+            else embedColor = 0xCD7F32;
             message.channel.send({
                 embed: {
                     title: "Time Trial information about " + result.miiName,
