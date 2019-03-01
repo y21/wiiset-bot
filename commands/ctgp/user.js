@@ -29,7 +29,7 @@ module.exports = class UserCommand {
             let result = await request.text();
             if (request.headers.raw()["content-type"][0] !== "application/json") return message.reply("An invalid profile ID was provided. "); // if result is not an object
             result = JSON.parse(result.replace(/^\s*/g, ""));
-            let bronzeStars = result.stars.bronze - result.stars.silver - result.stars.gold;
+            let bronzeStars = result.stars.bronze - result.stars.silver;
             let silverStars = result.stars.silver - result.stars.gold;
             let embedColor;
             if (result.stars.gold >= silverStars) embedColor = 0xD4AF37;
@@ -44,7 +44,7 @@ module.exports = class UserCommand {
                         "Country: " + (countryCodes[result.country] || "unknown"),
                     fields: [{
                         name: "Stars",
-                        value: `${result.stars.bronze - result.stars.silver - result.stars.gold} Bronze\n${result.stars.silver - result.stars.gold} Silver\n${result.stars.gold} Gold`
+                        value: `${bronzeStars} Bronze\n${silverStars} Silver\n${result.stars.gold} Gold`
                     },
                         {
                             name: "Last 5 out of " + (result.miiNames.length < 5 ? "<5" : result.miiNames.length - 5) + " Mii names",
