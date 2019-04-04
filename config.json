@@ -45,8 +45,11 @@
       "tag/delete": "Deletes a tag",
       "tag/list": "Gives a list with most-used tags",
       "tag/transfer": "(deactivated) Transfer a tag to another user",
-      "tag/view": "View a specific tag"
+      "tag/view": "View a specific tag",
+      "ctgp/setup": "Adds the WR Notifier in the current channel",
+      "ctgp/unregister": "Unregisters the WR Notifier from current channel"
    },
    "utils": {},
-   "token": "token"
+   "token": "token",
+   "wrAuthToken": ""
 }
