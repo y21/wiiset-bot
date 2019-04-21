@@ -26,7 +26,7 @@ module.exports = class TopCommand {
                     fields: result.ghosts.slice(0, limit).map(val => { return {
                         name: "#" + (++counter) + ": " + val.player,
                         value: "Time: `" + val.finishTimeSimple + "`\n"
-                            + "Country: " + countryCodes[val.country] || "???"
+                            + "Country: " + (countryCodes[val.country] || "???")
                     }})
                 }}).catch();
         } catch(e) {
