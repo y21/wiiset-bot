@@ -47,7 +47,8 @@
       "tag/transfer": "(deactivated) Transfer a tag to another user",
       "tag/view": "View a specific tag",
       "ctgp/setup": "Adds the WR Notifier in the current channel",
-      "ctgp/unregister": "Unregisters the WR Notifier from current channel"
+      "ctgp/unregister": "Unregisters the WR Notifier from current channel",
+      "wordcloud": "Most used words in a channel"
    },
    "utils": {},
    "token": "token",
