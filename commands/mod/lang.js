@@ -5,7 +5,8 @@ langs = langs.map(lang => lang.substr(0, lang.indexOf(".json")));
 module.exports = class LangCommand {
 	static run(message) {
         if(!message.guild) return message.reply("This command is only available in guilds.");
-        if(!message.member.hasPermission("MANAGE_SERVER")) return message.reply("you don't have enough permissions.");
+        if(!message.member.hasPermission("MANAGE_GUILD")) return message.reply("you don't have enough permissions.");
+	if(!message.args) return message.reply("No language provided");
         return message.connection.prepare("SELECT * FROM languages WHERE guild = ?").then(prepared => {
             prepared.get([ message.guild.id ]).then(res => {
                 if(typeof res !== "undefined" && message.args.length === 1) return message.reply("Local language is set to `" + res.lang + "`");
