@@ -2,6 +2,7 @@ const fs = require("fs");
 
 module.exports = async data => {
     const { production, prefix, message, Discord, embedColors, wiimmfi_api, fromString, FlagStore, commands, messages, sqlite, translations, tracks, messagelogs } = data;
+    const client = message.client;
     // DM & production mode test, adding required data to message object...
     if(!message.guild && message.author.id !== client.user.id) return message.channel.send("⛔ I don't work in direct messages!");
     if(production && message.author.id !== "312715611413413889") return;
