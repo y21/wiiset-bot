@@ -4,7 +4,7 @@ module.exports = async data => {
     const { production, prefix, message, Discord, embedColors, wiimmfi_api, fromString, FlagStore, commands, messages, sqlite, translations, tracks, messagelogs } = data;
     const client = message.client;
     // DM & production mode test, adding required data to message object...
-    if(!message.guild && message.author.id !== client.user.id) return message.channel.send("⛔ I don't work in direct messages!");
+    if(!message.guild && message.author.id !== client.user.id) return;
     if(production && message.author.id !== "312715611413413889") return;
     if (message.author.bot || !message.content.startsWith(prefix)) return;
     message.command = message.content.substr(prefix.length, (message.content.indexOf(" ") > -1 ? message.content.indexOf(" ") - prefix.length : message.content.length))
