@@ -4,7 +4,7 @@ const fetch = require("node-fetch"),
 module.exports = class RexCommand {
     static run(message) {
         // Because of Discord formatting ...
-        message.args = message.args.join(" ").split(/\s+/);
+        message.args = message.args.join(" ").split(" ");
         let languages = {
             "cs": 1,
             "vb": 2,
@@ -53,19 +53,19 @@ module.exports = class RexCommand {
             "fortran": 45
         };
         if(typeof languages[message.args[0]] === "undefined") return message.reply("Invalid language.");
-        const form = new FormData();
-        form.append("LanguageChoice", languages[message.args[0]]);
-        form.append("Program", message.args.slice(1).join(" ").replace(/```\w*/g, " "));
-        if (languages[message.args[0]] === 7) form.append("CompilerArgs", "-o a.out source_file.cpp");
-        fetch("http://rextester.com/rundotnet/api", {
-            method: "POST",
-            body: form
-        })
-            .then(res => res.json())
-            .then(res => {
-                message.channel.send(res.Errors || res.Result, {
-                    code: !message.flags.includes("nc") ? message.args[0] : undefined
-                }).catch(console.log);
-            });
+	
+
+	fetch("https://rextester.com/rundotnet/api?LanguageChoice=" + languages[message.args[0]], {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"LanguageChoice": languages[message.args[0]]
+		},
+		body: JSON.stringify({
+			"Program": message.args.slice(1).join(" ").replace(/```\w*/g, ""),
+			"CompilerArgs": "-o a.out source_file.c"
+		})
+	}).then(res=>res.json())
+	.then(res => message.channel.send((res.Errors || res.Result).substr(0, 1990), { code: "js" }));
     }
 };
