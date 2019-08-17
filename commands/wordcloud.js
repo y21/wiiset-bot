@@ -6,12 +6,11 @@ module.exports = class WordCloudCommand {
     static async run(message) {
         const img = await jimp.read("https://i.imgur.com/N0Ob19w.png");
         await img.resize(1024, 1024);
-        const channel = message.mentions.channels.first() || message.channel;
-        if (!channel.permissionsFor(message.author).has("VIEW_CHANNEL")) return message.reply("you don't have permissions to view that channel.");
+        const channel = message.channel;
         const font1 = await jimp.loadFont(jimp.FONT_SANS_64_WHITE);
         const font2 = await jimp.loadFont(jimp.FONT_SANS_32_WHITE);
         const font3 = await jimp.loadFont(jimp.FONT_SANS_16_WHITE);
-        const messages = await channel.fetchMessages({limit: 50});
+        const messages = channel.messages;
         let words = [];
         for (const msg of messages.values()) {
             for(let word of msg.content.split(" ")) {
