@@ -47,7 +47,7 @@ module.exports = async data => {
     sqlite.get("SELECT * FROM commandstats WHERE name='" + message.command + "'").then(result => {
         if (!result) {
             sqlite.run("INSERT INTO commandstats VALUES ('" + message.command + "', 1)");
-        } else sqlite.run("UPDATE commandstats SET uses=" + (result.uses + 1) + " WHERE name='" + message.command + "'");
+        } else sqlite.run("UPDATE commandstats SET uses=" + (result.uses + 1) + ", lastUsage=? WHERE name='" + message.command + "'", Date.now());
     }).catch(err => {
         if (err.toString().includes("no such table: commandstats")) {
             sqlite.run("CREATE TABLE commandstats (`name` TEXT, `uses` INTEGER)").catch();
