@@ -1,25 +1,7 @@
 const Base = require("./Base");
-const Server = require("./server/Server");
 const base = new Base({
     disableEveryone: true
 });
-const server = new Server(3000 || process.env.PORT, [
-    {
-        method: "get",
-        path: "/",
-        run: (req, res) => res.send(Server.serve("./server/client/index.html"))
-    },
-    {
-        method: "get",
-        path: "/api/usage",
-        run: (req, res) => {
-            base.sqlite.all("SELECT * FROM usageLogs").then(r => {
-                res.json(r);
-            });
-        }
-    }
-]);
-server.init();
 
 base.initializeCommands().then(() => {
     base.initializeUtils().then(() => {
