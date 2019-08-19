@@ -46,12 +46,8 @@ module.exports = async data => {
     // Increase command in database
     sqlite.get("SELECT * FROM commandstats WHERE name='" + message.command + "'").then(result => {
         if (!result) {
-            sqlite.run("INSERT INTO commandstats VALUES ('" + message.command + "', 1)");
+            sqlite.run("INSERT INTO commandstats VALUES ('" + message.command + "', 1, ?)", Date.now());
         } else sqlite.run("UPDATE commandstats SET uses=" + (result.uses + 1) + ", lastUsage=? WHERE name='" + message.command + "'", Date.now());
-    }).catch(err => {
-        if (err.toString().includes("no such table: commandstats")) {
-            sqlite.run("CREATE TABLE commandstats (`name` TEXT, `uses` INTEGER)").catch();
-        }
     });
 
     // Languages
