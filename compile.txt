@@ -22,5 +22,7 @@ commands/Rex.ts
 commands/Word.ts
 commands/Wordcloud.ts
 commands/Wordcloud2.ts
+commands/Bans.ts
+commands/List.ts
 
 utils/UserResolver.ts
