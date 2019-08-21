@@ -9,7 +9,7 @@ export default <Command>{
     category: null,
     ownerOnly: false,
     run: (base: Base, message: any) => {
-
+        // TODO: write actual stats command
         return ["it works!!!"];
     }
 }
