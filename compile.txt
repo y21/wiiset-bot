@@ -9,7 +9,7 @@ events/GuildDelete.ts
 structures/Command.ts
 structures/EventData.ts
 
-commands/Stats.ts
+commands/Info.ts
 commands/Bash.ts
 commands/Caption.ts
 commands/Cat.ts
@@ -24,5 +24,16 @@ commands/Wordcloud.ts
 commands/Wordcloud2.ts
 commands/Bans.ts
 commands/List.ts
+commands/Room.ts
+commands/User.ts
+commands/Users.ts
+commands/Ghosts.ts
+commands/Recent.ts
+commands/Setpid.ts
+commands/Setup.ts
+commands/CTGPStats.ts
+commands/Leaderboard.ts
+commands/Unregister.ts
+commands/Profile.ts
 
 utils/UserResolver.ts
