@@ -2,7 +2,7 @@ import Command from "../structures/Command";
 import Base from "../Base";
 
 export default <Command>{
-    name: "stats",
+    name: "info",
     description: "Sends general information about the bot, like server count and ping",
     args: [],
     guildOnly: false,
