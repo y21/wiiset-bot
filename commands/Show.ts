@@ -17,9 +17,10 @@ export default <Command>{
     run: async (base: Base, message: Message) => {
         const args: string[] = message.content.split(" ").slice(1);
         return new Promise((a: any, b: any) => {
-            base.sqlite.get("SELECT * FROM tags WHERE name = ?", args[1]).then(async (res: Tag) => {
-                await base.sqlite.run("UPDATE tags SET uses = uses + 1 WHERE name = ?", args[1]);
+            base.sqlite.get("SELECT * FROM tags WHERE name = ?", args[1]).then((res: Tag) => {
+                base.sqlite.run("UPDATE tags SET uses = uses + 1 WHERE name = ?", args[1]);
                 a([">>> " + res.content.replace(/<@(\d+)>/g, `<@\u200b$1>`)]);
+                return;
             }).catch(b);
         });
     }
