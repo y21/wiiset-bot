@@ -1,5 +1,6 @@
 import Command from "../structures/Command";
 import Base from "../Base";
+import {Message} from "discord.js";
 
 export default <Command>{
     name: "info",
@@ -8,7 +9,7 @@ export default <Command>{
     guildOnly: false,
     category: null,
     ownerOnly: false,
-    run: (base: Base, message: any) => {
+    run: (base: Base, message: Message) => {
         // TODO: write actual stats command
         return ["it works!!!"];
     }
