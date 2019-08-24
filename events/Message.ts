@@ -25,6 +25,7 @@ export default <Event>{
         if (!command) return;
         if (command.category !== null && command.category !== arg1) return;
         if (command.ownerOnly && message.author.id !== Base.owner.id) return message.reply("You cannot execute this command.");
+        if (command.guildOnly && !message.guild) return message.reply("This command only works in servers.");
 
         // Cooldown check
         {
