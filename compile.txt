@@ -1,13 +1,9 @@
 Client.ts
-Base.ts
 
 events/GuildCreate.ts
 events/Message.ts
 events/Ready.ts
 events/GuildDelete.ts
-
-structures/Command.ts
-structures/EventData.ts
 
 commands/Info.ts
 commands/Bash.ts
@@ -35,5 +31,13 @@ commands/CTGPStats.ts
 commands/Leaderboard.ts
 commands/Unregister.ts
 commands/Profile.ts
-
-utils/UserResolver.ts
+commands/Ban.ts
+commands/Kick.ts
+commands/Lang.ts
+commands/Unban.ts
+commands/Softban.ts
+commands/Ssbb.ts
+commands/Create.ts
+commands/Delete.ts
+commands/TagList.ts
+commands/Show.ts
