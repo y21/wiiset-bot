@@ -6,6 +6,7 @@ import {User} from "discord.js";
 export default class Base {
     static guildLogChannel: string = "445297325095780372";
     static owner: User | undefined;
+    static wiimmfiAPI = "https://wiimmfi.glitch.me";
     public client: Discord.Client;
     public sqlite: any;
     public FlagStore: any; //TODO: Write FlagStore
@@ -16,7 +17,7 @@ export default class Base {
     };
     public translations: any;
     public tracks: any;
-    public messages: Map<string, string>;
+    public messages: Map<string, number>;
     public commands: Map<string, Command>;
 
     constructor(ClientOptions: Discord.ClientOptions, dbPath: string = "./db.sqlite") {
