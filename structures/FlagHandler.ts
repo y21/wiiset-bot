@@ -1,18 +1,3 @@
-export interface Flag {
-    full?: string;
-    pre?: string;
-    dec?: number;
-    value?: string;
-}
-
-const FLAGS: Flag[] = [
-    {
-        full: "silent",
-        pre: "s",
-        dec: 0x1
-    }
-];
-
 export default class FlagHandler {
     static from(source: string): Flag[] {
         const flags: Flag[] = [];
@@ -60,4 +45,10 @@ export default class FlagHandler {
         }
         return flags;
     }
+}
+
+export interface Flag {
+    full?: string;
+    pre?: string;
+    value?: string;
 }
