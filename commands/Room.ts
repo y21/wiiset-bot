@@ -2,6 +2,7 @@ import Command from "../structures/Command";
 import Base from "../Base";
 import fetch from "node-fetch";
 import {Collection, Message, MessageReaction, ReactionCollector} from "discord.js";
+import * as FlagHandler from "../structures/FlagHandler";
 
 function formatDate(b: number) {
     return Math.floor(b / (60000 * 60)) + " hours, " + Math.floor(b / (60000) - 60 * Math.floor(b / (60000 * 60))) + " minutes and " + Math.floor(b / (1000) - 60 * Math.floor(b / (60000))) + " seconds ago";
@@ -44,9 +45,11 @@ export default <Command>{
         return new Promise(async (a: any, b: any) => {
             fetch("https://wiimmfi.de/mkw?m=json").then((res: any) => res.json())
                 .then(async (res: any) => {
-                    const roomID = parseInt(args[1]);
+                    const flags: FlagHandler.Flag[] = FlagHandler.default.from(message.content);
+                    const playerFlagValue: FlagHandler.Flag | undefined = flags.find(v => v.full === "user" || v.pre === "u");
+                    const roomID = !playerFlagValue ? parseInt(args[1]) : undefined;
                     let page = 0;
-                    let target: Room | undefined = res.filter((v: any) => v.type === "room").find((v: any) => (roomID && v.room_id === roomID) || v.room_name === args[1]);
+                    let target: Room | undefined = res.filter((v: any) => v.type === "room").find((v: any) => playerFlagValue ? v.members.some((v: any) => v.names.includes(playerFlagValue.value)) : (roomID && v.room_id === roomID) || v.room_name === args[1]);
                     if (typeof target === "undefined") return b("Room not found");
 
 
