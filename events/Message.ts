@@ -2,18 +2,19 @@ import Base from "../Base";
 import { Message } from "discord.js";
 import Event from "../structures/EventData";
 import Command from "../structures/Command";
+import * as FlagHandler from "../structures/FlagHandler";
 
 export default <Event>{
     type: "message",
     run: async (base: Base, message: Message): Promise<any> => {
         // TODO: remove
-        if (message.author.id !== "312715611413413889") return;
         if (!Base.owner) return console.log("Base.owner is undefined");
 
         if (message.author.bot || !message.content.startsWith(base.config.prefix)) return;
         const {config} = base;
         const args: string[] = message.content.split(" ").slice(1);
         const arg1: string = message.content.split(" ")[0].substr(config.prefix.length);
+        const flags: FlagHandler.Flag[] = FlagHandler.default.from(message.content);
         let command: Command | undefined;
 
         if (base.commands.has(arg1))
@@ -50,6 +51,7 @@ export default <Event>{
             await message.reply("❌ | An error occurred while trying to run the command.\n ```\n" + e + "\n```");
         }
         if (!commandResponse) return;
-        message.channel.send(...commandResponse);
+        if (!flags.some(v => v.pre === "s" || v.full === "silent"))
+            message.channel.send(...commandResponse);
     }
 }
