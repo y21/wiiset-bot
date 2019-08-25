@@ -43,7 +43,7 @@ export default <Command>{
                     },
                     {
                         name: "Total licks",
-                        value: `${target.username}'s paws got licked ${licks} times`
+                        value: `${target.username}'s paws have been licked ${licks} times.`
                     },
                 ],
                 footer: {
