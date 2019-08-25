@@ -4,6 +4,7 @@ import fetch, {Response} from "node-fetch";
 import {Message, MessageReaction, ReactionCollector, User} from "discord.js";
 import UserResolver from "../utils/UserResolver";
 import {Ghost} from "../structures/Ghost";
+import * as FlagHandler from "../structures/FlagHandler";
 
 export default <Command>{
     name: "ghosts",
@@ -22,6 +23,8 @@ export default <Command>{
             if (args.length === 1)
                 return b("No player ID provided. To get someone's player ID, you visit their profile by using the search bar at <http://chadsoft.co.uk/time-trials/players.html>. The player ID should be displayed on their profile.");
                 let pid: string | undefined;
+                const flags: FlagHandler.Flag[] = FlagHandler.default.from(message.content);
+                const trackFlag: FlagHandler.Flag | undefined = flags.find(v => v.full === "track" || v.pre === "t");
                 if (message.mentions.users.size === 0) {
                     if (/.+#\d{4}^$/.test(args[1])) {
                         const user: User | undefined = UserResolver.getByTag(base.client.users, args[1]);
@@ -57,7 +60,7 @@ export default <Command>{
                 const embed: any = {
                     color: (message.member || { displayColor: 0 }).displayColor,
                     title: "Ghosts of player " + response.miiName,
-                    fields: response.ghosts.slice(index, index + lengthPerEmbed).map((v: Ghost) => {
+                    fields: response.ghosts.slice(index, index + lengthPerEmbed).filter((v: Ghost) => trackFlag ? v.trackName === trackFlag.value : true).map((v: Ghost) => {
                         return {
                             name: v.trackName || "Unknown track name",
                             value: `Finish time: ${v.finishTimeSimple}\n` +
@@ -90,7 +93,7 @@ export default <Command>{
                             index -= lengthPerEmbed;
                         }
 
-                        embed.fields = response.ghosts.slice(index, index + lengthPerEmbed).map((v: Ghost) => {
+                        embed.fields = response.ghosts.slice(index, index + lengthPerEmbed).filter((v: Ghost) => trackFlag ? v.trackName === trackFlag.value : true).map((v: Ghost) => {
                             return {
                                 name: v.trackName || "Unknown track name",
                                 value: `Finish time: ${v.finishTimeSimple}\n` +
