@@ -43,6 +43,7 @@ export default <Command>{
             category.commands = commandsArray.filter(v => v.category === (category.name === "Uncategorized" ? null : category.name.toLowerCase()));
         const embed: any = {
             title: `Help | Page 1/${Math.floor(base.commands.size / (commandCategories.length - 1))}`,
+            color: 0x0066AA,
             description: "This bot is being developed by y21. It uses the Ghost Database API for CTGP commands and other external APIs for stuff like the cat command.\n" +
                 "The code might have some bugs as there was a rewrite going on over the past few weeks. If you find one, please report it.\n" +
                 "This help page will only work for the next 180 seconds (3 minutes).",
