@@ -14,6 +14,7 @@ export default <Command>{
         return [{
             embed: {
                 title: "Bot statistics",
+                color: 0x00FF00,
                 fields: [
                     {
                         name: texts.guilds,
@@ -27,19 +28,23 @@ export default <Command>{
                     },
                     {
                         name: texts.emojis,
-                        value: base.client.emojis.size
+                        value: base.client.emojis.size,
+                        inline: true
                     },
                     {
                         name: texts.ping,
-                        value: base.client.ping.toFixed(2)
+                        value: base.client.ping.toFixed(2),
+                        inline: true
                     },
                     {
                         name: texts.uptime,
-                        value: (base.client.uptime / 1000 / 60 / 60).toFixed(2) + " hours"
+                        value: (base.client.uptime / 1000 / 60 / 60).toFixed(2) + " hours",
+                        inline: true
                     },
                     {
                         name: texts.nodejs_ver,
-                        value: process.version
+                        value: process.version,
+                        inline: true
                     }
                 ]
             }
