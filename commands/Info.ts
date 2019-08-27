@@ -1,6 +1,6 @@
 import Command from "../structures/Command";
 import Base from "../Base";
-import {Message} from "discord.js";
+import {Guild, GuildMember, Message} from "discord.js";
 
 export default <Command>{
     name: "info",
@@ -9,8 +9,40 @@ export default <Command>{
     guildOnly: false,
     category: null,
     ownerOnly: false,
-    run: (base: Base, message: Message) => {
-        // TODO: write actual stats command
-        return ["it works!!!"];
+    run: (base: Base, message: Message, texts: any) => {
+        message.reply("test")
+        return [{
+            embed: {
+                title: "Bot statistics",
+                fields: [
+                    {
+                        name: texts.guilds,
+                        value: base.client.guilds.size,
+                        inline: true
+                    },
+                    {
+                        name: texts.users,
+                        value: base.client.users.size,
+                        inline: true
+                    },
+                    {
+                        name: texts.emojis,
+                        value: base.client.emojis.size
+                    },
+                    {
+                        name: texts.ping,
+                        value: base.client.ping.toFixed(2)
+                    },
+                    {
+                        name: texts.uptime,
+                        value: (base.client.uptime / 1000 / 60 / 60).toFixed(2) + " hours"
+                    },
+                    {
+                        name: texts.nodejs_ver,
+                        value: process.version
+                    }
+                ]
+            }
+        }];
     }
 }
