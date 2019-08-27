@@ -1,8 +1,8 @@
 {
   "name": "wiimmfi-bot",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "Client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
