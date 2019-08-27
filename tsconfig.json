@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "include": [
+      "./events/Message.ts",
+      "./events/GuildCreate.ts"
+    ],
+
+     "downlevelIteration": true,
+    "strict": true,
+    "esModuleInterop": true
+  }
+}

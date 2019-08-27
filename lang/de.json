@@ -15,6 +15,7 @@
     "kick_confirmation": "Bist Du dir sicher, dass du __{target}__ vom Server kicken willst? Antworte entweder mit __y__ (ja) oder __n__ (nein) in den nächsten 25 Sekunden.",
     "guild_only": "Dieser Befehl ist nur in Server ausführbar.",
     "no_permissions": "Du hast nicht genügend Berechtigungen. (`{perm}`)",
+    "user_not_found": "User nicht gefunden.",
     "no_member_softban": "User konnte nicht gebannt werden. Anscheinend hast Du keinen User in deiner Nachricht erwähnt. Bitte gebe als Parameter eine User ID, einen User Tag (User#1234) oder eine Mention.",
     "no_member_unban": "User konnte nicht entbannt werden. Anscheinend hast Du keine User ID angegeben.",
     "kicked": "__{target}__ wurde erfolgreich gekickt.",
@@ -42,6 +43,11 @@
     "mkw_conn_fail": "Verbindungsfehler",
     "mkw_online_users": "Online user - Seite {page}",
     "mkw_total_players": "Anzahl der Spieler: {players}",
+    "mkw_ban_limit": "Anzahl an Bans darf nicht größer als 10 sein.",
+    "mkw_recent_bans": "Kürzliche Bans auf Wiimmfi",
+    "mkw_ban_structure": "**Grund**: {reason}\n**__Ban ID__**: {ban_id}",
+    "caption_no_image": "Ein Bild wird benötigt. Es kann entweder eins als Link gesendet werden oder als Anhang",
+    "cmdstats": "---(Statistiken zu Befehlen)---\n",
     "ssbb_total_profiles": "Anzahl der Profile",
     "ssbb_currently_online": "Aktuell online",
     "ssbb_last_30m_logins": "Logins in den letzten 30 Minuten",
@@ -52,11 +58,19 @@
     "ctgp_registered_ghosts": "Registrierte Nutzer",
     "ctgp_leaderboards": "Anzahl der Ranglisten",
     "ctgp_existing_ghosts": "Anzahl aller existierenden Geister",
+    "ctgp_no_pid_provided": "Es wurde keine Player ID angegeben. Die Player ID eines Profils kannst du auf <http://chadsoft.co.uk/time-trials/players.html> finden, indem du einfach den Mii Namen in der Suchleiste eingibst.",
+    "ctgp_no_pid_set": "Genannter User hat keine Player ID festgelegt.",
+    "ctgp_invalid_pid": "Ungültige Player ID.",
+    "ctgp_unknown_track": "Unbekannte Strecke",
+    "ctgp_finish_time": "Zeit: ",
+    "ctgp_fastest_lap": "Schnellste Runde: ",
+    "ctgp_engine_class": "Motorklasse: ",
+    "ctgp_star": "Stern: ",
     "tag_nparams_create": "Nicht genügend Argumente wurden angegeben. Syntax: {prefix}tag create <tag-name> <tag-content>",
     "tag_too_long": "Tag ist zu lang! Stelle sicher, dass der Name des Tags keine 29 Zeichen überschreitet.",
     "tag_regex_not_match": "Tag Name ist ungültig. Stelle sicher, dass er mit diesem Regulären Ausdruck übereinstimmt: ```js\n[\\w\\-]{3,16}\n```",
     "tag_already_exists": "Ein Tag mit dem selben Namen existiert schon.",
-    "tag_created": "Tag wurde erfolgreich erstellt. Du kannst ihn mit {prefix}tag view {name} ansehen.",
+    "tag_created": "Tag wurde erfolgreich erstellt. Du kannst ihn mit {prefix}tag show {name} ansehen.",
     "tag_nparams_delete": "Nicht genügend Argumente wurden angegeben. Syntax: {prefix}tag delete <tag-name>",
     "tag_not_deleted": "Der angegebene Tag wurde entweder nicht gefunden oder Du bist nicht der Besitzer.",
     "tag_deleted": "Tag wurde erfolgreich gelöscht.",
@@ -70,5 +84,8 @@
     "tag_footer": "\n\n__Tag Besitzer (ID):__ {owner}",
     "tag_list_heading": "Eine Liste mit {amount} Tags wurde in {time} Millisekunden geladen. Um ein Tag aufzurufen, tippe {prefix}tag view <tagname>",
     "tag_list_value": "Ausgeführt: {amount}-mal | Erstellt am {date}"
-  }
+  },
+  "translators":  [
+    "312715611413413889"
+  ]
 }
