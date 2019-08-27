@@ -41,3 +41,4 @@ commands/Create.ts
 commands/Delete.ts
 commands/TagList.ts
 commands/Show.ts
+commands/Help.ts
