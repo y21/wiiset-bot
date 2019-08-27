@@ -14,22 +14,22 @@ export default <Command>{
     guildOnly: false,
     category: "tag",
     ownerOnly: false,
-    run: async (base: Base, message: Message) => {
+    run: async (base: Base, message: Message, texts: any) => {
         const args: string[] = message.content.split(" ").slice(1);
-        if (args.length < 2) throw new Error("Missing arguments.");
+        if (args.length < 2) throw new Error(texts.tag_nparams_delete.replace(/{prefix}/g, base.config.prefix));
         return new Promise((a: any, b: any) => {
             if (!Base.owner) return b("Internal error occurred: Base.owner returned undefined");
             if (message.author.id === Base.owner.id) {
                 base.sqlite.run("DELETE FROM tags WHERE name = ?", args[1]).then((stm: Statement) => {
                     if (stm.changes >= 1)
-                        return a(["Tag successfully deleted."]);
-                    else return b("Could not delete tag. Does it exist?");
+                        return a([texts.tag_deleted]);
+                    else return b(texts.tag_not_deleted);
                 });
             } else {
                 base.sqlite.run("DELETE FROM tags WHERE name = ? AND author = ?", args[1], message.author.id).then((stm: Statement) => {
                     if (stm.changes >= 1)
-                        return a(["Tag successfully deleted."]);
-                    else return b("Could not delete tag. Does it exist and are you the tag owner?");
+                        return a([texts.tag_deleted]);
+                    else return b(texts.tag_not_deleted);
                 });
             }
         });

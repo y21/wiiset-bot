@@ -13,9 +13,9 @@ export default <Command>{
     guildOnly: true,
     category: "mod",
     ownerOnly: false,
-    run: async (base: Base, message: Message) => {
+    run: async (base: Base, message: Message, texts: any) => {
         if (!message.member.hasPermission("BAN_MEMBERS"))
-            throw new Error("You don't have permissions to ban users.");
+            throw new Error(texts.no_permissions);
         let target: GuildMember | undefined;
         const args: string[] = message.content.split(" ").slice(1);
         if (message.mentions.members.size > 0)
@@ -23,9 +23,13 @@ export default <Command>{
         else if (/^\d{17,20}$/.test(args[1]))
             target = message.guild.members.get(args[1]) || await message.guild.fetchMember(args[1], false);
 
-        if (!target) throw new Error("User not found");
+        if (!target) throw new Error(texts.user_not_found);
 
-        const confirmMessage: Message | Message[] = await message.channel.send(`Do you really want to ban __${target.user.tag}__? Reply with either **y** or **n** in the next 15 seconds to confirm your ban.\n\nReason: \`${args.slice(2).join(" ")}\``);
+        const confirmMessage: Message | Message[] = await message.channel.send(
+            texts.ban_confirmation
+                .replace(/{target}/g, target.user.tag)
+                .replace(/{reason}/g, args.slice(2).join(" "))
+        );
         if (Array.isArray(confirmMessage))
             throw new Error("An internal error occurred: TextChannel.send(...) returned an array of messages.");
         const collector: MessageCollector = message.channel.createMessageCollector((m: Message) => true, {
@@ -40,10 +44,11 @@ export default <Command>{
                     days: 7,
                     reason: "Banned by " + message.author.tag + ". Reason: " + args.slice(2).join(" ")
                 }).then(() => {
-                    confirmMessage.edit("Banned.");
+                    if (!target) return;
+                    confirmMessage.edit(texts.banned.replace(/{target}/g, target.user.tag));
                 });
             } else if (msg.content.toLowerCase() === "n" || msg.content.toLowerCase() === "no") {
-                confirmMessage.edit("Ban aborted.");
+                confirmMessage.edit(texts.ban_aborted);
             }
         });
     }

@@ -9,26 +9,26 @@ export default <Command>{
     guildOnly: false,
     category: "ctgp",
     ownerOnly: false,
-    run: (base: Base, message: any) => {
+    run: (base: Base, message: any, texts: any) => {
         return new Promise((a: any, b: any) => {
             fetch("http://tt.chadsoft.co.uk/index.json").then((res: any) => res.text())
                 .then((res: any) => {
                     res = JSON.parse(res.replace(/^\s+/, ""));
                     a([{
                         embed: {
-                            title: "Ghost database statistics",
+                            title: texts.ctgp_general_statistics,
                             color: (message.member || { displayColor: 0x00FF00 }).displayColor,
                             fields: [
                                 {
-                                    name: "Registered consoles",
+                                    name: texts.ctgp_registered_ghosts,
                                     value: (res.uniquePlayers || 0).toLocaleString()
                                 },
                                 {
-                                    name: "Total leaderboards",
+                                    name: texts.ctgp_leaderboards,
                                     value: (res.leaderboardCount || 0).toLocaleString()
                                 },
                                 {
-                                    name: "Total ghosts",
+                                    name: texts.ctgp_existing_ghosts,
                                     value: (res.ghostCount || 0).toLocaleString()
                                 }
                             ]

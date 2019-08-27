@@ -21,10 +21,10 @@ export default <Command>{
     guildOnly: false,
     category: null,
     ownerOnly: false,
-    run: (base: Base, message: any) => {
+    run: (base: Base, message: any, texts: any) => {
         return new Promise((a: any, b: any) => {
             base.sqlite.all("SELECT * FROM commandstats ORDER BY uses DESC LIMIT 20").then((result: any) => {
-                message.channel.send("---(Command Statistics)---\n" + result.map((k: any) => {
+                message.channel.send(texts.cmdstats + result.map((k: any) => {
                     const pretext = `${k.name}: ${k.uses} uses`;
                     return `${pretext}${" ".repeat(25 - pretext.length)}(used ${k.lastUsage ? format(new Date(parseInt(k.lastUsage))) : "never"} ago)`
                 }).join("\n"), {

@@ -17,27 +17,27 @@ export default <Command>{
     guildOnly: false,
     category: "ctgp",
     ownerOnly: false,
-    run: (base: Base, message: Message) => {
+    run: (base: Base, message: Message, texts: any) => {
         return new Promise(async (a: any, b: any) => {
             const args: string[] = message.content.split(" ").slice(1);
             if (args.length === 1)
-                return b("No player ID provided. To get someone's player ID, you visit their profile by using the search bar at <http://chadsoft.co.uk/time-trials/players.html>. The player ID should be displayed on their profile.");
+                return b(texts.ctgp_no_pid_provided);
                 let pid: string | undefined;
                 const flags: FlagHandler.Flag[] = FlagHandler.default.from(message.content);
                 const trackFlag: FlagHandler.Flag | undefined = flags.find(v => v.full === "track" || v.pre === "t");
                 if (message.mentions.users.size === 0) {
                     if (/.+#\d{4}^$/.test(args[1])) {
                         const user: User | undefined = UserResolver.getByTag(base.client.users, args[1]);
-                        if (!user) return b("User not found.");
+                        if (!user) return b(texts.user_not_found);
                         let pidStatement: any = await base.sqlite.get("SELECT pid FROM pids WHERE user = ?", user.id);
                         if (!pidStatement)
-                            return b("Mentioned user does not have a profile ID set.");
+                            return b(texts.ctgp_no_pid_set);
                         pid = pidStatement.pid;
-                    } else if (!/^[A-Z0-9]+$/.test(args[1])) return b("Invalid Profile ID.");
+                    } else if (!/^[A-Z0-9]+$/.test(args[1])) return b(texts.ctgp_invalid_pid);
                 } else {
                     let pidStatement: any = await base.sqlite.get("SELECT pid FROM pids WHERE user = ?", message.mentions.users.first().id);
                     if (!pidStatement)
-                        return b("Mentioned user does not have a profile ID set.");
+                        return b(texts.ctgp_no_pid_set);
                     pid = pidStatement.pid;
                 }
                 if (!pid)
@@ -46,7 +46,7 @@ export default <Command>{
                 let request: Response = await fetch(`http://tt.chadsoft.co.uk/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
                 let response: any = await request.text();
                 if (request.headers.get("Content-Type") !== "application/json")
-                    return b("Invalid Profile ID.");
+                    return b(texts.ctgp_invalid_pid);
                 // Replace BOM
                 response = JSON.parse(response.replace(/^\s+/, ""));
 
@@ -62,11 +62,11 @@ export default <Command>{
                     title: "Ghosts of player " + response.miiName,
                     fields: response.ghosts.slice(index, index + lengthPerEmbed).filter((v: Ghost) => trackFlag ? v.trackName === trackFlag.value : true).map((v: Ghost) => {
                         return {
-                            name: v.trackName || "Unknown track name",
-                            value: `Finish time: ${v.finishTimeSimple}\n` +
-                            `Best lap: ${v.bestSplitSimple}\n` +
-                            `Engine class: ${v["200cc"] ? "200cc" : "150cc"}\n` +
-                            `Star: ${v.stars ? (v.stars.gold ? "Gold" : (v.stars.silver ? "Silver" : (v.stars.bronze ? "Bronze" : ""))) : "-"}`
+                            name: v.trackName || texts.ctgp_unknown_track,
+                            value: `${texts.ctgp_finish_time} ${v.finishTimeSimple}\n` +
+                            `${texts.ctgp_fastest_lap} ${v.bestSplitSimple}\n` +
+                            `${texts.ctgp_engine_class} ${v["200cc"] ? "200cc" : "150cc"}\n` +
+                            `${texts.ctgp_star} ${v.stars ? (v.stars.gold ? "Gold" : (v.stars.silver ? "Silver" : (v.stars.bronze ? "Bronze" : ""))) : "-"}`
                         }
                     }),
                     footer: {

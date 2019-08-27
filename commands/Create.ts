@@ -17,14 +17,14 @@ export default <Command>{
     guildOnly: false,
     category: "tag",
     ownerOnly: false,
-    run: async (base: Base, message: Message) => {
+    run: async (base: Base, message: Message, texts: any) => {
         const args: string[] = message.content.split(" ").slice(1);
-        if (args.length < 2) throw new Error("Missing arguments.");
-        if (args[1].length > 30) throw new Error("Tag name must not be longer than 30 characters.");
-        if(!/[\w\-]{1,16}/.test(args[1])) throw new Error("Invalid tag name. Make sure it only includes alphanumeric characters and hyphen-minus.");
+        if (args.length < 2) throw new Error(texts.tag_nparams_create.replace(/{prefix}/g, base.config.prefix));
+        if (args[1].length > 30) throw new Error(texts.tag_too_long);
+        if(!/[\w\-]{1,30}/.test(args[1])) throw new Error(texts.tag_regex_not_match);
         const tagStatement: any = await base.sqlite.get("SELECT * FROM tags WHERE name = ?", args[1]);
-        if (tagStatement) throw new Error("Tag already exists.");
+        if (tagStatement) throw new Error(texts.tag_already_exists);
         await base.sqlite.run("INSERT INTO tags VALUES (?, ?, ?, ?, ?)", args[1], message.author.id, args.slice(2).join(" "), Date.now(), 0);
-        return ["Tag successfully created."]
+        return [texts.tag_created.replace(/{prefix}/g, base.config.prefix)];
     }
 }

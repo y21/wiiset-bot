@@ -13,9 +13,9 @@ export default <Command>{
     guildOnly: false,
     category: null,
     ownerOnly: false,
-    run: async (base: Base, message: any) => {
+    run: async (base: Base, message: any, texts: any) => {
         const imageURL: string | undefined = message.attachments.size > 0 ? message.attachments.first().url : message.args.join(" ");
-        if (!imageURL) return ["please provide an image either by sending one or by sending a link"];
+        if (!imageURL) return [texts.caption_no_image];
         return new Promise((a: any, b: any) => {
             fetch("https://captionbot.azurewebsites.net/api/messages?language=en-US", {
                 method: "POST",
