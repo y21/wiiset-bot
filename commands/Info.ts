@@ -10,7 +10,6 @@ export default <Command>{
     category: null,
     ownerOnly: false,
     run: (base: Base, message: Message, texts: any) => {
-        message.reply("test")
         return [{
             embed: {
                 title: "Bot statistics",
