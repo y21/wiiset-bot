@@ -70,9 +70,5 @@
     "tag_footer": "\n\n__Propietario de la Tag (ID):__ {owner}",
     "tag_list_heading": "Una lista de {amount} Tags se ha cargado en {time} milisegundos. Para ver una tag, escrube {prefix}tag view <tagname>",
     "tag_list_value": "Ejecutado: {amount} veces | Creado en: {date}"
-  },
-
-  "translators": [
-    "311755166498160642"
-  ]
+  }
 }
