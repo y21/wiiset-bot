@@ -71,6 +71,7 @@ export default <Command>{
         });
 
         collector.on("collect", (r: MessageReaction) => {
+            r.remove(message.author).catch(()=>{});
             if (r.emoji.name === reactions[0]) {
                 if (!commandCategories[index - 1]) return;
                 index--;
