@@ -44,9 +44,15 @@ export default <Event>{
                 base.sqlite.run("UPDATE commandstats SET uses = uses + 1, lastUsage=? WHERE name=?", Date.now(), (command.category ? command.category + "." + command.name : command.name));
         });
 
+        let language: string = "en";
+        if (message.guild) {
+            const stm: any = await base.sqlite.get("SELECT lang FROM languages WHERE guild = ?", message.guild.id);
+            if (stm)
+                language = stm.lang;
+        }
         let commandResponse: string[] | undefined;
         try {
-            commandResponse = await command.run(base, message);
+            commandResponse = await command.run(base, message, base.texts[language].commands);
         } catch(e) {
             await message.reply("❌ | An error occurred while trying to run the command.\n ```\n" + e + "\n```");
         }
