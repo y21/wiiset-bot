@@ -4,7 +4,7 @@ import {Message} from "discord.js";
 import fetch, {Response} from "node-fetch";
 
 export default <Command>{
-    name: "info",
+    name: "unregister",
     description: "Unregisters the WR Notifier",
     args: [{
         name: "webhookID",
