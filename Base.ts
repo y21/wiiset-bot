@@ -2,6 +2,7 @@ import * as Discord from "discord.js";
 import * as sqlite from "sqlite";
 import Command from "./structures/Command";
 import {User} from "discord.js";
+import { readdirSync, readFileSync } from "fs";
 
 export default class Base {
     static guildLogChannel: string = "445297325095780372";
@@ -15,20 +16,28 @@ export default class Base {
         token: string,
         wrAuthToken: string
     };
-    public translations: any;
+    public texts: any;
     public tracks: any;
     public messages: Map<string, number>;
     public commands: Map<string, Command>;
 
-    constructor(ClientOptions: Discord.ClientOptions, dbPath: string = "./db.sqlite") {
+    constructor(ClientOptions: Discord.ClientOptions, dbPath: string = "./database.sqlite") {
         this.client = new Discord.Client(ClientOptions);
-        this.translations = {};
+        this.texts = {
+            de: {},
+            en: {},
+            es: {}
+        };
+        // Initialize translations
+        for (const lang of readdirSync("./lang").filter((v: string) => v.endsWith(".json"))) {
+            this.texts[lang.split(".")[0]] = JSON.parse(readFileSync(`./lang/${lang}`, "utf8"));
+        }
         this.tracks = [];
         this.messages = new Map();
         this.commands = new Map();
         this.sqlite = sqlite;
         this.config = require("./config.json");
-        this.openDatabase("./database.sqlite");
+        this.openDatabase(dbPath);
     }
 
     async openDatabase(path: string): Promise<any> {
