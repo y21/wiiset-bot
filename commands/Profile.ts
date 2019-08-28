@@ -70,7 +70,7 @@ export default <Command>{
                         },
                             {
                                 name: "Last 5 out of " + (rawResponse.miiNames.length < 5 ? "<5" : rawResponse.miiNames.length - 5) + " Mii names",
-                                value: rawResponse.miiNames.slice(0, 5).map(e => "`" + e + "`").join(", ")
+                                value: rawResponse.miiNames.slice(0, 5).map((e: string) => "`" + e + "`").join(", ")
                             },
                             {
                                 name: "Submitted ghosts",
