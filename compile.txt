@@ -42,3 +42,7 @@ commands/Delete.ts
 commands/TagList.ts
 commands/Show.ts
 commands/Help.ts
+commands/TTRRegister.ts
+commands/TTRCreateMatch.ts
+commands/TTRMatchList.ts
+commands/TTRJoinMatch.ts
