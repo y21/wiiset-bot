@@ -7,7 +7,6 @@ import * as FlagHandler from "../structures/FlagHandler";
 export default <Event>{
     type: "message",
     run: async (base: Base, message: Message): Promise<any> => {
-        // TODO: remove
         if (!Base.owner) return console.log("Base.owner is undefined");
 
         if (message.author.bot || !message.content.startsWith(base.config.prefix)) return;
