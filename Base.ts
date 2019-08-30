@@ -20,6 +20,7 @@ export default class Base {
     public tracks: any;
     public messages: Map<string, number>;
     public commands: Map<string, Command>;
+    public ongoingMatches: string[];
 
     constructor(ClientOptions: Discord.ClientOptions, dbPath: string = "./database.sqlite") {
         this.client = new Discord.Client(ClientOptions);
@@ -36,8 +37,10 @@ export default class Base {
         this.messages = new Map();
         this.commands = new Map();
         this.sqlite = sqlite;
+        this.ongoingMatches = [];
         this.config = require("./config.json");
         this.openDatabase(dbPath);
+        this.initMatches();
     }
 
     async openDatabase(path: string): Promise<any> {
@@ -48,5 +51,11 @@ export default class Base {
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS languages (`guild` TEXT, `lang` TEXT)");
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS pids (`user` TEXT, `pid` TEXT)");
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS usageLogs (`month` INTEGER, `uses` INTEGER)");
+        await this.sqlite.run("CREATE TABLE IF NOT EXISTS ttrProfiles (`user` TEXT, `pid` TEXT, `rating` INTEGER, `wins` INTEGER, `matches` INTEGER, `currentLobby` TEXT, `submittedTime` TEXT)");
+        await this.sqlite.run("CREATE TABLE IF NOT EXISTS ttrMatches (`id` TEXT, `participants` TEXT, `state` INTEGER, `options` INTEGER, `round` INTEGER, `createdAt` TEXT, `startedAt` TEXT, `givenTime` INTEGER, `currentPlayers` TEXT, `course` TEXT)");
+    }
+
+    initMatches() {
+        // TODO: Write function to add ongoing matches from db to this.ongoingMatches
     }
 }
