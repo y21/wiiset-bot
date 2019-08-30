@@ -64,6 +64,9 @@ export default <Command>{
                 },
                 {
                     name: "Tag"
+                },
+                {
+                    name: "TTR"
                 }
             ];
             for (const category of commandCategories.slice(1))

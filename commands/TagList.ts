@@ -5,7 +5,7 @@ import Tag from "../structures/Tag";
 
 export default <Command>{
     name: "tags",
-    description: "Deletes one of your tags",
+    description: "Shows a list of most used commands",
     args: [{
         name: "limit",
         description: "How many tags to get, must not be greater than 10. Default value is 10.",
