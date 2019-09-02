@@ -42,8 +42,8 @@ export default <Command>{
                 }
                 if (!pid) pid = args[1];
 
-                const request: Response = await fetch(`http://tt.chadsoft.co.uk/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
-                const response: string = await request.text();
+            const request: Response = await fetch(`http://tt.chadsoft.co.uk/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
+            const response: string = await request.text();
 
                 if (request.headers.get("Content-Type") !== "application/json")
                     return b("An invalid profile ID was provided.");

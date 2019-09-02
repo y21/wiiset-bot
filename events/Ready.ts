@@ -20,7 +20,8 @@ export default <Event>{
                     base.tracks.push({
                         name: track.name,
                         id: track.trackId,
-                        href: track._links.item.href
+                        href: track._links.item.href,
+                        category
                     });
                 }
             }
