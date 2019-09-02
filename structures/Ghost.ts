@@ -11,4 +11,5 @@ export interface Ghost {
     "200cc": boolean;
     player: string | undefined;
     country: string | undefined;
+    dateSet: string;
 }

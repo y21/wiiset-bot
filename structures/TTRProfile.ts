@@ -4,5 +4,7 @@ export interface Profile {
     rating: number;
     wins: number;
     matches: number;
+    submittedTime: number | null;
     currentLobby: string | null;
+    channel: string | null;
 }

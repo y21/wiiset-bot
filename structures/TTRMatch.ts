@@ -4,7 +4,6 @@ export enum State {
     COURSE_SELECTION,
     INGAME,
     CHECK_TIME,
-    ELIMINATE_PLAYERS
 }
 
 export const MatchOptions = {
@@ -30,6 +29,5 @@ export function stateToString(state: State): string | null {
         (state === State.WAITING ? "Waiting for players..." :
         (state === State.CHECK_TIME ? "Checking times..." :
         (state === State.INGAME ? "Ingame" :
-        (state === State.COURSE_SELECTION ? "Selecting course..." :
-        (state === State.ELIMINATE_PLAYERS ? "Eliminating..." : null)))));
+        (state === State.COURSE_SELECTION ? "Selecting course..." : null))));
 }
