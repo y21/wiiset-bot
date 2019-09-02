@@ -5,6 +5,7 @@ import {Profile} from "../structures/TTRProfile";
 import fetch, {Response} from "node-fetch";
 import * as TTRMatch from "../structures/TTRMatch";
 import {randomBytes} from "crypto";
+import TTR from "../structures/TTR";
 
 export default <Command>{
     name: "creatematch",
@@ -28,10 +29,10 @@ export default <Command>{
             throw new Error("Invalid match options");
 
         const options: any[] = args[1].split(",");
-        for(let option of options) {
-            const val: number | undefined = (Object.entries(TTRMatch.MatchOptions).find(v => v[0].toLowerCase() === option.toLowerCase()) || [])[1];
-            if (!val) throw new Error("Invalid match option: " + option);
-            else option = val;
+        for(let i = 0; i < options.length; ++i) {
+            const val: number | undefined = (Object.entries(TTRMatch.MatchOptions).find(v => v[0].toLowerCase() === options[i].toLowerCase()) || [])[1];
+            if (!val) throw new Error("Invalid match option: " + options[i]);
+            else options[i] = val;
         }
 
         if (!Object.keys(TTRMatch.MatchOptions).some(v => v.toLowerCase() === args[1].toLowerCase())) throw new Error("Invalid match option.");
@@ -57,6 +58,10 @@ export default <Command>{
             Date.now(),
             Date.now(),
             match.currentPlayers);
+        base.ongoingMatches.push(match);
+        setInterval(() => {
+            base.ttr.handle(matchID);
+        }, 100);
         return [`Lobby successfully created. Others can now use \`${base.config.prefix}ttr join ${match.id}\` to join this lobby.`];
     }
 }

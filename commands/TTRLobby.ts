@@ -22,11 +22,11 @@ export default <Command>{
             throw new Error("No lobby ID provided.");
         const targetMatch: TTRMatch.Match | undefined = await base.sqlite.get("SELECT * FROM ttrMatches WHERE id = ?", args[1]);
         if (!targetMatch) throw new Error("Match with given ID does not exist.");
-        const players: Profile[] = await base.sqlite.all("SELECT user, rating FROM ttrProfiles ORDER BY rating DESC LIMIT 20 WHERE currentLobby = ?", args[1]);
+        const players: Profile[] = await base.sqlite.all("SELECT user, rating FROM ttrProfiles WHERE currentLobby = ? ORDER BY rating DESC LIMIT 20", args[1]);
         return [{
             embed: {
                 title: "TTR Match Overview (Lobby: " + targetMatch.id + ")",
-                description: "**" + TTRMatch.stateToString(targetMatch.state) + "**\n" + players.map(v => `<@${v.user}> (Rating: ${v.rating})`).join("\n")
+                description: "**" + TTRMatch.stateToString(targetMatch.state) + "**\nCourse: " + (targetMatch.course || "-") + "\n--- Players ---\n" + players.map((v, i) => `#${i+1} <@${v.user}> (Rating: ${v.rating})`).join("\n")
             }
         }];
     }

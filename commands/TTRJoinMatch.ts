@@ -3,6 +3,7 @@ import Base from "../Base";
 import {Message, MessageReaction, ReactionCollector, User} from "discord.js";
 import * as TTRMatch from "../structures/TTRMatch";
 import {Profile} from "../structures/TTRProfile";
+import {Match} from "../structures/TTRMatch";
 
 export default <Command>{
     name: "join",
@@ -27,12 +28,7 @@ export default <Command>{
         if (!args[1]) throw new Error("No ID given");
         const targetMatch: { participants: string } | undefined = await base.sqlite.get("SELECT participants FROM ttrMatches WHERE NOT state = ? AND id = ?", TTRMatch.State.ENDED, args[1]);
         if (!targetMatch) throw new Error("Match with given ID has either ended or does not exist.");
-        if (targetMatch.participants.split(",").includes(message.author.id))
-            throw new Error("You've already joined this match");
-        await base.sqlite.run("UPDATE ttrMatches SET participants = participants || ?, currentPlayers = currentPlayers || ? WHERE user = ?",
-            "," + message.author.id,
-            "," + message.author.id,
-            message.author.id);
+        await base.sqlite.run("UPDATE ttrProfiles SET currentLobby = ? WHERE user = ?", args[1], message.author.id);
         return ["Lobby joined."];
     }
 }

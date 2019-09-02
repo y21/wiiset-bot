@@ -27,7 +27,9 @@ export default <Command>{
             matches: 0,
             pid: pidStatement.pid,
             rating: 1000,
-            wins: 0
+            wins: 0,
+            submittedTime: null,
+            channel: message.channel.id
         };
 
         const request: Response = await fetch(`http://tt.chadsoft.co.uk/players/${profile.pid.substr(0, 2)}/${profile.pid.substr(2)}.json`);
@@ -37,7 +39,7 @@ export default <Command>{
             throw new Error("An invalid profile ID was provided.");
         const rawResponse: any = JSON.parse(response.replace(/^\s+/, ""));
         profile.rating += (rawResponse.stars.bronze - rawResponse.stars.silver - rawResponse.stars.gold) + (rawResponse.stars.silver - rawResponse.stars.gold) * 4 + rawResponse.stars.gold * 8;
-        await base.sqlite.run("INSERT INTO ttrProfiles VALUES (?, ?, ?, 0, 0, NULL, NULL)", message.author.id, profile.pid, profile.rating);
+        await base.sqlite.run("INSERT INTO ttrProfiles VALUES (?, ?, ?, 0, 0, NULL, NULL, ?)", message.author.id, profile.pid, profile.rating, profile.channel);
         return [`Profile successfully created. Rating: ${profile.rating}`];
     }
 }

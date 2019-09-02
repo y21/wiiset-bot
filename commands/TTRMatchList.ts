@@ -2,6 +2,7 @@ import Command from "../structures/Command";
 import Base from "../Base";
 import {Message, MessageReaction, ReactionCollector, User} from "discord.js";
 import * as TTRMatch from "../structures/TTRMatch";
+import {Profile} from "../structures/TTRProfile";
 
 export default <Command>{
     name: "lobbies",
@@ -23,11 +24,12 @@ export default <Command>{
             color: 0x0066DD,
             title: "Available rooms",
             description: `There are ${matches.length} matches.`,
-            fields: matches.slice(index, index + entriesPerPage).map(v => ({
-                name: `${v.id} (${v.currentPlayers.split(",").length} players)`,
-                value: (v.options === TTRMatch.MatchOptions.RTs ? "RTs" : "CTs") + " | " + TTRMatch.stateToString(v.state) + " | Round: " + v.round
-            }))
-        };
+            fields: matches.slice(index, index + entriesPerPage).map(async v => {
+                return ({
+                    name: `${v.id} (${v.participants.split(",").length} players)`,
+                    value: (v.options === TTRMatch.MatchOptions.RTs ? "RTs" : "CTs") + " | " + TTRMatch.stateToString(v.state) + " | Round: " + v.round
+                })
+            })};
 
         const m: Message | Message[] = await message.channel.send({ embed });
         if (Array.isArray(m)) throw new Error;
