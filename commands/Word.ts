@@ -22,8 +22,8 @@ export default <Command>{
         const command: Command | undefined = base.commands.get("wordcloud2");
         if (!command)
             throw new Error("Internal Error occured: wordcloud2 command was not found, which the word command inherits.");
-        const words: string[] = await command.run(base, message);
-        const filteredWords: string[] = words.filter(v => !v.startsWith("w.")).map(v => v.replace(/<@[&!]?(\d{15,22})>/g, "<@‍$1>"));
+        const words: string = (await command.run(base, message))[0];
+        const filteredWords: string[] = words.split(" ").filter(v => !v.startsWith("w.")).map(v => v.replace(/<@[&!]?(\d{15,22})>/g, "<@‍$1>"));
         return [filteredWords[Math.floor(Math.random() * filteredWords.length)]];
     }
 }
