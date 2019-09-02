@@ -3,6 +3,8 @@ import * as sqlite from "sqlite";
 import Command from "./structures/Command";
 import {User} from "discord.js";
 import { readdirSync, readFileSync } from "fs";
+import TTR from "./structures/TTR";
+import {Match} from "./structures/TTRMatch";
 
 export default class Base {
     static guildLogChannel: string = "445297325095780372";
@@ -20,7 +22,8 @@ export default class Base {
     public tracks: any;
     public messages: Map<string, number>;
     public commands: Map<string, Command>;
-    public ongoingMatches: string[];
+    public ongoingMatches: Match[];
+    public ttr: TTR;
 
     constructor(ClientOptions: Discord.ClientOptions, dbPath: string = "./database.sqlite") {
         this.client = new Discord.Client(ClientOptions);
@@ -29,6 +32,7 @@ export default class Base {
             en: {},
             es: {}
         };
+        this.ttr = new TTR(this);
         // Initialize translations
         for (const lang of readdirSync("./lang").filter((v: string) => v.endsWith(".json"))) {
             this.texts[lang.split(".")[0]] = JSON.parse(readFileSync(`./lang/${lang}`, "utf8"));
@@ -51,7 +55,7 @@ export default class Base {
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS languages (`guild` TEXT, `lang` TEXT)");
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS pids (`user` TEXT, `pid` TEXT)");
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS usageLogs (`month` INTEGER, `uses` INTEGER)");
-        await this.sqlite.run("CREATE TABLE IF NOT EXISTS ttrProfiles (`user` TEXT, `pid` TEXT, `rating` INTEGER, `wins` INTEGER, `matches` INTEGER, `currentLobby` TEXT, `submittedTime` TEXT)");
+        await this.sqlite.run("CREATE TABLE IF NOT EXISTS ttrProfiles (`user` TEXT, `pid` TEXT, `rating` INTEGER, `wins` INTEGER, `matches` INTEGER, `currentLobby` TEXT, `submittedTime` TEXT, `channel` TEXT)");
         await this.sqlite.run("CREATE TABLE IF NOT EXISTS ttrMatches (`id` TEXT, `participants` TEXT, `state` INTEGER, `options` INTEGER, `round` INTEGER, `createdAt` TEXT, `startedAt` TEXT, `givenTime` INTEGER, `currentPlayers` TEXT, `course` TEXT)");
     }
 
