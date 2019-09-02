@@ -37,7 +37,7 @@ export default <Command>{
                         },
                         {
                             name: "Arguments",
-                            value: command.args ? (command.args.map(v => (!v.required ? "*" : "") + v.name + ": " + v.description)) + "\n* = required argument" : "none"
+                            value: command.args ? (command.args.map(v => (!v.required ? "*" : "") + v.name + ": " + v.description)).join("\n") + "\n* = required argument" : "none"
                         }
                     ]
                 }
