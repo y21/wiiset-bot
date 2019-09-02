@@ -47,4 +47,4 @@ commands/TTRCreateMatch.ts
 commands/TTRMatchList.ts
 commands/TTRJoinMatch.ts
 commands/TTRSubmit.ts
-commandS/TTRLobby.ts
+commands/TTRLobby.ts
