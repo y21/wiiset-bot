@@ -4,6 +4,10 @@ import Event from "../structures/EventData";
 import Command from "../structures/Command";
 import * as FlagHandler from "../structures/FlagHandler";
 
+export const IGNORED_COMMANDS: string[] = [
+    "ttr/*",
+];
+
 export default <Event>{
     type: "message",
     run: async (base: Base, message: Message): Promise<any> => {
@@ -26,6 +30,12 @@ export default <Event>{
         if (command.category !== null && command.category !== arg1) return;
         if (command.ownerOnly && message.author.id !== Base.owner.id) return message.reply("You cannot execute this command.");
         if (command.guildOnly && !message.guild) return message.reply("This command only works in servers.");
+
+        if (IGNORED_COMMANDS.some((v: string) => {
+            if (!command) return;
+            const parts: string[] = v.split("/");
+            return command.category ? command.category === parts[0] && (parts[1] === "*" || command.name === parts[1]) : command.name === parts[0];
+        })) return message.reply("this command has been disabled.");
 
         // Cooldown check
         {
