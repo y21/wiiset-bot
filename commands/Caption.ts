@@ -14,7 +14,8 @@ export default <Command>{
     category: null,
     ownerOnly: false,
     run: async (base: Base, message: any, texts: any) => {
-        const imageURL: string | undefined = message.attachments.size > 0 ? message.attachments.first().url : message.args.join(" ");
+        const args: string[] = message.content.split(/ +/g).slice(1);
+        const imageURL: string | undefined = message.attachments.size > 0 ? message.attachments.first().url : args.join(" ");
         if (!imageURL) return [texts.caption_no_image];
         return new Promise((a: any, b: any) => {
             fetch("https://captionbot.azurewebsites.net/api/messages?language=en-US", {
