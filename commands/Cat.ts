@@ -13,7 +13,7 @@ export default <Command>{
     run: (base: Base, message: any) => {
         return new Promise((a: any, b: any) => {
             fetch("http://aws.random.cat/meow").then(v => v.json()).then((res: any) => {
-                a([new Attachment(res.file, "cat.jpg")]);
+                a([res.file]);
             }).catch((err: any) => {
                 b(err);
             })
