@@ -13,8 +13,7 @@ export default <Command>{
     guildOnly: false,
     category: null,
     ownerOnly: false,
-    run: async (base: Base, message: any, texts: any) => {
-        const args: string[] = message.content.split(/ +/g).slice(1);
+    run: async (base: Base, message: any, texts: any, args: any) => {
         const imageURL: string | undefined = message.attachments.size > 0 ? message.attachments.first().url : args.join(" ");
         if (!imageURL) return [texts.caption_no_image];
         return new Promise((a: any, b: any) => {
