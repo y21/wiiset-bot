@@ -15,10 +15,9 @@ export default <Event>{
 
         if (message.author.bot || !message.content.startsWith(base.config.prefix)) return;
         const {config} = base;
-        const args: string[] = message.content.split(" ").slice(1);
         const arg1: string = message.content.split(" ")[0].substr(config.prefix.length);
         const flags: FlagHandler.Flag[] = FlagHandler.default.from(message.content);
-        const args = message.content.split(/ +/g).slice(1)
+        const args: string[] = message.content.split(/ +/g).slice(1)
         let command: Command | undefined;
         if (base.commands.has(arg1))
             command = base.commands.get(arg1);
