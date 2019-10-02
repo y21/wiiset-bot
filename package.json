@@ -4,7 +4,7 @@
   "description": "",
   "main": "Client.js",
   "scripts": {
-    "test": "tsc @compile.txt --downlevelIteration",
+    "test": "tsc @compile.txt --downlevelIteration"
   },
   "author": "y21",
   "license": "ISC",
