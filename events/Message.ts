@@ -18,8 +18,8 @@ export default <Event>{
         const args: string[] = message.content.split(" ").slice(1);
         const arg1: string = message.content.split(" ")[0].substr(config.prefix.length);
         const flags: FlagHandler.Flag[] = FlagHandler.default.from(message.content);
+        const args = message.content.split(/ +/g).slice(1)
         let command: Command | undefined;
-
         if (base.commands.has(arg1))
             command = base.commands.get(arg1);
         else if (args.length > 0 && base.commands.has(args[0])) {
@@ -61,7 +61,7 @@ export default <Event>{
         }
         let commandResponse: string[] | undefined;
         try {
-            commandResponse = await command.run(base, message, base.texts[language].commands);
+            commandResponse = await command.run(base, message, base.texts[language].commands, args);
         } catch(e) {
             await message.reply("❌ | An error occurred while trying to run the command.\n ```\n" + e + "\n```");
         }
