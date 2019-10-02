@@ -14,7 +14,8 @@
     "form-data": "^2.3.2",
     "node-fetch": "^2.2.0",
     "sqlite": "^2.9.2",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "jimp": "0.6.4"
   },
   "devDependencies": {
     "pm2": "*",
