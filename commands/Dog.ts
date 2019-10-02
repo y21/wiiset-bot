@@ -13,7 +13,7 @@ export default <Command>{
     run: (base: Base, message: any) => {
         return new Promise((a: any, b: any) => {
             fetch("https://dog.ceo/api/breeds/image/random").then(v => v.json()).then((res: any) => {
-                a([new Attachment(res.message, "dog.jpg")]);
+                a([res.message]);
             }).catch((err: any) => {
                 b(err);
             })
