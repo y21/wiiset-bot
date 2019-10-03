@@ -7,3 +7,4 @@ package-lock.json
 # Files
 database.sqlite
 config.json
+*/**.js
