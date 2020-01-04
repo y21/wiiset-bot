@@ -1,3 +1,6 @@
 {
-    "captionAPI": "https://captionbot.azurewebsites.net/api/messages?language=en-US"
+    "captionAPI": "https://captionbot.azurewebsites.net/api/messages?language=en-US",
+    "catAPI": "http://aws.random.cat/meow",
+    "dogAPI": "https://dog.ceo/api/breeds/image/random",
+    "rexAPI": "https://rextester.com/rundotnet/api"
 }
