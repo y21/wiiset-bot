@@ -1,6 +1,6 @@
 const Client = require("./src/Bot");
 const Logger = require("./src/structures/Logger");
-const config = require("./config");
+const config = require("./configs/bot");
 
 (async () => {
     const client = new Client(config);
