@@ -35,13 +35,12 @@ class Bot {
                 responseOptional: true,
                 onBefore: context => cmd.ownerOnly ? context.client.isOwner(context.userId) : true,
                 onCancel: context => context.reply("You are not allowed to execute this command"),
-                run: async (...args) => {
-                    const [context] = args;
+                run: async (context) => {
                     let commandResponse;
                     try {
-                        commandResponse = await cmd.run(...args);
+                        commandResponse = await cmd.run(context, context.content.split(" ").slice(1));
                     } catch(e) {
-                        commandResponse = "Error: " + e;
+                        commandResponse = ["Error: " + e];
                     }
 
                     this.client.rest.createMessage(context.channelId, ...commandResponse);
