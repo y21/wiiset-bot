@@ -1,5 +1,10 @@
 {
-   "prefix": "w.",
-   "token": "",
-   "wrAuthToken": ""
+    "token": "NDQwMjEwNjg2OTU0NTY5NzM5.XhB70A.mkHNY3kzJFMRlntnnTBGM_J9Eu4",
+    "prefix": "wdev.",
+    "presences": [
+        {
+            "name": "w.help | in a rewrite...",
+            "type": 0
+        }
+    ]
 }

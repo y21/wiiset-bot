@@ -1,22 +1,27 @@
 {
-  "name": "wiimmfi-bot",
-  "version": "2.0.0",
-  "description": "",
-  "main": "Client.js",
+  "name": "wiiset-bot",
+  "version": "1.0.0",
+  "description": "A Discord bot",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y21/wiiset-bot.git"
+  },
   "author": "y21",
   "license": "ISC",
-  "dependencies": {
-    "@types/node-fetch": "^2.5.0",
-    "discord.js": "^11.3.2",
-    "form-data": "^2.3.2",
-    "node-fetch": "^2.2.0",
-    "sqlite": "^2.9.2"
+  "bugs": {
+    "url": "https://github.com/y21/wiiset-bot/issues"
   },
-  "devDependencies": {
-    "pm2": "*",
-    "jimp": "*"
+  "homepage": "https://github.com/y21/wiiset-bot#readme",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "chalk": "^3.0.0",
+    "detritus-client": "^0.9.38",
+    "eslint": "^6.8.0",
+    "typescript": "^3.7.4"
   }
 }

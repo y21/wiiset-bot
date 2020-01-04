@@ -7,4 +7,4 @@ module.exports = {
     info: (text) => {
         console.log(chalk.blueBright(text));
     }
-}
+};
