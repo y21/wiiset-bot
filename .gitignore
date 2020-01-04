@@ -1,9 +1,2 @@
-# Directories
-node_modules/
-package-lock.json
-.idea
-.vsc
-
-# Files
-database.sqlite
-config.json
+node_modules
+.gitignore
