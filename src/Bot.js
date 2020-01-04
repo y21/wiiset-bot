@@ -1,5 +1,6 @@
 const Detritus = require("detritus-client");
 const Logger = require("./structures/Logger");
+const { readdirSync } = require("fs");
 
 class Bot {
     constructor(config) {
@@ -19,16 +20,44 @@ class Bot {
         });
     }
 
-    async initCommands() {
+    initCommands() {
+        let commands;
+        try {
+            commands = readdirSync("./src/commands");
+        } catch(e) {
+            Logger.error("Could not read commands directory: " + e);
+        }
 
+        for (const command of commands) {
+            const cmd = require(`./commands/${command}`);
+            this.client.add({
+                name: cmd.name,
+                responseOptional: true,
+                onBefore: context => cmd.ownerOnly ? context.client.isOwner(context.userId) : true,
+                run: async (...args) => {
+                    const [context] = args;
+                    let commandResponse;
+                    try {
+                        commandResponse = await cmd.run(...args);
+                    } catch(e) {
+                        commandResponse = "Error: " + e;
+                    }
+
+                    this.client.rest.createMessage(context.channelId, ...commandResponse);
+                }
+            });
+        }
+        
+        Logger.info(`Initialized ${this.client.commands.length} commands`);
     }
 
     async run() {
         const shardClient = await this.client.run();
-        Logger.info(`Logged in! (Shard: ${shardClient.shardId})`);
+        Logger.info(`Logged in! (Shard: ${shardClient.shardId}/${shardClient.shardCount})`);
         
         setInterval(() => {
-            shardClient.gateway.setPresence(this.config.presences[Math.floor(Math.random() * this.config.presences.length)]);
+            const presence = this.config.presences[Math.floor(Math.random() * this.config.presences.length)];
+            shardClient.gateway.setPresence(presence);
         }, 60000);
     }
 }
