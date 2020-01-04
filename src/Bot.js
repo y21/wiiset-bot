@@ -33,7 +33,7 @@ class Bot {
             this.client.add({
                 name: cmd.name,
                 responseOptional: true,
-                onBefore: context => cmd.ownerOnly ? context.client.isOwner(context.userId) : true,
+                onBefore: context => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true),
                 onCancel: context => context.reply("You are not allowed to execute this command"),
                 run: async (context) => {
                     let commandResponse;
