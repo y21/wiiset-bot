@@ -17,11 +17,14 @@
   },
   "homepage": "https://github.com/y21/wiiset-bot#readme",
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.14.0",
-    "@typescript-eslint/parser": "^2.14.0",
     "chalk": "^3.0.0",
     "detritus-client": "^0.9.38",
-    "eslint": "^6.8.0",
+    "pg": "^7.17.0",
     "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0"
   }
 }
