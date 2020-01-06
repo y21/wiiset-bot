@@ -52,7 +52,10 @@ class Bot {
                     try {
                         commandResponse = await cmd.run(context, context.content.split(" ").slice(1));
                     } catch(e) {
-                        commandResponse = [String(e)];
+                        commandResponse = [
+                            String(e)
+                            .replace(/https?:\/\/[^\/]+/g, "::")
+                        ];
                     }
 
                     if (typeof commandResponse[0] === "string")
