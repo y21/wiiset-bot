@@ -1,5 +1,7 @@
 module.exports = {
     Regexes: {
-        CTGP_PID: new RegExp("^[A-Z\\d]+$")
+        CTGPProfileID: new RegExp("^[A-Z\\d]+$"),
+
+        Snowflake: new RegExp("^\\d{17,19}$")
     }
 };
