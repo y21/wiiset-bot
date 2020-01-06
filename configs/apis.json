@@ -4,5 +4,6 @@
     "dogAPI": "https://dog.ceo/api/breeds/image/random",
     "rexAPI": "https://rextester.com/rundotnet/api",
     "wrNotifierAPI": "http://localhost:3000",
-    "wiimmfiAPI": "https://wiimmfi.glitch.me"
+    "wiimmfiAPI": "https://wiimmfi.glitch.me",
+    "ctgpAPI": "http://tt.chadsoft.co.uk"
 }
