@@ -13,7 +13,7 @@ module.exports = {
                     if (res.rowCount === 0) {
                         reject(["⚠️ `Tag exists already...`"]);
                     } else {
-                        resolve(["✅ Tag created"])
+                        resolve(["✅ Tag created"]);
                     }
                 });
         });
