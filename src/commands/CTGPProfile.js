@@ -6,7 +6,10 @@ module.exports = {
     name: "ctgpprofile",
     ownerOnly: false,
     guildOnly: false,
-    run: async () => {
-        
+    run: (context, args) => {
+        return new Promise((resolve, reject) => {
+            if (args.length === 0)
+                return reject(["⚠️ `No arguments provided...`"]);
+        });
     }
 };
