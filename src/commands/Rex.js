@@ -7,7 +7,7 @@ module.exports = {
     ownerOnly: false,
     guildOnly: false,
     run: async (_, args) => {
-        if (!languages.hasOwnProperty(args[0])) throw new Error("Language not found!");
+        if (!languages[args[0]]) throw new Error("Language not found!");
         const lang = languages[args[0]];
         const request = await fetch(rexAPI + "?LanguageChoice=" + lang, {
             method: "POST",
