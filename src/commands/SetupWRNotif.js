@@ -6,7 +6,7 @@ module.exports = {
     name: "setup",
     ownerOnly: false,
     guildOnly: false,
-    run: async (context, args) => {
+    run: async (context) => {
         const members = await context.rest.fetchGuildMembers(context.guildId, { limit: 10 });
         if (members.size < 10)
             throw new Error("To avoid spam, this feature is only available for servers with 10 or more members.");
