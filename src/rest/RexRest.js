@@ -1,4 +1,5 @@
 const { rexAPI } = require("../../configs/apis");
+const fetch = require("node-fetch");
 
 class RexRest {
     executeCode(language, code) {
@@ -6,7 +7,7 @@ class RexRest {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "LanguageChoice": lang
+                "LanguageChoice": language
             },
             body: JSON.stringify({
                 "Program": code
