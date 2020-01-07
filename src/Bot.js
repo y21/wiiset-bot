@@ -2,6 +2,7 @@ const Detritus = require("detritus-client");
 const pg = require("pg");
 const Logger = require("./structures/Logger");
 const { readdirSync } = require("fs");
+const Database = require("./structures/Database");
 
 class Bot {
     constructor(config, database) {
@@ -13,6 +14,7 @@ class Bot {
             password: database.password,
             database: database.database
         });
+        this.db = new Database(this.pool);
         this.client = new Detritus.CommandClient(config.token, {
             prefix: config.prefix,
             isBot: true,
@@ -44,8 +46,8 @@ class Bot {
                 onBefore: context => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true),
                 onCancel: context => context.reply("You are not allowed to execute this command"),
                 run: async (context) => {
-                    Object.defineProperty(context, "pool", {
-                        value: this.pool
+                    Object.defineProperty(context, "db", {
+                        value: this.db
                     });
 
                     let commandResponse;
