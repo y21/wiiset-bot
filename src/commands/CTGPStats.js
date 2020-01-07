@@ -1,13 +1,9 @@
-const fetch = require("node-fetch");
-const { ctgpAPI } = require("../../configs/apis");
-
-
 module.exports = {
     name: "ctgpstats",
     ownerOnly: false,
     guildOnly: false,
-    run: async () => {
-        const req = await fetch(`${ctgpAPI}/index.json`).then(v => v.text()).then(v => JSON.parse(v.replace(new RegExp("^[^{]"), "")));
+    run: async (_, __, rest) => {
+        const req = await rest.ctgp.getStats();
         return [{
             embed: {
                 title: "CTGP Statistics",
