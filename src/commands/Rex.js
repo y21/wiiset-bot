@@ -1,6 +1,4 @@
-const fetch = require("node-fetch");
 const languages = require("../../rextesterLanguages");
-const { rexAPI } = require("../../configs/apis");
 
 module.exports = {
     name: "rex",
