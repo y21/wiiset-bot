@@ -13,7 +13,7 @@ module.exports = {
                 embed: {
                     description: res.rows[0].content
                 }
-            }]
+            }];
         }
     }
 };

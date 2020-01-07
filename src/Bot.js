@@ -56,7 +56,7 @@ class Bot {
                     } catch(e) {
                         commandResponse = [
                             "⚠️ `" + String(e)
-                            .replace(/https?:\/\/[^\/]+/g, "::") + "`"
+                                .replace(/https?:\/\/[^/]+/g, "::") + "`"
                         ];
                     }
 

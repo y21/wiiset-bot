@@ -4,7 +4,7 @@ module.exports = {
     guildOnly: false,
     run: async (context) => {
         const { mentions } = context.message;
-        if (mentions.size === 0) reject(["User not found"]);
+        if (mentions.size === 0) throw new Error("User not found");
         const licks = await context.db.query("SELECT amount FROM licks WHERE author = $1",
             [
                 mentions.first().id
