@@ -18,6 +18,15 @@ class CTGPRest {
             .then(v => v.recentRecords);
     }
 
+    getStats() {
+        return this.getEndpoint(`${this.host}/index.json`)
+            .then(v => ({
+                uniquePlayers: v.uniquePlayers,
+                leaderboardCount: v.leaderboardCount,
+                ghostCount: v.ghostCount
+            }));
+    }
+
     removeBOM(str) {
         return str.replace(Regexes.BOM, "");
     }
