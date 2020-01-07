@@ -55,8 +55,8 @@ class Bot {
                         commandResponse = await cmd.run(context, context.content.split(" ").slice(1));
                     } catch(e) {
                         commandResponse = [
-                            String(e)
-                            .replace(/https?:\/\/[^\/]+/g, "::")
+                            "⚠️ `" + String(e)
+                            .replace(/https?:\/\/[^\/]+/g, "::") + "`"
                         ];
                     }
 
