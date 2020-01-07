@@ -8,6 +8,11 @@ class CTGPRest {
 
     getEndpoint(url) {
         return fetch(url)
+            .then(v => {
+                if (v.headers.get("content-type") !== "application/json")
+                    throw new Error("Invalid content type received");
+                else return v;
+            })
             .then(v => v.text())
             .then(this.removeBOM)
             .then(JSON.parse);
@@ -25,6 +30,10 @@ class CTGPRest {
                 leaderboardCount: v.leaderboardCount,
                 ghostCount: v.ghostCount
             }));
+    }
+
+    getProfileInfo(pid) {
+        return this.getEndpoint(`${this.host}/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
     }
 
     removeBOM(str) {
