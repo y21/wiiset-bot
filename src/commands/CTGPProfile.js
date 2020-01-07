@@ -12,19 +12,19 @@ module.exports = {
     run: (context, args) => {
         return new Promise(async (resolve, reject) => {
             if (args.length === 0)
-                return reject(["⚠️ `No arguments provided...`"]);
+                return reject(["No arguments provided..."]);
             let pid;
             if (Snowflake.test(args[0])) {
                 // todo: get pid from database
             } else if (!CTGPProfileID.test(args[0])) {
-                return reject(["⚠️ `Invalid Profile ID provided...`"]);
+                return reject(["Invalid Profile ID provided..."]);
             } else {
                 pid = args[0];
             }
 
             const req = await fetch(`${ctgpAPI}/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
             if (req.headers.get("content-type") !== "application/json")
-                return reject(["⚠️ `Invalid content type received, this is probably due to an invalid Profile ID`"]);
+                return reject(["Invalid content type received, this is probably due to an invalid Profile ID"]);
             const response = await req.text().then(v => JSON.parse(v.replace(new RegExp("^[^{]"), "")));
 
             const bronzeStars = response.stars.bronze - response.stars.silver;
