@@ -8,7 +8,7 @@ module.exports = {
                 [context.userId, args[0]],
                 (_, res) => {
                     if (res.rowCount === 0) {
-                        reject(["⚠️ `Tag not found...`"]);
+                        reject(["Tag not found..."]);
                     } else {
                         resolve(["✅ Tag deleted"]);
                     }
