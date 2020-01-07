@@ -1,9 +1,12 @@
-const { rexAPI } = require("../../configs/apis");
 const fetch = require("node-fetch");
 
 class RexRest {
+    constructor(host) {
+        this.host = host;
+    }
+
     executeCode(language, code) {
-        return fetch(rexAPI + "?LanguageChoice=" + language, {
+        return fetch(this.host + "?LanguageChoice=" + language, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
