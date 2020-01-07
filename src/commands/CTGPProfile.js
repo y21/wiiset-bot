@@ -9,7 +9,7 @@ module.exports = {
     name: "ctgpprofile",
     ownerOnly: false,
     guildOnly: false,
-    run: async (context, args) => {
+    run: async (_, args, rest) => {
         if (args.length === 0)
             throw new Error("No arguments provided...");
         let pid;
@@ -20,11 +20,8 @@ module.exports = {
         } else {
             pid = args[0];
         }
-
-        const req = await fetch(`${ctgpAPI}/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
-        if (req.headers.get("content-type") !== "application/json")
-            throw new Error("Invalid content type received, this is probably due to an invalid Profile ID");
-        const response = await req.text().then(v => JSON.parse(v.replace(new RegExp("^[^{]"), "")));
+        
+        const response = await rest.ctgp.getProfileInfo(pid);
 
         const bronzeStars = response.stars.bronze - response.stars.silver;
         const silverStars = response.stars.silver - response.stars.gold;
