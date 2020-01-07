@@ -6,20 +6,11 @@ module.exports = {
     name: "rex",
     ownerOnly: false,
     guildOnly: false,
-    run: async (_, args) => {
+    run: async (_, args, rest) => {
         if (!languages[args[0]]) throw new Error("Language not found!");
-        const lang = languages[args[0]];
-        const request = await fetch(rexAPI + "?LanguageChoice=" + lang, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "LanguageChoice": lang
-            },
-            body: JSON.stringify({
-                "Program": args.slice(1).join(" ").replace(/```\w*/g, "")
-            })
-        }).then(v => v.json());
+        const lang = rest.rex.resolveLanguage(args[0]);
+        const res = await rest.rex.executeCode(lang, args.slice(1).join(" ").replace(/```\w* /g, ""));
 
-        return ["```js\n" + (request.Errors || request.Result).substr(0, 1980) + "\n```"];
+        return ["```js\n" + (res.Errors || res.Result).substr(0, 1980) + "\n```"];
     }
 };
