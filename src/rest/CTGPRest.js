@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const { Regexes } = require("../structures/Constants");
 
 class CTGPRest {
     constructor(host) {
@@ -18,7 +19,7 @@ class CTGPRest {
     }
 
     removeBOM(str) {
-        return str.replace(new RegExp("^[^{}]"), "");
+        return str.replace(Regexes.BOM, "");
     }
 }
 
