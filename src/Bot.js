@@ -3,6 +3,7 @@ const pg = require("pg");
 const Logger = require("./structures/Logger");
 const { readdirSync } = require("fs");
 const Database = require("./structures/Database");
+const Rest = require("./rest/RestClient");
 
 class Bot {
     constructor(config, database) {
@@ -28,6 +29,7 @@ class Bot {
                 }
             }
         });
+        this.rest = new Rest();
     }
 
     initCommands() {
@@ -52,7 +54,7 @@ class Bot {
 
                     let commandResponse;
                     try {
-                        commandResponse = await cmd.run(context, context.content.split(" ").slice(1));
+                        commandResponse = await cmd.run(context, context.content.split(" ").slice(1), this.rest);
                     } catch(e) {
                         commandResponse = [
                             "⚠️ `" + String(e)
