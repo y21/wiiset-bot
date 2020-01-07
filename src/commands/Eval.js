@@ -4,7 +4,7 @@ module.exports = {
     name: "eval",
     ownerOnly: true,
     guildOnly: false,
-    run: async (context, args) => {
+    run: async (context, args, rest) => { // eslint-disable-line no-unused-vars
         let res;
         try {
             res = await eval(args.join(" "));
