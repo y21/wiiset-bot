@@ -18,7 +18,7 @@ class RexRest {
     resolveLanguage(langString) {
         return RexRest.languages[langString];
     }
-};
+}
 RexRest.languages = require("../../rextesterLanguages");
 
 module.exports = RexRest;
