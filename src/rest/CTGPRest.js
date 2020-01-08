@@ -9,8 +9,9 @@ class CTGPRest {
     getEndpoint(url) {
         return fetch(url)
             .then(v => {
-                if (v.headers.get("content-type") !== "application/json")
+                if (!v.headers.get("content-type").startsWith("application/json")) {
                     throw new Error("Invalid content type received");
+                }
                 else return v;
             })
             .then(v => v.text())
@@ -18,8 +19,12 @@ class CTGPRest {
             .then(JSON.parse);
     }
 
+    getTrackByEndpoint(endpoint, appendJson = true) {
+        return this.getEndpoint(this.host + endpoint + (appendJson ? ".json" : ""));
+    }
+
     getTrack(slot, hash, category) {
-        return this.getEndpoint(`${this.host}/leaderboard/${slot}/${hash}/${category}`);
+        return this.getTrackByEndpoint(`${slot}/${hash}/${category}`);
     }
 
     getRecentRecords() {
