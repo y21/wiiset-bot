@@ -19,7 +19,7 @@ module.exports = {
             name: "WR Notifier"
         });
 
-        const req = await fetch(`${wrNotifierAPI}/${webhook.id}/${webhook.token}?key=${wrNotifierAuthToken}`, {
+        const req = await fetch(`${wrNotifierAPI}/register/${webhook.id}/${webhook.token}?key=${wrNotifierAuthToken}`, {
             method: "POST"
         }).then(v => v.json());
 
