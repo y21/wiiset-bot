@@ -1,5 +1,3 @@
-const fetch = require("node-fetch");
-const { ctgpAPI } = require("../../configs/apis");
 const { CTGPProfileID, Snowflake } = require("../structures/Constants").Regexes;
 const controllerCodes = require("../../controllerCodes");
 const countryCodes = require("../../countryCodes");
