@@ -8,13 +8,13 @@ module.exports = class TrackHelper {
     }
 
     async init() {
-        this.tracks = await TrackHelper.getTracks();
+        this.tracks = await TrackHelper.getTracks(this.rest);
     }
 
-    static async getTracks() {
+    static async getTracks(rest) {
         const tracks = {
-            original: (await this.rest.getOriginalTracks()).map(v => ({ ...v, category: "original" })),
-            custom: (await this.rest.getCustomTracks()).map(v => ({ ...v, category: "custom" }))
+            original: (await rest.getOriginalTracks()).leaderboards.map(v => ({ ...v, category: "original" })),
+            custom: (await rest.getCustomTracks()).leaderboards.map(v => ({ ...v, category: "custom" }))
         };
         
         return tracks.original.concat(tracks.custom).map(v => ({
