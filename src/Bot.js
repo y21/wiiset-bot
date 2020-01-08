@@ -4,6 +4,7 @@ const Logger = require("./structures/Logger");
 const { readdirSync } = require("fs");
 const Database = require("./structures/Database");
 const Rest = require("./rest/RestClient");
+const TrackHelper = require("./structures/TrackHelper");
 
 class Bot {
     constructor(config, database) {
@@ -30,6 +31,7 @@ class Bot {
             }
         });
         this.rest = new Rest();
+        this.trackHelper = new TrackHelper(this.rest.ctgp);
     }
 
     initCommands() {
@@ -48,9 +50,8 @@ class Bot {
                 onBefore: context => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true),
                 onCancel: context => context.reply("You are not allowed to execute this command"),
                 run: async (context) => {
-                    Object.defineProperty(context, "db", {
-                        value: this.db
-                    });
+                    context.db = this.db;
+                    context.trackHelper = this.trackHelper;
 
                     let commandResponse;
                     try {
