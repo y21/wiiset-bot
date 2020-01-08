@@ -41,11 +41,11 @@ class CTGPRest {
     }
 
     getOriginalTracks() {
-
+        return this.getEndpoint(`${this.host}/original-track-leaderboards.json`);
     }
 
     getCustomTracks() {
-        
+        return this.getEndpoint(`${this.host}/ctgp-leaderboards.json`);
     }
 
     removeBOM(str) {
