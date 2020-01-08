@@ -40,6 +40,14 @@ class CTGPRest {
         return this.getEndpoint(`${this.host}/players/${pid.substr(0, 2)}/${pid.substr(2)}.json`);
     }
 
+    getOriginalTracks() {
+
+    }
+
+    getCustomTracks() {
+        
+    }
+
     removeBOM(str) {
         return str.replace(Regexes.BOM, "");
     }
