@@ -27,6 +27,6 @@ module.exports = {
                     + "Country: " + (countryCodes[v.country || ""] || "???")
                 }))
             }
-        }]
+        }];
     }
-}
+};

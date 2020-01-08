@@ -24,4 +24,4 @@ module.exports = class TrackHelper {
             category: v.category
         }));
     }
-}
+};
