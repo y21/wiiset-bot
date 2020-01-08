@@ -19,7 +19,7 @@ class CTGPRest {
     }
 
     getTrack(slot, hash, category) {
-
+        return this.getEndpoint(`${this.host}/leaderboard/${slot}/${hash}/${category}`);
     }
 
     getRecentRecords() {
