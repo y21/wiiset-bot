@@ -18,6 +18,10 @@ class CTGPRest {
             .then(JSON.parse);
     }
 
+    getTrack(slot, hash, category) {
+
+    }
+
     getRecentRecords() {
         return this.getEndpoint(`${this.host}/index.json`)
             .then(v => v.recentRecords);
