@@ -35,6 +35,8 @@ class WiimmfiRest {
             })
             .then(v => {
                 const stats = {
+                    name: v.room_name,
+                    id: v.room_id,
                     roomStart: v.room_start,
                     raceStart: v.race_start,
                     players: v.members.sort((a, b) => b.ev - a.ev)
