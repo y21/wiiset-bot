@@ -13,14 +13,14 @@ module.exports = class WiimmfiRest {
 
     /* MKW */
     getMKWUsers(limit = 10) {
-        return fetch(`${this.hosts}/mkw/users`)
+        return fetch(`${this.host}/mkw/users`)
             .then(v => v.json())
             .then(v => v.slice(0, limit));
     }
 
     getMKWBans(limit = 10) {
-        return fetch(`${this.hosts}/bans`)
+        return fetch(`${this.host}/bans`)
             .then(v => v.json())
             .then(v => v.slice(0, limit));
     }
-}
+};
