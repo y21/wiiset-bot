@@ -1,7 +1,3 @@
-const fetch = require("node-fetch");
-const { wiimmfiAPI } = require("../../configs/apis");
-
-
 module.exports = {
     name: "mkwbans",
     ownerOnly: false,
