@@ -17,4 +17,10 @@ module.exports = class WiimmfiRest {
             .then(v => v.json())
             .then(v => v.slice(0, limit));
     }
+
+    getMKWBans(limit = 10) {
+        return fetch(`${this.hosts}/bans`)
+            .then(v => v.json())
+            .then(v => v.slice(0, limit));
+    }
 }
