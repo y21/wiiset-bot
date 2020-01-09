@@ -6,8 +6,8 @@ module.exports = {
     name: "mkwbans",
     ownerOnly: false,
     guildOnly: false,
-    run: async () => {
-        const req = await fetch(`${wiimmfiAPI}/bans`).then(v => v.json());
+    run: async (_, __, rest) => {
+        const req = await rest.wiimmfi.getMKWBans();
         return [{
             embed: {
                 fields: req.map(v => ({
