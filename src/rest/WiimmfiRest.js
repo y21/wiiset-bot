@@ -41,11 +41,11 @@ class WiimmfiRest {
                 };
                 stats.highestVR = stats.players[0];
                 stats.lowestVR = stats.players.slice(-1)[0];
-                stats.averageVR = stats.players.reduce((a, b) => a.ev + b.ev) / stats.players.length
+                stats.averageVR = stats.players.map(v => v.ev).reduce((a, b) => a + b) / stats.players.length;
                 return stats;
             });
     }
-};
+}
 WiimmfiRest.originHost = "https://wiimmfi.de";
 
 module.exports = WiimmfiRest;
