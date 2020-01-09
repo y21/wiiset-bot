@@ -1,8 +1,5 @@
 # wiiset-bot
 The Wiiset Discord Bot
-
-[![Discord Bots](https://discordbots.org/api/widget/440210686954569739.svg)](https://discordbots.org/bot/440210686954569739)
-
 Join our <a href="https://discord.gg/6DPWSmK">Discord Server</a> for support.
 
 ## Translations
