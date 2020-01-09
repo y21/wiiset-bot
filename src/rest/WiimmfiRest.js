@@ -47,6 +47,11 @@ class WiimmfiRest {
                 return stats;
             });
     }
+
+    getMKWList() {
+        return fetch(`${this.host}/mkw/amount`)
+            .then(v => v.json());
+    }
 }
 WiimmfiRest.originHost = "https://wiimmfi.de";
 
