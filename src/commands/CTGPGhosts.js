@@ -41,23 +41,5 @@ module.exports = {
             pages,
             message: context.message
         });
-
-        /*return [{
-            embed: {
-                color: 0xCD7F32,
-                title: "Ghosts of player " + response.miiName,
-                fields: response.ghosts
-                    .slice(0, 10)
-                    .map(v => {
-                        return {
-                            name: v.trackName || "Unknown track",
-                            value: `Finish time: ${v.finishTimeSimple}\n` +
-                            `Fastest lap: ${v.bestSplitSimple}\n` +
-                            `Engine class: ${v["200cc"] ? "200cc" : "150cc"}\n` +
-                            `Star: ${v.stars ? (v.stars.gold ? "Gold" : (v.stars.silver ? "Silver" : (v.stars.bronze ? "Bronze" : ""))) : "-"}`
-                        };
-                    })
-            }
-        }];*/
     }
 };
