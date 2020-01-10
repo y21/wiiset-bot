@@ -5,6 +5,7 @@ const { readdirSync } = require("fs");
 const Database = require("./structures/Database");
 const Rest = require("./rest/RestClient");
 const TrackHelper = require("./structures/TrackHelper");
+const Paginator = require("detritus-pagination");
 
 class Bot {
     constructor(config, database) {
@@ -32,6 +33,10 @@ class Bot {
         });
         this.rest = new Rest();
         this.trackHelper = new TrackHelper(this.rest.ctgp);
+        this.paginator = new Paginator(this.client, {
+            maxTime: 180000,
+            pageLoop: true
+        });
     }
 
     initCommands() {
@@ -52,6 +57,7 @@ class Bot {
                 run: async (context) => {
                     context.db = this.db;
                     context.trackHelper = this.trackHelper;
+                    context.paginator
 
                     let commandResponse;
                     try {
