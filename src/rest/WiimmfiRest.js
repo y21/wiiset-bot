@@ -15,13 +15,13 @@ class WiimmfiRest {
     getMKWUsers(limit = 10) {
         return fetch(`${this.host}/mkw/users`)
             .then(v => v.json())
-            .then(v => v.slice(0, limit));
+            .then(v => limit === -1 ? v : v.slice(0, limit));
     }
 
     getMKWBans(limit = 10) {
         return fetch(`${this.host}/bans`)
             .then(v => v.json())
-            .then(v => v.slice(0, limit));
+            .then(v => limit === -1 ? v : v.slice(0, limit));
     }
 
     getMKWRoomStats(id) {
