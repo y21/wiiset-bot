@@ -18,23 +18,22 @@ module.exports = {
         const response = await rest.ctgp.getProfileInfo(pid);
         const pages = [];
         for (let i = 0; i < response.ghosts.length; i += 5) {
-            const embed = {
-                color: 0xCD7F32,
-                title: "Ghosts of player " + response.miiName,
-                fields: response.ghosts
-                    .slice(i, i + 5)
-                    .map(v => {
-                        return {
-                            name: v.trackName || "Unknown track",
-                            value: `Finish time: ${v.finishTimeSimple}\n` +
-                            `Fastest lap: ${v.bestSplitSimple}\n` +
-                            `Engine class: ${v["200cc"] ? "200cc" : "150cc"}\n` +
-                            `Star: ${v.stars ? (v.stars.gold ? "Gold" : (v.stars.silver ? "Silver" : (v.stars.bronze ? "Bronze" : ""))) : "-"}`
-                        };
-                    })
-            };
             pages.push({
-                embed
+                embed: {
+                    color: 0xCD7F32,
+                    title: "Ghosts of player " + response.miiName,
+                    fields: response.ghosts
+                        .slice(i, i + 5)
+                        .map(v => {
+                            return {
+                                name: v.trackName || "Unknown track",
+                                value: `Finish time: ${v.finishTimeSimple}\n` +
+                                `Fastest lap: ${v.bestSplitSimple}\n` +
+                                `Engine class: ${v["200cc"] ? "200cc" : "150cc"}\n` +
+                                `Star: ${v.stars ? (v.stars.gold ? "Gold" : (v.stars.silver ? "Silver" : (v.stars.bronze ? "Bronze" : ""))) : "-"}`
+                            };
+                        })
+                }
             });
         }
 
