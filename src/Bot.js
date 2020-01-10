@@ -5,7 +5,7 @@ const { readdirSync } = require("fs");
 const Database = require("./structures/Database");
 const Rest = require("./rest/RestClient");
 const TrackHelper = require("./structures/TrackHelper");
-const Paginator = require("detritus-pagination");
+const { Paginator } = require("detritus-pagination");
 
 class Bot {
     constructor(config, database) {
