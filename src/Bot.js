@@ -57,7 +57,7 @@ class Bot {
                 run: async (context) => {
                     context.db = this.db;
                     context.trackHelper = this.trackHelper;
-                    context.paginator
+                    context.paginator = this.paginator;
 
                     let commandResponse;
                     try {
