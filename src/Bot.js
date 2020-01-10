@@ -72,7 +72,8 @@ class Bot {
                     if (typeof commandResponse[0] === "string")
                         commandResponse[0] = commandResponse[0].replace(/@/g, "@\u200b");
 
-                    this.client.rest.createMessage(context.channelId, ...commandResponse);
+                    if (commandResponse.length > 0)
+                        this.client.rest.createMessage(context.channelId, ...commandResponse);
                 }
             });
         }
