@@ -7,7 +7,7 @@ module.exports = {
     name: "ctgpprofile",
     ownerOnly: false,
     guildOnly: false,
-    run: async (_, args, rest) => {
+    run: async (context, args, rest) => {
         if (args.length === 0)
             throw new Error("No arguments provided...");
         let pid;
