@@ -42,22 +42,23 @@ module.exports = {
                 description: "USB GCN Adapter attached: " + (response.usbGcnAdapterAttached ? "yes" : "no") + "\n" +
                     "Controller: " + (controllerCodes[response.controller] || "unknown") + "\n" +
                     "Country: " + (countryCodes[response.country] || "unknown"),
-                fields: [{
-                    name: "Stars",
-                    value: `${bronzeStars} Bronze\n${silverStars} Silver\n${goldStars} Gold`
-                },
-                {
-                    name: "Last 5 out of " + (response.miiNames.length < 5 ? "<5" : response.miiNames.length - 5) + " Mii names",
-                    value: response.miiNames.slice(0, 5).map(e => "`" + e + "`").join(", ")
-                },
-                {
-                    name: "Submitted ghosts",
-                    value: response.ghostCount || 0
-                },
-                {
-                    name: "Ghosts",
-                    value: response.ghosts.slice(0, 5).map(e => e.trackName + ": " + e.finishTimeSimple).join("\n") + (response.ghosts.length > 4 ? "\n... and " + (response.ghosts.length - 5) + " more. (" + response.ghosts.length + " total ghosts)" : "")
-                }
+                fields: [
+                    {
+                        name: "Stars",
+                        value: `${bronzeStars} Bronze\n${silverStars} Silver\n${goldStars} Gold`
+                    },
+                    {
+                        name: "Last 5 out of " + (response.miiNames.length < 5 ? "<5" : response.miiNames.length - 5) + " Mii names",
+                        value: response.miiNames.slice(0, 5).map(e => "`" + e + "`").join(", ")
+                    },
+                    {
+                        name: "Submitted ghosts",
+                        value: response.ghostCount || 0
+                    },
+                    {
+                        name: "Ghosts",
+                        value: response.ghosts.slice(0, 5).map(e => e.trackName + ": " + e.finishTimeSimple).join("\n") + (response.ghosts.length > 4 ? "\n... and " + (response.ghosts.length - 5) + " more. (" + response.ghosts.length + " total ghosts)" : "")
+                    }
                 ]
             }
         }];
