@@ -9,7 +9,7 @@ module.exports = {
             throw new Error("No arguments provided...");
         let pid;
         if (Snowflake.test(args[0])) {
-            const query = await context.db.query("SELECT pid FROM pids WHERE author = $1", [context.userId]);
+            const query = await context.db.query("SELECT pid FROM pids WHERE author = $1", [args[0]]);
             if (query.rowCount > 0)
                 pid = query.rows[0].pid;
         } else if (!CTGPProfileID.test(args[0])) {
