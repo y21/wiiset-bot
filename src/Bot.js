@@ -52,6 +52,12 @@ class Bot {
             this.client.add({
                 name: cmd.name,
                 responseOptional: true,
+                ratelimit: {
+                    limit: 1,
+                    duration: 1000,
+                    type: "user"
+                },
+                onRatelimit: context => context.reply("calm down, don't spam!"),
                 onBefore: context => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true),
                 onCancel: context => context.reply("You are not allowed to execute this command"),
                 run: async (context) => {
