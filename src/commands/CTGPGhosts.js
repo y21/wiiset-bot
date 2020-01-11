@@ -17,6 +17,10 @@ module.exports = {
         } else {
             pid = args[0];
         }
+
+        if (!pid)
+            throw new Error("Invalid Profile ID provided");
+        
         const response = await rest.ctgp.getProfileInfo(pid);
         const pages = [];
         for (let i = 0; i < response.ghosts.length; i += 5) {
