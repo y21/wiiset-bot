@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/y21/wiiset-bot#readme",
   "dependencies": {
+    "ascii-table": "0.0.9",
     "chalk": "^3.0.0",
     "detritus-client": "^0.9.38",
-    "node-fetch": "*",
     "detritus-pagination": "^1.0.1",
+    "node-fetch": "*",
     "pg": "^7.17.0",
     "typescript": "^3.7.4"
   },
