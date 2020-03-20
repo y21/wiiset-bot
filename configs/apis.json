@@ -5,5 +5,6 @@
     "rexAPI": "https://rextester.com/rundotnet/api",
     "wrNotifierAPI": "https://wr.blobs-game.com",
     "wiimmfiAPI": "https://wiimmfi.glitch.me",
-    "ctgpAPI": "http://tt.chadsoft.co.uk"
+    "ctgpAPI": "http://tt.chadsoft.co.uk",
+    "ttcAPI": "http://localhost:3004"
 }
