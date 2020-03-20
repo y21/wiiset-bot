@@ -1,45 +1,74 @@
+const fetch = require("node-fetch");
+
 class TTCRest {
     constructor(host) {
         this.host = host;
     }
 
-    registerUser() {
-
+    registerUser(userId, pid) {
+        return fetch(`${this.host}/api/v1/users/${userId}`, {
+            method: "POST",
+            body: JSON.stringify({ pid })
+        });
     }
 
-    getUser() {
-
+    getUser(userId) {
+        return fetch(`${this.host}/api/v1/users/${userId}`);
     }
 
     getUsers() {
-
+        return fetch(`${this.host}/api/v1/users`);
     }
 
-    createLobby() {
-
+    createLobby(userId, channelId) {
+        return fetch(`${this.host}/api/v1/lobbies`, {
+            method: "POST",
+            body: JSON.stringify({
+                userid: userId,
+                channel: channelId
+            })
+        });
     }
 
-    getLobby() {
-
+    getLobby(lobbyId) {
+        return fetch(`${this.host}/api/v1/lobbies/${lobbyId}`);
     }
 
     getLobbies() {
-
+        return fetch(`${this.host}/api/v1/lobbies`);
     }
 
-    getPlayersInLobby() {
-
+    getPlayersInLobby(lobbyId) {
+        return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`);
     }
 
-    addPlayerToLobby() {
-
+    addPlayerToLobby(lobbyId, userId) {
+        return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
+            method: "POST",
+            body: JSON.stringify({
+                userid: userId,
+                channel: channelId
+            })
+        });
     }
 
-    removePlayerFromLobby() {
-
+    removePlayerFromLobby(lobbyId, userId) {
+        return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
+            method: "DELETE",
+            body: JSON.stringify({
+                userid: userId,
+                channel: channelId
+            })
+        });
     }
 
-    submitGhost() {
-
+    submitGhost(lobbyId, userId) {
+        return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players/${userId}/ghosts`, {
+            method: "POST",
+            body: JSON.stringify({
+                userid: userId,
+                channel: channelId
+            })
+        });
     }
 }
