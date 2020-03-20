@@ -33,7 +33,7 @@ class Bot {
         });
         this.rest = new Rest();
         this.trackHelper = new TrackHelper(this.rest.ctgp);
-        this.paginator = new Paginator(this.client, {
+        this.paginator = new Paginator(this.client.client, {
             maxTime: 180000,
             pageLoop: true
         });
