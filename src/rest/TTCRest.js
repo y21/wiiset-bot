@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-class TTCRest {
+module.exports = class TTCRest {
     constructor(host) {
         this.host = host;
     }
