@@ -42,7 +42,7 @@ module.exports = class TTCRest {
         return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`);
     }
 
-    addPlayerToLobby(lobbyId, userId) {
+    addPlayerToLobby(lobbyId, userId, channelId) {
         return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
             method: "POST",
             body: JSON.stringify({
@@ -52,7 +52,7 @@ module.exports = class TTCRest {
         });
     }
 
-    removePlayerFromLobby(lobbyId, userId) {
+    removePlayerFromLobby(lobbyId, userId, channelId) {
         return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
             method: "DELETE",
             body: JSON.stringify({
@@ -62,7 +62,7 @@ module.exports = class TTCRest {
         });
     }
 
-    submitGhost(lobbyId, userId) {
+    submitGhost(lobbyId, userId, channelId) {
         return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players/${userId}/ghosts`, {
             method: "POST",
             body: JSON.stringify({
