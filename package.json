@@ -23,7 +23,9 @@
     "detritus-pagination": "^1.0.1",
     "node-fetch": "*",
     "pg": "^7.17.0",
-    "typescript": "^3.7.4"
+    "pws": "^4.3.0",
+    "typescript": "^3.7.4",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
