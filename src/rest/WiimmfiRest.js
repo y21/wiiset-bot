@@ -7,14 +7,14 @@ class WiimmfiRest {
 
     /* SSBB */
     getSSBBStats() {
-        return fetch(`${this.host}/ssbb/amount`)
+        return fetch(`${this.host}/rsbj/overview`)
             .then(v => v.json());
     }
 
     /* MKW */
     getMKWUsers(limit = 10) {
         return fetch(`${this.host}/mkw/users`)
-            .then(v => v.json())
+            .then(v => v.status === 200 ? v.json() : [])
             .then(v => limit === -1 ? v : v.slice(0, limit));
     }
 
@@ -49,8 +49,19 @@ class WiimmfiRest {
     }
 
     getMKWList() {
-        return fetch(`${this.host}/mkw/amount`)
+        return fetch(`${this.host}/mkw/rooms`)
             .then(v => v.json());
+    }
+
+    getMKWLoginRegions() {
+        return fetch(`${this.host}/mkw/regions`)
+            .then(v => v.json());
+    }
+
+    getMKWData() {
+        return fetch(`${this.host}/rmcj/overview`)
+        .then(v => v.json())
+        .then(v => v.data);
     }
 }
 WiimmfiRest.originHost = "https://wiimmfi.de";
