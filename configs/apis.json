@@ -4,7 +4,7 @@
     "dogAPI": "https://dog.ceo/api/breeds/image/random",
     "rexAPI": "https://rextester.com/rundotnet/api",
     "wrNotifierAPI": "https://wr.blobs-game.com",
-    "wiimmfiAPI": "https://wiimmfi-api--y21-.repl.co",
+    "wiimmfiAPI": "https://wiimmfi-api--y21-.repl.co/api/v2",
     "ctgpAPI": "http://tt.chadsoft.co.uk",
     "ttcAPI": "http://localhost:3004"
 }
