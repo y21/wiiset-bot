@@ -11,19 +11,19 @@ module.exports = {
                 fields: [
                     {
                         name: "Worldwide rooms",
-                        value: req.available.worldwides
+                        value: req.worldwides || "0"
                     },
                     {
                         name: "Continental rooms",
-                        value: req.available.continentals
+                        value: req.continentals || "0"
                     },
                     {
                         name: "Private rooms",
-                        value: req.available.privates
+                        value: req.privates || "0"
                     },
                     {
                         name: "Total players",
-                        value: req.available.players
+                        value: req.players || "0"
                     }
                 ]
             }

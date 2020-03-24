@@ -1,7 +1,7 @@
 module.exports = {
     name: "ttc leave",
     guildOnly: false,
-    ownerOnly: false,
+    ownerOnly: true,
     run: async (context, args, rest) => {
         const lobby = await rest.ttc.removePlayerFromLobby(args[1], context.userId, context.channelId);
         if (lobby.status !== 200) {

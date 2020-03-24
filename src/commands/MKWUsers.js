@@ -6,6 +6,10 @@ module.exports = {
         const req = await rest.wiimmfi.getMKWUsers(-1);
         const pages = [];
 
+        if (req.length === 0) {
+            throw new Error("no rooms found");
+        }
+
         for (let i = 0; i < req.length; i += 10)
             pages.push({
                 embed: {
