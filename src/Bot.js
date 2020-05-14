@@ -6,6 +6,7 @@ const Database = require("./structures/Database");
 const Rest = require("./rest/RestClient");
 const TrackHelper = require("./structures/TrackHelper");
 const { Paginator } = require("detritus-pagination");
+const TTCGateway = require("./structures/TTCGateway");
 
 class Bot {
     constructor(config, database) {
@@ -37,6 +38,8 @@ class Bot {
             maxTime: 180000,
             pageLoop: true
         });
+        this.ttcGateway = new TTCGateway(this);
+        this.ttcGateway.init();
     }
 
     initCommands() {
