@@ -4,7 +4,7 @@ const { Markup } = require("detritus-client/lib/utils");
 module.exports = {
     name: "ttc users",
     guildOnly: false,
-    ownerOnly: true,
+    ownerOnly: false,
     run: async (context, args, rest) => {
         const user = await rest.ttc.getUsers();
         if (user.status !== 200) {
@@ -14,11 +14,11 @@ module.exports = {
         const data = await user.json();
         const table = new AsciiTable("Leaderboard")
             .removeBorder()
-            .setHeading("#", "Player", "Total Rating");
+            .setHeading("#", "Player", "Total Rating", "Base Rating");
 
         for (let i = 0; i < data.length; ++i) {
             const username = await context.rest.fetchUser(data[i].userid).then(v => v.username).catch(() => "<unknown>");
-            table.addRow(i + 1, username, data[i].total_rating.toLocaleString());
+            table.addRow(i + 1, username, data[i].total_rating.toLocaleString(), data[i].base_rating.toLocaleString());
         }
 
         return [
