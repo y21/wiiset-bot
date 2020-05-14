@@ -20,12 +20,17 @@ module.exports = class TTCRest {
         return fetch(`${this.host}/api/v1/users`);
     }
 
-    createLobby(userId, channelId) {
+    createLobby(userId, channelId, options) {
+        // Default to RTs
+        if ((options & LobbyOptions.RT) !== LobbyOptions.RT && (options & LobbyOptions.CT) !== LobbyOptions.CT)
+            options |= LobbyOptions.RT;
+        
         return fetch(`${this.host}/api/v1/lobbies`, {
             method: "POST",
             body: JSON.stringify({
                 userid: userId,
-                channel: channelId
+                channel: channelId,
+                options
             })
         });
     }
@@ -72,3 +77,12 @@ module.exports = class TTCRest {
         });
     }
 }
+
+module.exports.LobbyOptions = {
+    RT: 0x1,
+    CT: 0x2,
+    AT: 0x1 | 0x2,
+    "150cc": 0x8,
+    "200cc": 0x10,
+    NoElimination: 0x20
+};
