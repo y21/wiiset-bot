@@ -6,5 +6,6 @@
     "wrNotifierAPI": "https://wr.blobs-game.com",
     "wiimmfiAPI": "https://wiimmfi-api--y21-.repl.co/api/v2",
     "ctgpAPI": "http://tt.chadsoft.co.uk",
-    "ttcAPI": "http://localhost:3004"
+    "ttcAPI": "http://localhost",
+    "ttcWS": "ws://localhost/ws"
 }
