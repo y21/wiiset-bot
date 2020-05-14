@@ -13,7 +13,8 @@ class RexRest {
                 "LanguageChoice": language
             },
             body: JSON.stringify({
-                "Program": code
+                "Program": code,
+                "CompilerArgs": "-o a.out source_file.c"
             })
         }).then(v => v.json());
     }
