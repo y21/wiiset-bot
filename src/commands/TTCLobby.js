@@ -1,3 +1,5 @@
+const { stateToString } = require("../rest/TTCRest");
+
 module.exports = {
     name: "ttc lobby",
     guildOnly: false,
@@ -23,12 +25,23 @@ module.exports = {
                         value: `<@${data.creator.userid}>`
                     },
                     {
+                        name: "Players",
+                        value: data.players
+                            .sort((a, b) => b.total_rating - a.total_rating)
+                            .slice(0, 10)
+                            .map(v => `<@${v.userid}> (Rating: ${v.total_rating})`).join("\n") || "-"
+                    },
+                    {
                         name: "Round",
-                        value: data.round
+                        value: data.round || "-"
                     },
                     {
                         name: "Current Track",
                         value: data.currentTrack.name || "-"
+                    },
+                    {
+                        name: "State",
+                        value: stateToString(data.state) || "-"
                     }
                 ]
             }
