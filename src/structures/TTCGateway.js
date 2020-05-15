@@ -7,19 +7,28 @@ const AsciiTable = require("ascii-table");
 const Version = "1.0-beta";
 
 const Events = {
-    NewTrack: 0x1,
-    GameStart: 0x2,
-    RoundEnd: 0x4,
-    LobbyEnd: 0x8
+    ThresholdReached: 0x1,
+    NewTrack: 0x2,
+    GameStart: 0x4,
+    RoundEnd: 0x8,
+    LobbyEnd: 0x10
 };
 
 const LobbyStates = {
     Waiting: 0x1,
-    MapPick: 0x2,
-    Preparation: 0x4,
-    Ingame: 0x8,
-    Upload: 0x10
+    ThresholdReached: 0x2,
+    MapPick: 0x4,
+    Preparation: 0x8,
+    Ingame: 0x10,
+    Upload: 0x20
 };
+
+const Medals = ["🥇", "🥈", "🥉"];
+
+function calculateGainForPlacement(placement, totalPlayers) {
+    // gain := int((totalPlayers * 35) / placement)
+    return (totalPlayers * 35) / placement;
+}
 
 module.exports = class TTCGateway {
     constructor(bot) {
@@ -45,7 +54,7 @@ module.exports = class TTCGateway {
             this.ready = false;
         };
 
-        this.connection.onmessage = ({ data: event }) => {
+        this.connection.onmessage = async ({ data: event }) => {
             // TODO: clean this mess up
             let message;
             try {
@@ -62,6 +71,20 @@ module.exports = class TTCGateway {
                                 title: `TT-Competition ${Version}`,
                                 color: 0x2ecc71,
                                 description: `Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on ${message.data.message}`,
+                                footer: {
+                                    text: `Lobby ID: ${message.data.lobbyID}`
+                                }
+                            }
+                        });
+                    }
+                break;
+                case Events.ThresholdReached:
+                    for (const c of message.recipients) {
+                        this.bot.client.rest.createMessage(c, {
+                            embed: {
+                                title: `TT-Competition ${Version}`,
+                                color: 0x2ecc71,
+                                description: "Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
                                 footer: {
                                     text: `Lobby ID: ${message.data.lobbyID}`
                                 }
@@ -96,7 +119,7 @@ module.exports = class TTCGateway {
 
                     for (let i = 0; i < filteredGhosts.length; ++i) {
                         const tag = await this.bot.rest.fetchUser(filteredGhosts[i].userid).then(v => v.tag);
-                        table.addRow(i + 1, tag, filteredGhosts[i].ghost.finishTimeSimple);
+                        table.addRow(Medals[i] || i + 1, tag, filteredGhosts[i].ghost.finishTimeSimple);
                     }
 
                     const embed = {
@@ -104,7 +127,7 @@ module.exports = class TTCGateway {
                         color: 0x2ecc71,
                         fields: [
                             {
-                                name: "Top ghosts",
+                                name: "Top ghosts for this round",
                                 value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```"
                             },
                             {
@@ -138,7 +161,4 @@ module.exports = class TTCGateway {
     }
 }
 
-function calculateGainForPlacement(placement, totalPlayers) {
-    // gain := int((totalPlayers * 35) / placement)
-    return (totalPlayers * 35) / placement;
-}
+module.exports.LobbyStates = LobbyStates;
