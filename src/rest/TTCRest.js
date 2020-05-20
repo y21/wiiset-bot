@@ -4,10 +4,28 @@ const { LobbyStates } = require("../structures/TTCGateway");
 const LobbyOptions = {
     RT: 0x1,
     CT: 0x2,
-    AT: 0x1 | 0x2,
+    AT: 0x4,
     "150cc": 0x8,
     "200cc": 0x10,
-    NoElimination: 0x20
+    NoElimination: 0x20,
+    Private: 0x40,
+
+    // Aliases
+    get AllTracks() {
+        return this.AT;
+    },
+    get RTs() {
+        return this.RT;
+    },
+    get CTs() {
+        return this.CT;
+    },
+    get NoElim() {
+        return this.NoElimination;
+    },
+    get Password() {
+        return this.Private;
+    }
 };
 
 /**
@@ -34,6 +52,9 @@ function formatLobbyOptions(options) {
 
     if (hasOption(options, LobbyOptions.NoElimination))
         allOptions.push("No Elimination");
+
+    if (hasOption(options, LobbyOptions.Private))
+        allOptions.push("Private");
     
 
     return allOptions.join(", ");
@@ -99,9 +120,9 @@ module.exports = class TTCRest {
     }
 
     createLobby(userId, channelId, options) {
-        // Default to RTs
-        if ((options & LobbyOptions.RT) !== LobbyOptions.RT && (options & LobbyOptions.CT) !== LobbyOptions.CT)
-            options |= LobbyOptions.RT;
+        // Default to ATs
+        if (!hasOption(options, LobbyOptions.RT) && !hasOption(options, LobbyOptions.CT))
+            options |= LobbyOptions.AT;
         
         return fetch(`${this.host}/api/v1/lobbies`, {
             method: "POST",
@@ -125,12 +146,13 @@ module.exports = class TTCRest {
         return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`);
     }
 
-    addPlayerToLobby(lobbyId, userId, channelId) {
+    addPlayerToLobby(lobbyId, userId, channelId, password) {
         return fetch(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
             method: "POST",
             body: JSON.stringify({
                 userid: userId,
-                channel: channelId
+                channel: channelId,
+                password: parseInt(password, 10)
             })
         });
     }
@@ -159,3 +181,4 @@ module.exports = class TTCRest {
 module.exports.LobbyOptions = LobbyOptions;
 module.exports.formatLobbyOptions = formatLobbyOptions;
 module.exports.stateToString = stateToString;
+module.exports.hasOption = hasOption;
