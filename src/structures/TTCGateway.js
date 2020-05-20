@@ -118,7 +118,7 @@ module.exports = class TTCGateway {
                         .filter(v => v.ghost.timeSeconds > 0 && v.ghost.timeSeconds < 360); // > 0 seconds and < 6 minutes
 
                     for (let i = 0; i < filteredGhosts.length; ++i) {
-                        const tag = await this.bot.rest.fetchUser(filteredGhosts[i].userid).then(v => v.tag);
+                        const tag = await this.bot.client.rest.fetchUser(filteredGhosts[i].userid).then(v => v.username);
                         table.addRow(Medals[i] || i + 1, tag, filteredGhosts[i].ghost.finishTimeSimple);
                     }
 
