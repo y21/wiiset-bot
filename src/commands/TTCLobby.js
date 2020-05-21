@@ -1,9 +1,9 @@
-const { stateToString } = require("../rest/TTCRest");
+const { stateToString, formatOptions } = require("../structures/ttc/Lobby");
 
 module.exports = {
     name: "ttc lobby",
     guildOnly: false,
-    ownerOnly: true,
+    ownerOnly: false,
     run: async (context, args, rest) => {
         const lobby = await rest.ttc.getLobby(args[1]);
         if (lobby.status !== 200) {
@@ -42,6 +42,10 @@ module.exports = {
                     {
                         name: "State",
                         value: stateToString(data.state) || "-"
+                    },
+                    {
+                        name: "Options",
+                        value: formatOptions(data.options) || "-"
                     }
                 ]
             }

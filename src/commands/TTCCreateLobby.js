@@ -1,7 +1,7 @@
-const { LobbyOptions, formatLobbyOptions, hasOption } = require("../rest/TTCRest");
+const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption } = require("../structures/ttc/Lobby");
 
 module.exports = {
-    name: "ttc createlobby",
+    name: "ttc create",
     guildOnly: false,
     ownerOnly: true,
     metadata: {

@@ -6,7 +6,7 @@ const Database = require("./structures/Database");
 const Rest = require("./rest/RestClient");
 const TrackHelper = require("./structures/TrackHelper");
 const { Paginator } = require("detritus-pagination");
-const TTCGateway = require("./structures/TTCGateway");
+const TTCGateway = require("./structures/ttc/Gateway");
 
 class Bot {
     constructor(config, database) {

@@ -1,8 +1,8 @@
 const PersistentWebSocket = require("pws");
 const WebSocket = require("ws");
-const { ttcWS } = require("../../configs/apis");
-const { ttcToken } = require("../../configs/bot");
-const Logger = require("./Logger");
+const { ttcWS } = require("../../../configs/apis");
+const { ttcToken } = require("../../../configs/bot");
+const Logger = require("../Logger");
 const AsciiTable = require("ascii-table");
 const Version = "1.0-beta";
 
@@ -25,11 +25,6 @@ const LobbyStates = {
 
 const Medals = ["🥇", "🥈", "🥉"];
 
-function calculateGainForPlacement(placement, totalPlayers) {
-    // gain := int((totalPlayers * 35) / placement)
-    return (totalPlayers * 35) / placement;
-}
-
 module.exports = class TTCGateway {
     constructor(bot) {
         this.bot = bot;
@@ -50,7 +45,6 @@ module.exports = class TTCGateway {
         };
 
         this.connection.onclose = () => {
-            console.log("closed");
             this.ready = false;
         };
 
