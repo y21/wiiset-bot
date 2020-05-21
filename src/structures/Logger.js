@@ -1,10 +1,8 @@
-const chalk = require("chalk");
-
 module.exports = {
     error: (text) => {
-        console.log(chalk.red(text));
+        console.log("\x1b[31m%s\x1b[0m", text);
     },
     info: (text) => {
-        console.log(chalk.blueBright(text));
+        console.log("\x1b[34m%s\x1b[0m", text);
     }
 };
