@@ -23,7 +23,14 @@ const LobbyStates = {
     Upload: 0x20
 };
 
-const Medals = ["🥇", "🥈", "🥉"];
+const Medals = [ "🥇", "🥈", "🥉" ];
+
+const Texts = {
+    PreparationPhase: "ℹ️ Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on {track}",
+    ThresholdPhase: "⏱️ Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
+    IngamePhase: "🏎️ Ingame phase has started! Make sure to upload a ghost to the ghost database on the selected track within the next 15 minutes.",
+    LobbyEnd: "✅ Lobby has ended! Winner: <@{winner}> ({rating}R)"
+};
 
 module.exports = class TTCGateway {
     constructor(bot) {
@@ -32,24 +39,21 @@ module.exports = class TTCGateway {
         this.ready = false;
     }
 
+    identify() {
+        this.connection.send(JSON.stringify({
+            t: "IDENTIFY",
+            d: { key: ttcToken }
+        }));
+    }
+
     init() {
-        this.connection.onopen = () => {
-            console.log("Sent IDENTIFY call");
-            this.ready = true;
-            this.connection.send(JSON.stringify({
-                t: "IDENTIFY",
-                d: {
-                    key: ttcToken
-                }
-            }));
-        };
+        this.connection.onopen = this.identify;
 
         this.connection.onclose = () => {
             this.ready = false;
         };
 
         this.connection.onmessage = async ({ data: event }) => {
-            // TODO: clean this mess up
             let message;
             try {
                 message = JSON.parse(event);
@@ -57,47 +61,36 @@ module.exports = class TTCGateway {
                 return Logger.error(e.message);
             }
 
+            const messageData = {
+                embed: {
+                    title: `TT-Competition ${Version}`,
+                    color: 0xff7979,
+                    footer: {
+                        text: `Lobby ID: ${message.data.lobbyID}`
+                    }
+                }
+            }
+
             switch(message.type) {
                 case Events.NewTrack:
+                    messageData.embed.description = Texts.PreparationPhase.replace("{track}", message.data.message);
+
                     for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, {
-                            embed: {
-                                title: `TT-Competition ${Version}`,
-                                color: 0x2ecc71,
-                                description: `Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on ${message.data.message}`,
-                                footer: {
-                                    text: `Lobby ID: ${message.data.lobbyID}`
-                                }
-                            }
-                        });
+                        this.bot.client.rest.createMessage(c, messageData);
                     }
                 break;
                 case Events.ThresholdReached:
+                    messageData.embed.description = Texts.ThresholdPhase;
+
                     for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, {
-                            embed: {
-                                title: `TT-Competition ${Version}`,
-                                color: 0x2ecc71,
-                                description: "Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
-                                footer: {
-                                    text: `Lobby ID: ${message.data.lobbyID}`
-                                }
-                            }
-                        });
+                        this.bot.client.rest.createMessage(c, messageData);
                     }
                 break;
                 case Events.GameStart:
+                    messageData.embed.description = Texts.IngamePhase;
+
                     for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, {
-                            embed: {
-                                title: `TT-Competition ${Version}`,
-                                color: 0x2ecc71,
-                                description: "Ingame phase has started! Make sure to upload a ghost to the ghost database on the selected track within the next 15 minutes.",
-                                footer: {
-                                    text: `Lobby ID: ${message.data.lobbyID}`
-                                }
-                            }
-                        });
+                        this.bot.client.rest.createMessage(c, messageData);
                     }
                 break;
                 case Events.RoundEnd:
@@ -116,38 +109,30 @@ module.exports = class TTCGateway {
                         table.addRow(Medals[i] || i + 1, tag, filteredGhosts[i].ghost.finishTimeSimple);
                     }
 
-                    const embed = {
-                        title: `TT-Competition ${Version}`,
-                        color: 0x2ecc71,
-                        fields: [
-                            {
-                                name: "Top ghosts for this round",
-                                value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```"
-                            },
-                            {
-                                name: "Eliminated",
-                                value: message.data.eliminated.map((v, i) => `<@${v.userid}> (${v.total_rating + v.base_rating}R)`).join("\n") || "No players have been eliminated"
-                            }
-                        ]
-                    };
+                    messageData.embed.fields = [
+                        {
+                            name: "Top ghosts for this round",
+                            value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```"
+                        },
+                        {
+                            name: "Eliminated",
+                            value: message.data.eliminated
+                                .map((v) => `<@${v.userid}> (${v.total_rating + v.base_rating}R)`)
+                                .join("\n") || "No players have been eliminated"
+                        }
+                    ];
 
                     for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, { embed });
+                        this.bot.client.rest.createMessage(c, messageData);
                     }
                 break;
                 case Events.LobbyEnd:
+                    messageData.embed.description = Texts.LobbyEnd
+                        .replace("{winner}", message.data.winner.userid)
+                        .replace("{rating}", message.data.winner.total_rating + message.data.winner.base_rating);
+
                     for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, {
-                            embed: {
-                                title: `TT-Competition ${Version}`,
-                                color: 0x2ecc71,
-                                description: `Lobby has ended! Winner: <@${message.data.winner.userid}> (${message.data.winner.total_rating + message.data.winner.base_rating}R)`,
-                                color: 0x2ecc71,
-                                footer: {
-                                    text: `Lobby ID: ${message.data.lobbyID}`
-                                }
-                            }
-                        });
+                        this.bot.client.rest.createMessage(c, messageData);
                     }
                 break;
             }
