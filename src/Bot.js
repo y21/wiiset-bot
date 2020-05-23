@@ -35,8 +35,9 @@ class Bot {
         this.rest = new Rest();
         this.trackHelper = new TrackHelper(this.rest.ctgp);
         this.paginator = new Paginator(this.client.client, {
-            maxTime: 180000,
-            pageLoop: true
+            maxTime: 300000,
+            pageLoop: true,
+            pageNumber: true
         });
         this.ttcGateway = new TTCGateway(this);
         this.ttcGateway.init();
