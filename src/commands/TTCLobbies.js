@@ -22,7 +22,7 @@ module.exports = {
                     value: `State: ${stateToString(v.state)}\nPlayers: ${v.players.length} | Round: ${v.round}\nTier: ${TierToString(GetTier(v.creator.total_rating))}`
                 })),
                 footer: {
-                    text: "Join a lobby using w.ttc join <id> or get more details about a lobby using w.ttc lobby <id>"
+                    text: "w.ttc join <id> | w.ttc lobby <id>"
                 }
             }
         }];
