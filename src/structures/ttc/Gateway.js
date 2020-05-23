@@ -47,7 +47,7 @@ module.exports = class TTCGateway {
     }
 
     init() {
-        this.connection.onopen = this.identify;
+        this.connection.onopen = () => this.identify();
 
         this.connection.onclose = () => {
             this.ready = false;
@@ -141,3 +141,4 @@ module.exports = class TTCGateway {
 }
 
 module.exports.LobbyStates = LobbyStates;
+module.exports.Version = Version;
