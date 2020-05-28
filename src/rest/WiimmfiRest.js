@@ -25,7 +25,7 @@ class WiimmfiRest {
     }
 
     getMKWRoomStats(id) {
-        return fetch(`${WiimmfiRest.originHost}/mkw?m=json`)
+        return fetch(`${WiimmfiRest.originHost}/stats/mkwx/?m=json`)
             .then(v => v.json())
             .then(v => {
                 const targetRoom = v.find(r => r.room_id === id || r.room_name === id);
