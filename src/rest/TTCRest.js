@@ -31,7 +31,7 @@ module.exports = class TTCRest {
         return this.request(`${this.host}/api/v1/users`);
     }
 
-    createLobby(userId, channelId, options) {
+    createLobby(userId, channelId, options, aiDiffs) {
         // Default to ATs
         if (!hasOption(options, LobbyOptions.RT) && !hasOption(options, LobbyOptions.CT))
             options |= LobbyOptions.AT;
@@ -41,7 +41,8 @@ module.exports = class TTCRest {
             body: JSON.stringify({
                 userid: userId,
                 channel: channelId,
-                options
+                options,
+                aiDiffs
             })
         });
     }
