@@ -29,14 +29,15 @@ module.exports = class Lobby {
 
     static get Options() {
         return {
-            RT: 0x1,
-            CT: 0x2,
-            AT: 0x4,
-            "150cc": 0x8,
-            "200cc": 0x10,
-            NoElimination: 0x20,
-            Private: 0x40,
-            Ranked: 0x80,
+            RT: 1,
+            CT: 1 << 1,
+            AT: 1 << 2,
+            "150cc": 1 << 3,
+            "200cc": 1 << 4,
+            NoElimination: 1 << 5,
+            Private: 1 << 6,
+            Ranked: 1 << 7,
+            Bots: 1 << 8,
 
             // Aliases
             get AllTracks() {
@@ -55,6 +56,10 @@ module.exports = class Lobby {
                 return this.Private;
             }
         }
+    }
+
+    static get BotsLimit() {
+        return 1 << 3;
     }
 
     static formatOptions(options) {
