@@ -1,4 +1,13 @@
-const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption } = require("../structures/ttc/Lobby");
+const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit } = require("../structures/ttc/Lobby");
+const { AiDifficulty } = require("../structures/ttc/User");
+
+const Reactions = {
+    EASY: "🟢",
+    MEDIUM: "🟠",
+    HARD: "🔴",
+    EXPERT: "⚪",
+    STOP: "⏹️"
+};
 
 module.exports = {
     name: "ttc create",
@@ -32,37 +41,105 @@ module.exports = {
             .map(v => LobbyOptions[v])
             .reduce((a, b) => a | b);
 
-        const data = await rest.ttc.createLobby(context.userId, context.channelId, options);
-        if (data.status !== 200) {
-            throw new Error(await data.text());
+
+        if (hasOption(options, LobbyOptions.Bots)) {
+            const botDiffs = [];
+
+            const response = await context.reply(buildCPUMessage(0));
+
+            const paginator = await context.paginator.createReactionPaginator({
+                message: context.message,
+                commandMessage: response,
+                reactions: Reactions
+            });
+            
+            paginator.on("raw", (data) => {
+                const { emoji } = data;
+                switch (emoji.name) {
+                    case Reactions.EASY:
+                        botDiffs.push(AiDifficulty.EASY);
+                        break;
+                    case Reactions.MEDIUM:
+                        botDiffs.push(AiDifficulty.MEDIUM);
+                        break;
+                    case Reactions.HARD:
+                        botDiffs.push(AiDifficulty.HARD);
+                        break;
+                    case Reactions.EXPERT:
+                        botDiffs.push(AiDifficulty.EXPERT);
+                        break;
+                    case Reactions.STOP:
+                        createLobby(context, rest, options, botDiffs, response);
+                        return;
+                }
+
+                if (botDiffs.length >= BotsLimit) {
+                    paginator.stop();
+                    createLobby(context, rest, options, botDiffs, response);
+                    return;
+                }
+                paginator.commandMessage.edit(buildCPUMessage(botDiffs.length));
+            });
+
+            return;
         }
 
-        const lobby = await data.json();
+        await createLobby(context, rest, options, []);
 
-        // Attempt to send password to message author
-        if (hasOption(lobby.options, LobbyOptions.Private)) {
-            try {
-                await context.message.author.createMessage(`🔒 Password for lobby: __${lobby.password}__. This is required for people to join this lobby because it has been marked as **private**.`)
-            } catch {
-                await rest.ttc.removePlayerFromLobby(lobby.id, context.userId, context.channelId);
-                return context.reply(`<@${context.userId}> could not send the lobby password in direct messages. Please enable \`Allow direct messages from server members\`. https://i.imgur.com/7N0zBK0.gif`);
-            }
-        }
-
-        return [{
-            embed: {
-                color: 0x2ecc71,
-                description: "Successfully created lobby!",
-                fields: [{
-                        name: "Lobby ID",
-                        value: lobby.id
-                    },
-                    {
-                        name: "Lobby Options",
-                        value: formatLobbyOptions(lobby.options) || "-"
-                    }
-                ]
-            }
-        }]
+        
     }
 };
+
+function buildCPUMessage(index) {
+    return {
+        embed: {
+            color: 0x2ecc71,
+            description: `React with one of the emojis below to set the difficulty for CPU #${index + 1}\n` +
+                Object.entries(Reactions).map(([k, v]) => v + " " + k).join("\n")
+        }
+    };
+}
+
+async function createLobby(context, rest, options, aiDiffs, response) {
+    const data = await rest.ttc.createLobby(context.userId, context.channelId, options, aiDiffs);
+    if (data.status !== 200) {
+        throw new Error(await data.text());
+    }
+    
+    const lobby = await data.json();
+    await sendOrEditLobbyMessage(context, lobby, response);
+}
+
+async function sendOrEditLobbyMessage(context, rest, lobby, response) {
+    // Attempt to send password to message author
+    if (hasOption(lobby.options, LobbyOptions.Private)) {
+        try {
+            await context.message.author.createMessage(`🔒 Password for lobby: __${lobby.password}__. This is required for people to join this lobby because it has been marked as **private**.`)
+        } catch {
+            await rest.ttc.removePlayerFromLobby(lobby.id, context.userId, context.channelId);
+            return context.reply(`<@${context.userId}> could not send the lobby password in direct messages. Please enable \`Allow direct messages from server members\`. https://i.imgur.com/7N0zBK0.gif`);
+        }
+    }
+
+    const messageData = {
+        embed: {
+            color: 0x2ecc71,
+            description: "Successfully created lobby!",
+            fields: [{
+                    name: "Lobby ID",
+                    value: lobby.id
+                },
+                {
+                    name: "Lobby Options",
+                    value: formatLobbyOptions(lobby.options) || "-"
+                }
+            ]
+        }
+    };
+
+    if (response) {
+        await response.edit(messageData);
+    } else {
+        await context.reply(messagedata);
+    }
+}
