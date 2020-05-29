@@ -12,4 +12,13 @@ module.exports = class User {
     get rating() {
         return this.baseRating + this.totalRating;
     }
+
+    static get AiDifficulty() {
+        return {
+            EASY: 1,
+            MEDIUM: 2,
+            HARD: 3,
+            EXPERT: 4
+        };
+    }
 }
