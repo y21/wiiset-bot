@@ -20,11 +20,11 @@ module.exports = {
                     },
                     {
                         name: "Highest VR",
-                        value: req.highestVR ? `${req.highestVR.names[0]} (${req.highestVR.ev} VR)` : "-"
+                        value: req.highestVR ? `${req.highestVR.name[0]} (${req.highestVR.ev} VR)` : "-"
                     },
                     {
                         name: "Lowest VR",
-                        value: req.lowestVR ? `${req.lowestVR.names[0]} (${req.lowestVR.ev} VR)` : "-"
+                        value: req.lowestVR ? `${req.lowestVR.name[0]} (${req.lowestVR.ev} VR)` : "-"
                     }
                 ]
             }
