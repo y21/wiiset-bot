@@ -6,11 +6,6 @@ module.exports = {
     ownerOnly: false,
     run: async (context, args, rest) => {
         const lobby = await rest.ttc.getLobby(args[1]);
-        if (lobby.status !== 200) {
-            throw new Error(await lobby.text());
-        }
-
-        const data = await lobby.json();
 
         return [{
             embed: {
@@ -18,34 +13,34 @@ module.exports = {
                 fields: [
                     {
                         name: "ID",
-                        value: data.id || "?"
+                        value: lobby.id || "?"
                     },
                     {
                         name: "Creator",
-                        value: `<@${data.creator.userid}>`
+                        value: `<@${lobby.creator.id}>`
                     },
                     {
                         name: "Players",
-                        value: data.players
-                            .sort((a, b) => b.total_rating - a.total_rating)
+                        value: lobby.players
+                            .sort((a, b) => b.rating - a.rating)
                             .slice(0, 10)
-                            .map(v => `<@${v.userid}> (Rating: ${v.total_rating})`).join("\n") || "-"
+                            .map(v => `<@${v.id}> (Rating: ${v.rating})`).join("\n") || "-"
                     },
                     {
                         name: "Round",
-                        value: data.round || "-"
+                        value: lobby.round || "-"
                     },
                     {
                         name: "Current Track",
-                        value: data.currentTrack.name || "-"
+                        value: (lobby.currentTrack || {}).name || "-"
                     },
                     {
                         name: "State",
-                        value: stateToString(data.state) || "-"
+                        value: stateToString(lobby.state) || "-"
                     },
                     {
                         name: "Options",
-                        value: formatOptions(data.options) || "-"
+                        value: formatOptions(lobby.options) || "-"
                     }
                 ]
             }

@@ -6,7 +6,7 @@ const Reactions = {
     MEDIUM: "🟠",
     HARD: "🔴",
     EXPERT: "⚪",
-    STOP: "⏹️"
+    STOP: "⏹"
 };
 
 module.exports = {
@@ -23,23 +23,26 @@ module.exports = {
     },
     run: async function (context, args, rest) {
         if (args.length < 2) {
-            // Yeah I know, this is ugly
-            return context.reply("Invalid lobby options. Available options:\n" +
-                Object.entries(Object.getOwnPropertyDescriptors(LobbyOptions))
-                    .filter(([, desc]) => !desc.get)
-                    .map(v => `- ${v[0]}`)
-                    .join("\n") +
-                "\nExamples: \n" +
+            const options = Object.keys(LobbyOptions);
+
+            return context.reply("Invalid lobby options.`\nAvailable options:\n" + 
+                options.map(v => `- ${v}`).join("\n") +
+                "\nExamples:\n" +
                 this.metadata.examples.map(([cmd, expl]) => `\`${cmd}\` => ${expl}`).join("\n"));
         }
 
         // Parse options
-        const options = args.slice(1)
-            .join(" ")
-            .split(/, */g)
-            .filter(v => LobbyOptions.hasOwnProperty(v)) // To prevent access to 'constructor'
-            .map(v => LobbyOptions[v])
-            .reduce((a, b) => a | b);
+        let options = args.slice(1)
+                .join(" ")
+                .split(/, */g)
+                .filter(v => LobbyOptions.hasOwnProperty(v)) // To prevent access to 'constructor', 'prototype', ...
+                .map(v => LobbyOptions[v]);
+            
+        if (options.length < 1) {
+            return context.reply("Option(s) not found. Run command without arguments to get a list of available options.");
+        }
+        
+        options = options.reduce((a, b) => a | b);
 
 
         if (hasOption(options, LobbyOptions.Bots)) {
@@ -102,12 +105,8 @@ function buildCPUMessage(index) {
 
 async function createLobby(context, rest, options, aiDiffs, response) {
     const data = await rest.ttc.createLobby(context.userId, context.channelId, options, aiDiffs);
-    if (data.status !== 200) {
-        throw new Error(await data.text());
-    }
     
-    const lobby = await data.json();
-    await sendOrEditLobbyMessage(context, lobby, response);
+    await sendOrEditLobbyMessage(context, rest, data, response);
 }
 
 async function sendOrEditLobbyMessage(context, rest, lobby, response) {
@@ -140,6 +139,6 @@ async function sendOrEditLobbyMessage(context, rest, lobby, response) {
     if (response) {
         await response.edit(messageData);
     } else {
-        await context.reply(messagedata);
+        await context.reply(messageData);
     }
 }
