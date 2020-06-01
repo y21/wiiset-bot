@@ -29,7 +29,7 @@ const Texts = {
     PreparationPhase: "ℹ️ Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on {track}",
     ThresholdPhase: "⏱️ Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
     IngamePhase: "🏎️ Ingame phase has started! Make sure to upload a ghost to the ghost database on the selected track within the next 15 minutes.",
-    LobbyEnd: "✅ Lobby has ended! Winner: <@{winner}> ({rating}R)"
+    LobbyEnd: "✅ Lobby has ended! Winner: {winner} ({rating}R)"
 };
 
 module.exports = class TTCGateway {
@@ -59,6 +59,10 @@ module.exports = class TTCGateway {
                 message = JSON.parse(event);
             } catch(e) {
                 return Logger.error(e.message);
+            }
+
+            if (message.recipients) {
+                message.recipients = message.recipients.filter(r => r !== "");
             }
 
             const messageData = {
@@ -98,15 +102,22 @@ module.exports = class TTCGateway {
                         .removeBorder()
                         .setHeading("#", "Player", "Time");
 
-
                     const filteredGhosts = message.data.remainingPlayers
                         .concat(message.data.eliminated)
                         .sort((a, b) => a.ghost.timeSeconds - b.ghost.timeSeconds)
                         .filter(v => v.ghost.timeSeconds > 0 && v.ghost.timeSeconds < 360); // > 0 seconds and < 6 minutes
 
                     for (let i = 0; i < filteredGhosts.length; ++i) {
-                        const tag = await this.bot.client.rest.fetchUser(filteredGhosts[i].userid).then(v => v.username);
-                        table.addRow(Medals[i] || i + 1, tag, filteredGhosts[i].ghost.finishTimeSimple);
+                        let tag, finishTime;
+                        if (filteredGhosts[i].userid !== "") {
+                            tag = await this.bot.client.rest.fetchUser(filteredGhosts[i].userid).then(v => v.username);
+                            finishTime = filteredGhosts[i].ghost.FinishTimeSimple;
+                        } else {
+                            tag = "CPU";
+                            finishTime = timeSecondsToString(filteredGhosts[i].ghost.timeSeconds);
+                        }
+
+                        table.addRow(Medals[i] || i + 1, tag, finishTime);
                     }
 
                     messageData.embed.fields = [
@@ -117,7 +128,7 @@ module.exports = class TTCGateway {
                         {
                             name: "Eliminated",
                             value: message.data.eliminated
-                                .map((v) => `<@${v.userid}> (${v.total_rating + v.base_rating}R)`)
+                                .map((v) => `${v.userid === "" ? "CPU" : `<@${v.userid}>`} (${v.total_rating + v.base_rating}R)`)
                                 .join("\n") || "No players have been eliminated"
                         }
                     ];
@@ -127,8 +138,9 @@ module.exports = class TTCGateway {
                     }
                 break;
                 case Events.LobbyEnd:
+                    const { winner } = message.data;
                     messageData.embed.description = Texts.LobbyEnd
-                        .replace("{winner}", message.data.winner.userid)
+                        .replace("{winner}", winner.userid === "" ? "CPU" : "<@" + message.data.winner.userid + ">")
                         .replace("{rating}", message.data.winner.total_rating + message.data.winner.base_rating);
 
                     for (const c of message.recipients) {
@@ -138,6 +150,13 @@ module.exports = class TTCGateway {
             }
         };
     }
+}
+
+function timeSecondsToString(time) {
+    const min = time / 60 | 0;
+    const sec = time % 60;
+    const ms = sec - (sec | 0);
+    return String(min).padStart(2, "0") + ":" + String(sec | 0).padStart(2, 0) + (String(ms).slice(1, 5) || ".000");
 }
 
 module.exports.LobbyStates = LobbyStates;
