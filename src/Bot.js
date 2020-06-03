@@ -114,6 +114,7 @@ class Bot {
                     duration: 1000,
                     type: "user"
                 },
+                metadata: cmd.metadata,
                 onRatelimit,
                 onBefore: onBefore.bind(null, cmd),
                 onCancel,
