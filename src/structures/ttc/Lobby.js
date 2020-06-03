@@ -56,42 +56,42 @@ module.exports = class Lobby {
         return Lobby.stateToString(this.state);
     }
 
-    static formatOptions(options) {
+    static formatOptions(checkOptions) {
         const allOptions = [];
     
-        if (Lobby.hasOption(options, options["150cc"])) {
+        if (Lobby.hasOption(checkOptions, options["150cc"])) {
             allOptions.push("150cc");
         }
     
-        if (Lobby.hasOption(options, options["200cc"])) {
+        if (Lobby.hasOption(checkOptions, options["200cc"])) {
             allOptions.push("200cc");
         }
     
-        if (Lobby.hasOption(options, options.AT)) {
+        if (Lobby.hasOption(checkOptions, options.AT)) {
             allOptions.push("All Tracks");
-        } else if (Lobby.hasOption(options, options.RT)) {
+        } else if (Lobby.hasOption(checkOptions, options.RT)) {
             allOptions.push("RTs");
-        } else if (Lobby.hasOption(options, options.CT)) {
+        } else if (Lobby.hasOption(checkOptions, options.CT)) {
             allOptions.push("CTs");
         }
     
-        if (Lobby.hasOption(options, options.NoElimination)) {
+        if (Lobby.hasOption(checkOptions, options.NoElimination)) {
             allOptions.push("No Elimination");
         }
     
-        if (Lobby.hasOption(options, options.Private)) {
+        if (Lobby.hasOption(checkOptions, options.Private)) {
             allOptions.push("Private");
         }
     
-        if (Lobby.hasOption(options, options.Ranked)) {
+        if (Lobby.hasOption(checkOptions, options.Ranked)) {
             allOptions.push("Ranked");
         }
         
         return allOptions.join(", ");
     }
 
-    static hasOption(options, option) {
-        return (options & option) === option;
+    static hasOption(checkOptions, option) {
+        return (checkOptions & option) === option;
     }
 
     static stateToString(state) {
