@@ -43,7 +43,7 @@ class WiimmfiRest {
                 };
                 stats.highestVR = stats.players[0];
                 stats.lowestVR = stats.players.slice(-1)[0];
-                stats.averageVR = stats.players.map(v => v.ev).reduce((a, b) => a + b) / stats.players.length;
+                stats.averageVR = stats.players.map(player => player.ev).reduce((a, b) => a + b) / stats.players.length;
                 return stats;
             });
     }
