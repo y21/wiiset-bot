@@ -1,6 +1,35 @@
 const User = require("./User");
 const { LobbyStates } = require("./Gateway");
 
+const options = {
+    RT: 1,
+    CT: 1 << 1,
+    AT: (1 | 1 << 1),
+    "150cc": 1 << 3,
+    "200cc": 1 << 4,
+    NoElimination: 1 << 5,
+    Private: 1 << 6,
+    Ranked: 1 << 7,
+    Bots: 1 << 8,
+
+    // Aliases
+    get AllTracks() {
+        return this.AT;
+    },
+    get RTs() {
+        return this.RT;
+    },
+    get CTs() {
+        return this.CT;
+    },
+    get NoElim() {
+        return this.NoElimination;
+    },
+    get Password() {
+        return this.Private;
+    }
+};
+
 module.exports = class Lobby {
     constructor(data) {
         this.id = data.id;
@@ -27,69 +56,34 @@ module.exports = class Lobby {
         return Lobby.stateToString(this.state);
     }
 
-    static get Options() {
-        return {
-            RT: 1,
-            CT: 1 << 1,
-            AT: (1 | 1 << 1),
-            "150cc": 1 << 3,
-            "200cc": 1 << 4,
-            NoElimination: 1 << 5,
-            Private: 1 << 6,
-            Ranked: 1 << 7,
-            Bots: 1 << 8,
-
-            // Aliases
-            get AllTracks() {
-                return this.AT;
-            },
-            get RTs() {
-                return this.RT;
-            },
-            get CTs() {
-                return this.CT;
-            },
-            get NoElim() {
-                return this.NoElimination;
-            },
-            get Password() {
-                return this.Private;
-            }
-        }
-    }
-
-    static get BotsLimit() {
-        return 1 << 3;
-    }
-
     static formatOptions(options) {
         const allOptions = [];
     
-        if (Lobby.hasOption(options, Lobby.Options["150cc"])) {
+        if (Lobby.hasOption(options, options["150cc"])) {
             allOptions.push("150cc");
         }
     
-        if (Lobby.hasOption(options, Lobby.Options["200cc"])) {
+        if (Lobby.hasOption(options, options["200cc"])) {
             allOptions.push("200cc");
         }
     
-        if (Lobby.hasOption(options, Lobby.Options.AT)) {
+        if (Lobby.hasOption(options, options.AT)) {
             allOptions.push("All Tracks");
-        } else if (Lobby.hasOption(options, Lobby.Options.RT)) {
+        } else if (Lobby.hasOption(options, options.RT)) {
             allOptions.push("RTs");
-        } else if (Lobby.hasOption(options, Lobby.Options.CT)) {
+        } else if (Lobby.hasOption(options, options.CT)) {
             allOptions.push("CTs");
         }
     
-        if (Lobby.hasOption(options, Lobby.Options.NoElimination)) {
+        if (Lobby.hasOption(options, options.NoElimination)) {
             allOptions.push("No Elimination");
         }
     
-        if (Lobby.hasOption(options, Lobby.Options.Private)) {
+        if (Lobby.hasOption(options, options.Private)) {
             allOptions.push("Private");
         }
     
-        if (Lobby.hasOption(options, Lobby.Options.Ranked)) {
+        if (Lobby.hasOption(options, options.Ranked)) {
             allOptions.push("Ranked");
         }
         
@@ -117,3 +111,6 @@ module.exports = class Lobby {
         }
     }
 }
+
+module.exports.Options = options;
+module.exports.BotsLimit = 1 << 3;
