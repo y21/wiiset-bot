@@ -23,10 +23,10 @@ module.exports = {
     },
     run: async function (context, args, rest) {
         if (args.length < 2) {
-            const options = Object.keys(LobbyOptions);
+            const availableOptions = Object.keys(LobbyOptions);
 
             return context.reply("Invalid lobby options.`\nAvailable options:\n" + 
-                options.map(v => `- ${v}`).join("\n") +
+                availableOptions.map(v => `- ${v}`).join("\n") +
                 "\nExamples:\n" +
                 this.metadata.examples.map(([cmd, expl]) => `\`${cmd}\` => ${expl}`).join("\n"));
         }
