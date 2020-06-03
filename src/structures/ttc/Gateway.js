@@ -2,9 +2,11 @@ const PersistentWebSocket = require("pws");
 const WebSocket = require("ws");
 const { ttcWS } = require("../../../configs/apis");
 const { ttcToken } = require("../../../configs/bot");
+const User = require("./User");
 const Logger = require("../Logger");
 const AsciiTable = require("ascii-table");
 const Version = "1.0-beta";
+const { Regexes } = require("../Constants");
 
 const Events = {
     ThresholdReached: 0x1,
@@ -62,7 +64,7 @@ module.exports = class TTCGateway {
             }
 
             if (message.recipients) {
-                message.recipients = message.recipients.filter(r => r !== "");
+                message.recipients = message.recipients.filter(r => Regexes.Snowflake.test(r));
             }
 
             const messageData = {
@@ -107,14 +109,19 @@ module.exports = class TTCGateway {
                         .sort((a, b) => a.ghost.timeSeconds - b.ghost.timeSeconds)
                         .filter(v => v.ghost.timeSeconds > 0 && v.ghost.timeSeconds < 360); // > 0 seconds and < 6 minutes
 
+                        console.log(filteredGhosts);
+
                     for (let i = 0; i < filteredGhosts.length; ++i) {
+                        const player = filteredGhosts[i];
                         let tag, finishTime;
-                        if (filteredGhosts[i].userid !== "") {
-                            tag = await this.bot.client.rest.fetchUser(filteredGhosts[i].userid).then(v => v.username);
-                            finishTime = filteredGhosts[i].ghost.FinishTimeSimple;
+
+                        if (player.aiDiff === User.AiDifficulty.DISABLED) {
+                            tag = await this.bot.client.rest.fetchUser(player.userid).then(v => v.username);
+                            finishTime = player.ghost.FinishTimeSimple;
                         } else {
-                            tag = "CPU";
-                            finishTime = timeSecondsToString(filteredGhosts[i].ghost.timeSeconds);
+                            const { aiDiff } = player;
+                            tag = User.buildAIName(player.userid, aiDiff);
+                            finishTime = timeSecondsToString(player.ghost.timeSeconds);
                         }
 
                         table.addRow(Medals[i] || i + 1, tag, finishTime);
@@ -128,7 +135,7 @@ module.exports = class TTCGateway {
                         {
                             name: "Eliminated",
                             value: message.data.eliminated
-                                .map((v) => `${v.userid === "" ? "CPU" : `<@${v.userid}>`} (${v.total_rating + v.base_rating}R)`)
+                                .map((v) => `${v.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(v.userid, v.aiDiff) : `<@${v.userid}>`} (${v.total_rating + v.base_rating}R)`)
                                 .join("\n") || "No players have been eliminated"
                         }
                     ];
@@ -140,7 +147,7 @@ module.exports = class TTCGateway {
                 case Events.LobbyEnd:
                     const { winner } = message.data;
                     messageData.embed.description = Texts.LobbyEnd
-                        .replace("{winner}", winner.userid === "" ? "CPU" : "<@" + message.data.winner.userid + ">")
+                        .replace("{winner}", winner.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(winner.userid, winner.aiDiff) : "<@" + winner.userid + ">")
                         .replace("{rating}", message.data.winner.total_rating + message.data.winner.base_rating);
 
                     for (const c of message.recipients) {
