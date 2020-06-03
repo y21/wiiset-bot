@@ -8,7 +8,7 @@ module.exports = {
         description: "Displays lobby information"
     },
     run: async (context, args, rest) => {
-        const lobby = await rest.ttc.getLobby(args[1]);
+        const lobby = await rest.ttc.getLobby(args[0]);
 
         return [{
             embed: {

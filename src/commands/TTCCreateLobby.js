@@ -23,17 +23,17 @@ module.exports = {
         ]
     },
     run: async function (context, args, rest) {
-        if (args.length < 2) {
+        if (args.length < 1) {
             const availableOptions = Object.keys(LobbyOptions);
 
-            return context.reply("Invalid lobby options.`\nAvailable options:\n" + 
+            return context.reply("Invalid lobby options.\nAvailable options:\n" + 
                 availableOptions.map(v => `- ${v}`).join("\n") +
                 "\nExamples:\n" +
                 this.metadata.examples.map(([cmd, expl]) => `\`${cmd}\` => ${expl}`).join("\n"));
         }
 
         // Parse options
-        let options = args.slice(1)
+        let options = args
                 .join(" ")
                 .split(/, */g)
                 .filter(v => LobbyOptions.hasOwnProperty(v)) // To prevent access to 'constructor', 'prototype', ...
@@ -44,7 +44,6 @@ module.exports = {
         }
         
         options = options.reduce((a, b) => a | b);
-
 
         if (hasOption(options, LobbyOptions.Bots)) {
             const botDiffs = [];

@@ -6,7 +6,7 @@ module.exports = {
         description: "Register for TTC using your CTGP Profile ID"
     },
     run: async (context, args, rest) => {
-        const user = await rest.ttc.registerUser(context.userId, args[1]);
+        const user = await rest.ttc.registerUser(context.userId, args[0]);
 
         return [`✅ Successfully registered! (New rating: ${user.rating}).`];
     }
