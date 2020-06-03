@@ -12,9 +12,22 @@ class WiimmfiRest {
     }
 
     /* MKW */
-    getMKWUsers(limit = 10) {
-        return fetch(`${this.host}/mkw/users`)
+    getMKWUsers(room, limit = 10) {
+        return fetch(`${WiimmfiRest.originHost}/stats/mkw/?m=json`)
             .then(v => v.status === 200 ? v.json() : [])
+            .then(v => {
+                if (v.length === 0) return v;
+
+                const res = [];
+                for (let i = 0; i < v.length; ++i) {
+                    const cur = v[i];
+                    if (!Array.isArray(cur.members) || (room && cur.room_id != room && cur.room_name !== room)) continue;
+
+                    res.push(...cur.members);
+                }
+
+                return res;
+            })
             .then(v => limit === -1 ? v : v.slice(0, limit));
     }
 
