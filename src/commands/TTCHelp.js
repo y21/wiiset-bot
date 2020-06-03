@@ -96,8 +96,6 @@ module.exports = {
                 embed: {
                     title,
                     color,
-                    title: "TT-Competition 1.0-beta",
-                    color: 7649791,
                     description: "Every lobby has a state tied to it which presents the current phase so the bot can detect what it currently has to do at any time. When the last phase ends and there are no more players, the lobby ends.",
                     fields: [{
                             name: "Waiting",
