@@ -28,10 +28,12 @@ module.exports = {
             pages.push({
                 embed: {
                     title: "Help",
-                    description: context.commandClient.commands
+                    fields: context.commandClient.commands
                         .slice(i, i + 5)
-                        .map(v => context.commandClient.prefixes.custom.first() + v.name)
-                        .join("\n")
+                        .map((v) => ({ 
+                            name: context.commandClient.prefixes.custom.first() + v.name,
+                            value: v.metadata.description || "-"
+                        }))
                 }
             });
         }
