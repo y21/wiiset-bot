@@ -31,7 +31,7 @@ module.exports = class Lobby {
         return {
             RT: 1,
             CT: 1 << 1,
-            AT: 1 << 2,
+            AT: (1 | 1 << 1),
             "150cc": 1 << 3,
             "200cc": 1 << 4,
             NoElimination: 1 << 5,
