@@ -4,6 +4,9 @@ module.exports = {
     name: "setpid",
     guildOnly: false,
     ownerOnly: false,
+    metadata: {
+        description: "Sets a Profile ID"
+    },
     run: async (context, args) => {
         const query = await context.db.query("SELECT pid FROM pids WHERE author = $1", [context.userId]);
         if (args.length === 0) {

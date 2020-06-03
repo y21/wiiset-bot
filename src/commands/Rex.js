@@ -4,6 +4,9 @@ module.exports = {
     name: "rex",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Runs code in a given programming language"
+    },
     run: async (_, args, rest) => {
         if (!languages[args[0]]) throw new Error("Language not found!");
         const lang = rest.rex.resolveLanguage(args[0]);

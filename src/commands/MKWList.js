@@ -1,7 +1,11 @@
 module.exports = {
-    name: "mkwlist",
+    name: "mkw list",
+    aliases: ["mkwlist"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays number of rooms"
+    },
     run: async (_, __, rest) => {
         const req = await rest.wiimmfi.getMKWList();
         return [{

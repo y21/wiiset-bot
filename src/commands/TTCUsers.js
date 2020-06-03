@@ -5,6 +5,9 @@ module.exports = {
     name: "ttc users",
     guildOnly: false,
     ownerOnly: false,
+    metadata: {
+        description: "Displays top 10 TTC users"
+    },
     run: async (context, args, rest) => {
         const users = await rest.ttc.getUsers().then(v => v.slice(0, 9));
         

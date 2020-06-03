@@ -4,6 +4,9 @@ module.exports = {
     name: "createtag",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Creates a tag with the given name"
+    },
     run: async (context, args) => {
         if (!TagRegex.test(args[0])) throw new Error("Invalid tag name");
         const res = await context.db.query("INSERT INTO tags (\"name\", \"author\", \"content\", \"createdAt\", \"uses\") VALUES ($1, $2, $3, $4, $5) ON CONFLICT DO NOTHING",

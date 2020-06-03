@@ -1,7 +1,12 @@
 module.exports = {
-    name: "mkwbans",
+    name: "mkw bans",
+    aliases: ["mkwbans"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays recent MKW Bans"
+    },
+    disabled: true,
     run: async (_, __, rest) => {
         const req = await rest.wiimmfi.getMKWBans();
         return [{

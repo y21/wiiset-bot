@@ -6,6 +6,9 @@ module.exports = {
     name: "setup",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Sets up WR Notifier for this channel"
+    },
     run: async (context) => {
         const members = await context.rest.fetchGuildMembers(context.guildId, { limit: 10 });
         if (members.size < 10)

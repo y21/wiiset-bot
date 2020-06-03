@@ -5,6 +5,9 @@ module.exports = {
     name: "caption",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Describes an image"
+    },
     run: async (_, args) => {
         const url = args.join(" ");
         if (!url) throw new Error("No URL provided");

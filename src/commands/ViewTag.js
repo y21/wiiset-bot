@@ -2,6 +2,9 @@ module.exports = {
     name: "tag",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays tag contents"
+    },
     run: async (context, args) => {
         const res = await context.db.query("SELECT content FROM tags WHERE name = $1", [args[0]]);
         await context.db.query("UPDATE tags SET uses = uses + 1 WHERE name = $1", [args[0]]);

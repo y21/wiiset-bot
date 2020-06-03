@@ -4,9 +4,13 @@ const countryCodes = require("../../countryCodes");
 
 
 module.exports = {
-    name: "ctgpprofile",
+    name: "ctgp profile",
+    aliases: ["ctgpprofile"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays profile statistics"
+    },
     run: async (context, args, rest) => {
         if (args.length === 0)
             throw new Error("No arguments provided...");

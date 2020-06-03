@@ -1,7 +1,11 @@
 module.exports = {
-    name: "mkwregions",
+    name: "mkw regions",
+    aliases: ["mkwregions"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays number of login regions"
+    },
     run: async (_, __, rest) => {
         const req = await rest.wiimmfi.getMKWLoginRegions();
         return [{

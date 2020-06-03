@@ -2,6 +2,9 @@ module.exports = {
     name: "info",
     guildOnly: false,
     ownerOnly: false,
+    metadata: {
+        description: "Displays Bot information"
+    },
     run: async (context) => {
         const ping = await context.client.ping();
         return [{

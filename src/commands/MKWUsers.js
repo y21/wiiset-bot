@@ -2,9 +2,13 @@ const { Markup } = require("detritus-client/lib/utils");
 const AsciiTable = require("ascii-table");
 
 module.exports = {
-    name: "mkwusers",
+    name: "mkw users",
+    aliases: ["mkwusers"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays users in rooms"
+    },
     run: async (context, args, rest) => {
         const req = await rest.wiimmfi.getMKWUsers(args[0] || undefined, -1);
         const pages = [];

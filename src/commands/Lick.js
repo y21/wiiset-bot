@@ -2,6 +2,9 @@ module.exports = {
     name: "lick",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: ""
+    },
     run: async (context) => {
         const { mentions } = context.message;
         if (mentions.size === 0) throw new Error("User not found");

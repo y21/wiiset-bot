@@ -4,6 +4,9 @@ module.exports = {
     name: "help",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Lists all commands"
+    },
     run: async (context) => {
         const pages = [{
             embed: {

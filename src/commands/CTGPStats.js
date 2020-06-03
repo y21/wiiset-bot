@@ -1,7 +1,11 @@
 module.exports = {
-    name: "ctgpstats",
+    name: "ctgp stats",
+    aliases: ["ctgpstats"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays general statistics about the Ghost Database"
+    },
     run: async (_, __, rest) => {
         const req = await rest.ctgp.getStats();
         return [{

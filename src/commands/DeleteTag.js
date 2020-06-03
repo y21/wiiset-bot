@@ -2,6 +2,9 @@ module.exports = {
     name: "deletetag",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Deletes a tag"
+    },
     run: async (context, args) => {
         const res = await context.db.query("DELETE FROM tags WHERE author = $1 AND name = $2",
             [

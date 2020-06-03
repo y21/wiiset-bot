@@ -4,6 +4,9 @@ module.exports = {
     name: "ttc lobby",
     guildOnly: false,
     ownerOnly: false,
+    metadata: {
+        description: "Displays lobby information"
+    },
     run: async (context, args, rest) => {
         const lobby = await rest.ttc.getLobby(args[1]);
 

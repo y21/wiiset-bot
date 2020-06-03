@@ -63,17 +63,18 @@ class Bot {
         }
 
         // Middleware functions
-        const onBefore = (cmd, context) => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true);
+        const onBefore = (cmd, context) => !cmd.disabled && (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true);
         const onRatelimit = context => context.editOrReply("calm down, don't spam!");
-        const onCancel = context => context.editOrReply("You are not allowed to execute this command");
-        const run = async (cmd, context) => {
+        const onCancel = context => context.editOrReply("Command execution failed");
+        const run = async (cmd, context, args) => {
             context.db = this.db;
             context.trackHelper = this.trackHelper;
             context.paginator = this.paginator;
 
             let commandResponse;
             try {
-                commandResponse = await cmd.run(context, context.content.split(" ").slice(1), this.rest);
+                const realArgs = args[cmd.name];
+                commandResponse = await cmd.run(context, realArgs ? realArgs.split(" ") : [], this.rest);
             } catch(e) {
                 console.log(e.stack);
 
@@ -86,12 +87,18 @@ class Bot {
             }
 
             if (commandResponse.length > 0) {
-                context.editOrReply({
-                    content: commandResponse.join(" "),
-                    allowedMentions: {
-                        parse: []
-                    }
-                });
+                const messageData = {
+                    allowedMentions: { parse: [] }
+                };
+                
+                if (typeof commandResponse[0] === "string") {
+                    messageData.content = commandResponse.join(" ");
+                } else {
+                    const o = commandResponse[0];
+                    for (const k in o) messageData[k] = o[k];
+                }
+
+                context.editOrReply(messageData);
             }
         };
 
@@ -99,6 +106,7 @@ class Bot {
             const cmd = require(`./commands/${command}`);
             this.client.add({
                 name: cmd.name,
+                aliases: cmd.aliases,
                 responseOptional: true,
                 activateOnEdits: true,
                 ratelimit: {

@@ -5,6 +5,9 @@ module.exports = {
     name: "ttc lobbies",
     guildOnly: false,
     ownerOnly: true,
+    metadata: {
+        description: "Displays TTC lobbies"
+    },
     run: async (context, args, rest) => {
         const lobbies = await rest.ttc.getLobbies()
             .then(v => v.sort((a, b) => b.players - a.players).slice(0, 10));

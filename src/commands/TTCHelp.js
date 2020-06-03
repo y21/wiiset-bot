@@ -4,6 +4,9 @@ module.exports = {
     name: "ttc help",
     guildOnly: false,
     ownerOnly: false,
+    metadata: {
+        description: "An introduction to TTC"
+    },
     run: async (context, args, rest) => {
         const title = `TT-Competition ${Version}`;
         const color = 0x74b9ff;

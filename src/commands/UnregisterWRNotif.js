@@ -6,6 +6,9 @@ module.exports = {
     name: "unregister",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Removes WR Notifier from this channel"
+    },
     run: async (context, args) => {
         const guild = await context.rest.fetchGuild(context.guildId);
         if (guild.ownerId !== context.userId)
@@ -21,7 +24,7 @@ module.exports = {
         }).then(v => v.json());
 
         if (req.status === 200)
-            return ["HTTP [200:OK]: Webhook unregistered."];
+            return ["HTTP [200:OK]: Webhook removed."];
         else {
             throw new Error("HTTP [???:???]: An unknown error occured: " + (req.error || ""));
         }

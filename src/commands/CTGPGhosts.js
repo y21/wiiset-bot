@@ -1,9 +1,13 @@
 const { CTGPProfileID, Snowflake } = require("../structures/Constants").Regexes;
 
 module.exports = {
-    name: "ctgpghosts",
+    name: "ctgp ghosts",
+    aliases: ["ctgpghosts"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays ghosts submitted by a user"
+    },
     run: async (context, args, rest) => {
         if (args.length === 0)
             throw new Error("No arguments provided...");
@@ -18,8 +22,7 @@ module.exports = {
             pid = args[0];
         }
 
-        if (!pid)
-            throw new Error("Invalid Profile ID provided");
+        if (!pid) throw new Error("Invalid Profile ID provided");
         
         const response = await rest.ctgp.getProfileInfo(pid);
         const pages = [];

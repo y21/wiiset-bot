@@ -2,6 +2,9 @@ module.exports = {
     name: "tags",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Lists global tags"
+    },
     run: async (context) => {
         const res = await context.db.query("SELECT name, uses FROM tags ORDER BY uses DESC LIMIT 10");
         return [{

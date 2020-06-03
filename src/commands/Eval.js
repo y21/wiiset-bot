@@ -4,6 +4,9 @@ module.exports = {
     name: "eval",
     ownerOnly: true,
     guildOnly: false,
+    metadata: {
+        description: "Evaluates Javascript code"
+    },
     run: async (context, args, rest) => { // eslint-disable-line no-unused-vars
         let res;
         try {

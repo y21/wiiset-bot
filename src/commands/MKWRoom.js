@@ -3,9 +3,13 @@ function formatDate(b) {
 }
 
 module.exports = {
-    name: "mkwroom",
+    name: "mkw room",
+    aliases: ["mkwroom"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays room statistics"
+    },
     run: async (_, args, rest) => {
         const req = await rest.wiimmfi.getMKWRoomStats(args.join(" "));
         return [{

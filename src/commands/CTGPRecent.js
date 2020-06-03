@@ -1,7 +1,11 @@
 module.exports = {
-    name: "ctgprecent",
+    name: "ctgp recent",
+    aliases: ["ctgprecent"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays recently set World Records"
+    },
     run: async (context, args, rest) => {
         const response = await rest.ctgp.getRecentRecords();
         return [{

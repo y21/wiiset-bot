@@ -14,6 +14,7 @@ module.exports = {
     guildOnly: false,
     ownerOnly: true,
     metadata: {
+        description: "Creates a TTC Lobby",
         examples: [
             ["w.ttc createlobby 150cc, RT, NoElimination", "150cc, Regular Tracks and no Elimination after each round"],
             ["w.ttc createlobby 200cc", "200cc, All Tracks and Elimination"],

@@ -1,9 +1,13 @@
 const countryCodes = require("../../countryCodes");
 
 module.exports = {
-    name: "ctgpleaderboard",
+    name: "ctgp leaderboard",
+    aliases: ["ctgpleaderboard"],
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays top ghosts on a given track"
+    },
     run: async (context, args, rest) => {
         if (args.length === 0)
             throw new Error("Track name required");

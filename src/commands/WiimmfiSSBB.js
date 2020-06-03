@@ -2,6 +2,9 @@ module.exports = {
     name: "ssbb",
     ownerOnly: false,
     guildOnly: false,
+    metadata: {
+        description: "Displays Super Smash Bros Brawl statistics"
+    },
     run: async (_, __, rest) => {
         const res = await rest.wiimmfi.getSSBBStats();
         return [{
