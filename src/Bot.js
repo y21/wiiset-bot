@@ -79,7 +79,7 @@ class Bot {
 
                 let message = stripSensitiveLink(e.message);
                 if (cmd.name.startsWith("ttc")) {
-                    message += "\nConfused? Check out the documentation on <https://y21.github.io/tt-competition> or type w.ttc help";
+                    message += "\n\nConfused? Check out the documentation on <https://y21.github.io/tt-competition> or type w.ttc help";
                 }
 
                 commandResponse = [ "⚠️ " + message ];
