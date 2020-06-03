@@ -8,6 +8,16 @@ const TrackHelper = require("./structures/TrackHelper");
 const { Paginator } = require("detritus-pagination");
 const TTCGateway = require("./structures/ttc/Gateway");
 
+const LinkOrIpRegex = /(https?:\/\/[^/ ,:]+)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d{1,5})?)/g;
+
+/**
+ * @param {string} str
+ * @returns {string}
+ */
+function stripSensitiveLink(str) {
+    return str.replace(LinkOrIpRegex, "::");
+}
+
 class Bot {
     constructor(config, database) {
         this.config = config;
@@ -21,6 +31,7 @@ class Bot {
         this.db = new Database(this.pool);
         this.client = new Detritus.CommandClient(config.token, {
             prefix: config.prefix,
+            shards: [0, 1],
             isBot: true,
             mentionsEnabled: false,
             activateOnEdits: true,
@@ -51,6 +62,39 @@ class Bot {
             Logger.error("Could not read commands directory: " + e);
         }
 
+        // Middleware functions
+        const onBefore = (cmd, context) => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true);
+        const onRatelimit = context => context.editOrReply("calm down, don't spam!");
+        const onCancel = context => context.editOrReply("You are not allowed to execute this command");
+        const run = async (cmd, context) => {
+            context.db = this.db;
+            context.trackHelper = this.trackHelper;
+            context.paginator = this.paginator;
+
+            let commandResponse;
+            try {
+                commandResponse = await cmd.run(context, context.content.split(" ").slice(1), this.rest);
+            } catch(e) {
+                console.log(e.stack);
+
+                let message = stripSensitiveLink(e.message);
+                if (cmd.name.startsWith("ttc")) {
+                    message += "\nConfused? Check out the documentation on <https://y21.github.io/tt-competition> or type w.ttc help";
+                }
+
+                commandResponse = [ "⚠️ " + message ];
+            }
+
+            if (commandResponse.length > 0) {
+                context.editOrReply({
+                    content: commandResponse.join(" "),
+                    allowedMentions: {
+                        parse: []
+                    }
+                });
+            }
+        };
+
         for (const command of commands) {
             const cmd = require(`./commands/${command}`);
             this.client.add({
@@ -62,31 +106,10 @@ class Bot {
                     duration: 1000,
                     type: "user"
                 },
-                onRatelimit: context => context.editOrReply("calm down, don't spam!"),
-                onBefore: context => (cmd.ownerOnly ? context.client.isOwner(context.userId) : true) && (cmd.guildOnly ? !context.inDm : true),
-                onCancel: context => context.editOrReply("You are not allowed to execute this command"),
-                run: async (context) => {
-                    context.db = this.db;
-                    context.trackHelper = this.trackHelper;
-                    context.paginator = this.paginator;
-
-                    let commandResponse;
-                    try {
-                        commandResponse = await cmd.run(context, context.content.split(" ").slice(1), this.rest);
-                    } catch(e) {
-                        console.log(e.stack);
-                        commandResponse = [
-                            "⚠️ `" + String(e)
-                                .replace(/https?:\/\/[^/]+/g, "::") + "`"
-                        ];
-                    }
-
-                    if (typeof commandResponse[0] === "string")
-                        commandResponse[0] = commandResponse[0].replace(/@/g, "@\u200b");
-
-                    if (commandResponse.length > 0)
-                        context.editOrReply(...commandResponse);
-                }
+                onRatelimit,
+                onBefore: onBefore.bind(null, cmd),
+                onCancel,
+                run: run.bind(null, cmd)
             });
         }
         
