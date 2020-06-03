@@ -2,6 +2,8 @@ const fetch = require("node-fetch");
 const Lobby = require("../structures/ttc/Lobby");
 const User = require("../structures/ttc/User");
 
+const AutoDetection = 0;
+
 module.exports = class TTCRest {
     constructor(host, token) {
         this.host = host;
@@ -96,7 +98,7 @@ module.exports = class TTCRest {
     }
 
     removePlayerFromLobby(lobbyId, userId, channelId) {
-        return this.request(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
+        return this.request(`${this.host}/api/v1/lobbies/${lobbyId || AutoDetection}/players`, {
             method: "DELETE",
             body: JSON.stringify({
                 userid: userId,
@@ -106,7 +108,7 @@ module.exports = class TTCRest {
     }
 
     submitGhost(lobbyId, userId, channelId) {
-        return this.request(`${this.host}/api/v1/lobbies/${lobbyId}/players/${userId}/ghosts`, {
+        return this.request(`${this.host}/api/v1/lobbies/${lobbyId || AutoDetection}/players/${userId}/ghosts`, {
             method: "POST",
             body: JSON.stringify({
                 userid: userId,
