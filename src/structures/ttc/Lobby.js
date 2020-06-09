@@ -11,6 +11,11 @@ const options = {
     Private: 1 << 6,
     Ranked: 1 << 7,
     Bots: 1 << 8,
+    Teams: 1 << 9,
+    Teams2: 1 << 10,
+    Teams3: 1 << 11,
+    Teams4: 1 << 12,
+    Teams6: 1 << 13,
 
     // Aliases
     get AllTracks() {
