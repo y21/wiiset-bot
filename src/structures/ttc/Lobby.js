@@ -7,7 +7,7 @@ const options = {
     AT: (1 | 1 << 1),
     "150cc": 1 << 3,
     "200cc": 1 << 4,
-    NoElimination: 1 << 5,
+    Elimination: 1 << 5,
     Private: 1 << 6,
     Ranked: 1 << 7,
     Bots: 1 << 8,
