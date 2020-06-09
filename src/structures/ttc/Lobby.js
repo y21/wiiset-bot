@@ -47,7 +47,7 @@ module.exports = class Lobby {
         this.originalPlayerCount = data.originalPlayerCount;
         this.options = data.options;
         this.password = data.password;
-        this.teams = Object.values(data.teams);
+        this.teams = Object.values(data.teams).sort((a, b) => b.points - a.points);
     }
 
     formatOptions() {
@@ -64,7 +64,13 @@ module.exports = class Lobby {
 
     teamsToString() {
         // TODO: use user objects
-        return this.teams.map(v => `__Team ${v.id}:__\n` + v.players.map(p => `- ${p.aiDiff === User.AiDifficulty.DISABLED ? `<@${p.userid}>` : p.userid}`).join("\n")).join("\n");
+        return this.teams.map(team => {
+            const head = `__Team ${team.id} (${team.points | 0} points):__\n`;
+            return head + team.players.map(player => {
+                const ai = player.aiDiff === User.AiDifficulty.DISABLED;
+                return "- " + (ai ? `<@${player.userid}>` : User.buildAIName(player.userid, player.aiDiff));
+            }).join("\n");
+        }).join("\n");
     }
 
     static formatOptions(checkOptions) {
