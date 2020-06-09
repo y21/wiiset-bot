@@ -64,7 +64,7 @@ module.exports = {
     }
 };
 
-function handleTeamsOption(context, rest, options) {
+async function handleTeamsOption(context, rest, options) {
     const response = await context.reply({
         embed: {
             color: 0x2ecc71,
@@ -100,7 +100,7 @@ function handleTeamsOption(context, rest, options) {
     });
 }
 
-function handleBotsOption(context, rest, options, resp) {
+async function handleBotsOption(context, rest, options, resp) {
     const botDiffs = [];
 
     const response = resp || await context.reply(buildCPUMessage(0));
