@@ -18,7 +18,7 @@
   "homepage": "https://github.com/y21/wiiset-bot#readme",
   "dependencies": {
     "ascii-table": "0.0.9",
-    "detritus-client": "^0.9.44",
+    "detritus-client": "^0.10.5",
     "detritus-pagination": "^1.1.1",
     "node-fetch": "*",
     "pg": "^7.17.0",
