@@ -47,6 +47,7 @@ module.exports = class Lobby {
         this.originalPlayerCount = data.originalPlayerCount;
         this.options = data.options;
         this.password = data.password;
+        this.teams = Object.values(data.teams);
     }
 
     formatOptions() {
@@ -59,6 +60,11 @@ module.exports = class Lobby {
 
     stateToString() {
         return Lobby.stateToString(this.state);
+    }
+
+    teamsToString() {
+        // TODO: use user objects
+        return this.teams.map(v => `__Team ${v.id}:__\n` + v.players.map(p => `- ${p.aiDiff === User.AiDifficulty.DISABLED ? `<@${p.userid}>` : p.userid}`).join("\n")).join("\n");
     }
 
     static formatOptions(checkOptions) {
