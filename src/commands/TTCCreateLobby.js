@@ -1,12 +1,19 @@
 const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit } = require("../structures/ttc/Lobby");
 const { AiDifficulty } = require("../structures/ttc/User");
 
-const Reactions = {
+const CpuReactions = {
     EASY: "🟢",
     MEDIUM: "🟠",
     HARD: "🔴",
     EXPERT: "⚪",
     STOP: "⏹"
+};
+
+const TeamReactions = {
+    "2v2": "2️⃣",
+    "3v3": "3️⃣",
+    "4v4": "4️⃣",
+    "6v6": "6️⃣"
 };
 
 module.exports = {
@@ -45,60 +52,100 @@ module.exports = {
         
         options = options.reduce((a, b) => a | b);
 
+        if (hasOption(options, LobbyOptions.Teams)) {
+            return handleTeamsOption(context, rest, options);
+        }
+
         if (hasOption(options, LobbyOptions.Bots)) {
-            const botDiffs = [];
-
-            const response = await context.reply(buildCPUMessage(0));
-
-            const paginator = await context.paginator.createReactionPaginator({
-                message: context.message,
-                commandMessage: response,
-                reactions: Reactions
-            });
-            
-            paginator.on("raw", (data) => {
-                const { emoji } = data;
-                switch (emoji.name) {
-                    case Reactions.EASY:
-                        botDiffs.push(AiDifficulty.EASY);
-                        break;
-                    case Reactions.MEDIUM:
-                        botDiffs.push(AiDifficulty.MEDIUM);
-                        break;
-                    case Reactions.HARD:
-                        botDiffs.push(AiDifficulty.HARD);
-                        break;
-                    case Reactions.EXPERT:
-                        botDiffs.push(AiDifficulty.EXPERT);
-                        break;
-                    case Reactions.STOP:
-                        createLobby(context, rest, options, botDiffs, response);
-                        return;
-                }
-
-                if (botDiffs.length >= BotsLimit) {
-                    paginator.stop();
-                    createLobby(context, rest, options, botDiffs, response);
-                    return;
-                }
-                paginator.commandMessage.edit(buildCPUMessage(botDiffs.length));
-            });
-
-            return;
+            return handleBotsOption(context, rest, options, null);
         }
 
         await createLobby(context, rest, options, []);
-
-        
     }
 };
+
+function handleTeamsOption(context, rest, options) {
+    const response = await context.reply({
+        embed: {
+            color: 0x2ecc71,
+            description: `React with one of the emojis below to set the team size for this lobby\n` +
+                Object.entries(TeamReactions).map(([k, v]) => v + " " + k).join("\n")
+        }
+    });
+
+    const paginator = await context.paginator.createReactionPaginator({
+        message: context.message,
+        commandMessage: response,
+        reactions: TeamReactions
+    });
+
+    paginator.on("raw", (data) => {
+        const { emoji } = data;
+        switch (emoji.name) {
+            case TeamReactions["2v2"]:
+                options |= LobbyOptions.Teams2;
+                break;
+            case TeamReactions["3v3"]:
+                options |= LobbyOptions.Teams3;
+                break;
+            case TeamReactions["4v4"]:
+                options |= LobbyOptions.Teams4;
+                break;
+            case TeamReactions["6v6"]:
+                options |= LobbyOptions.Teams6;
+                break;              
+        }
+
+        return handleBotsOption(context, rest, options, response);
+    });
+}
+
+function handleBotsOption(context, rest, options, resp) {
+    const botDiffs = [];
+
+    const response = resp || await context.reply(buildCPUMessage(0));
+
+    const paginator = await context.paginator.createReactionPaginator({
+        message: context.message,
+        commandMessage: response,
+        reactions: CpuReactions
+    });
+    
+    paginator.on("raw", (data) => {
+        const { emoji } = data;
+        switch (emoji.name) {
+            case CpuReactions.EASY:
+                botDiffs.push(AiDifficulty.EASY);
+                break;
+            case CpuReactions.MEDIUM:
+                botDiffs.push(AiDifficulty.MEDIUM);
+                break;
+            case CpuReactions.HARD:
+                botDiffs.push(AiDifficulty.HARD);
+                break;
+            case CpuReactions.EXPERT:
+                botDiffs.push(AiDifficulty.EXPERT);
+                break;
+            case CpuReactions.STOP:
+                createLobby(context, rest, options, botDiffs, response);
+                return;
+        }
+
+        if (botDiffs.length >= BotsLimit) {
+            paginator.stop();
+            createLobby(context, rest, options, botDiffs, response);
+            return;
+        }
+        paginator.commandMessage.edit(buildCPUMessage(botDiffs.length));
+    });
+}
 
 function buildCPUMessage(index) {
     return {
         embed: {
             color: 0x2ecc71,
             description: `React with one of the emojis below to set the difficulty for CPU #${index + 1}\n` +
-                Object.entries(Reactions).map(([k, v]) => v + " " + k).join("\n")
+                Object.entries(CpuReactions).map(([k, v]) => v + " " + k).join("\n")
         }
     };
 }
