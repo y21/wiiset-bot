@@ -2,18 +2,18 @@ const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, Bot
 const { AiDifficulty } = require("../structures/ttc/User");
 
 const CpuReactions = {
-    EASY: "🟢",
-    MEDIUM: "🟠",
-    HARD: "🔴",
-    EXPERT: "⚪",
-    STOP: "⏹"
+    EASY: "1️⃣",
+    MEDIUM: "2️⃣",
+    HARD: "3️⃣",
+    EXPERT: "4️⃣",
+    STOP: "⏹️"
 };
 
 const TeamReactions = {
-    "2v2": "2️⃣",
-    "3v3": "3️⃣",
-    "4v4": "4️⃣",
-    "6v6": "6️⃣"
+    "2v2": CpuReactions.EASY,
+    "3v3": CpuReactions.MEDIUM,
+    "4v4": CpuReactions.HARD,
+    "6v6": CpuReactions.EXPERT
 };
 
 module.exports = {
@@ -95,15 +95,27 @@ async function handleTeamsOption(context, rest, options) {
                 options |= LobbyOptions.Teams6;
                 break;              
         }
+        paginator.stop();
 
-        return handleBotsOption(context, rest, options, response);
+
+        if (hasOption(options, LobbyOptions.Bots)) {
+            return handleBotsOption(context, rest, options, response);
+        } else {
+            return createLobby(context, rest, options, [], response);
+        }
     });
 }
 
 async function handleBotsOption(context, rest, options, resp) {
-    const botDiffs = [];
+    const botDiffs = [], embed = buildCPUMessage(0);
 
-    const response = resp || await context.reply(buildCPUMessage(0));
+    let response;
+
+    if (resp) {
+        response = await resp.edit(embed);
+    } else {
+        response = await context.reply(embed);
+    }
 
     const paginator = await context.paginator.createReactionPaginator({
         message: context.message,
@@ -151,7 +163,16 @@ function buildCPUMessage(index) {
 }
 
 async function createLobby(context, rest, options, aiDiffs, response) {
-    const data = await rest.ttc.createLobby(context.userId, context.channelId, options, aiDiffs);
+    let data;
+    try {
+        data = await rest.ttc.createLobby(context.userId, context.channelId, options, aiDiffs);
+    } catch(e) {
+        await response.edit({
+            content: e.message,
+            embed: null
+        });
+        return;
+    }
     
     await sendOrEditLobbyMessage(context, rest, data, response);
 }
@@ -182,6 +203,17 @@ async function sendOrEditLobbyMessage(context, rest, lobby, response) {
             ]
         }
     };
+
+    if (hasOption(lobby.options, LobbyOptions.Teams)) {
+        console.log({
+            name: "Teams",
+            value: lobby.teamsToString() || "-"
+        })
+        messageData.embed.fields.push({
+            name: "Teams",
+            value: lobby.teamsToString() || "-"
+        });
+    }
 
     if (response) {
         await response.edit(messageData);
