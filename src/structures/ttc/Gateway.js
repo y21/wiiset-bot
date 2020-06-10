@@ -7,6 +7,7 @@ const Logger = require("../Logger");
 const AsciiTable = require("ascii-table");
 const Version = "1.0-beta";
 const { Regexes } = require("../Constants");
+let Lobby = require("./Lobby");
 
 const Events = {
     ThresholdReached: 0x1,
@@ -32,11 +33,12 @@ const Texts = {
     ThresholdPhase: "⏱️ Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
     IngamePhase: "🏎️ Ingame phase has started! Make sure to upload a ghost to the ghost database on the selected track within the next 15 minutes.",
     LobbyEndUser: "✅ Lobby has ended! Winner: __{winner}__ ({rating}R)",
-    LobbyEndTeams: "✅ Lobby has ended! Winner: __Team #{winner}__\n\nTeam members:\n"
+    LobbyEndTeams: "✅ Lobby has ended! Winner: __Team #{winner}__\n\n"
 };
 
 module.exports = class TTCGateway {
     constructor(bot) {
+        Lobby = require("./Lobby");
         this.bot = bot;
         this.connection = new PersistentWebSocket(ttcWS, WebSocket);
         this.ready = false;
@@ -149,12 +151,7 @@ module.exports = class TTCGateway {
                     if (message.data.isTeamsMode) {
                         messageData.embed.description = Texts.LobbyEndTeams
                             .replace("{winner}", winner.id) + 
-                            winner.players.map(v => {
-                                const user = v.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(v.userid) : `<@${v.userid}>`;
-                                const rating = v.base_rating + v.total_rating;
-
-                                return `- ${user} (${rating}R)`;
-                            }).join("\n")
+                            Lobby.teamsToString(Object.values(message.data.users), true)
                     } else {
                         messageData.embed.description = Texts.LobbyEndUser
                             .replace("{winner}", winner.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(winner.userid, winner.aiDiff) : "<@" + winner.userid + ">")
