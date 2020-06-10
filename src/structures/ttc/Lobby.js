@@ -47,7 +47,7 @@ module.exports = class Lobby {
         this.originalPlayerCount = data.originalPlayerCount;
         this.options = data.options;
         this.password = data.password;
-        this.teams = Object.values(data.teams).sort((a, b) => b.points - a.points);
+        this.teams = data.teams ? Object.values(data.teams).sort((a, b) => b.points - a.points) : [];
     }
 
     formatOptions() {
@@ -106,6 +106,14 @@ module.exports = class Lobby {
     
         if (Lobby.hasOption(checkOptions, options.Ranked)) {
             allOptions.push("Ranked");
+        }
+
+        if (Lobby.hasOption(checkOptions, options.Teams)) {
+            allOptions.push("Teams");
+        }
+
+        if (Lobby.hasOption(checkOptions, options.Bots)) {
+            allOptions.push("Bots");
         }
         
         return allOptions.join(", ");
