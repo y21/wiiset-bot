@@ -44,18 +44,20 @@ module.exports = class TTCRest {
             });
     }
 
-    createLobby(userId, channelId, options, aiDiffs) {
+    createLobby(userId, channelId, data) {
         // Default to ATs
-        if (!Lobby.hasOption(options, Lobby.Options.RT) && !Lobby.hasOption(options, Lobby.Options.CT))
-            options |= Lobby.Options.AT;
+        if (!Lobby.hasOption(data.options, Lobby.Options.RT) && !Lobby.hasOption(data.options, Lobby.Options.CT))
+            data.options |= Lobby.Options.AT;
         
         return this.request(`${this.host}/api/v1/lobbies`, {
             method: "POST",
             body: JSON.stringify({
                 userid: userId,
                 channel: channelId,
-                options,
-                aiDiffs
+                options: data.options,
+                aiDiffs: data.aiDiffs || [],
+                maxRounds: data.maxRounds || 0,
+                ingameTime: data.ingameTime || 0
             })
         }).then(r => new Lobby(r));
     }
