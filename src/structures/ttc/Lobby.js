@@ -63,11 +63,18 @@ module.exports = class Lobby {
     }
 
     teamsToString() {
-        return Lobby.teamsToString(this.teams);
+        return Lobby.teamsToString(this.teams, false);
     }
 
-    static teamsToString(teams) {
-        // TODO: use user objects
+    static teamsToString(teams, sort = false) {
+        if (!Array.isArray(teams)) {
+            throw new Error("Teams is not an array");
+        }
+
+        if (sort) {
+            teams = teams.sort((a, b) => b.points - a.points);
+        }
+
         return teams.map(team => {
             const head = `__Team ${team.id} (${team.points | 0} points):__\n`;
             return head + team.players.map(player => {
