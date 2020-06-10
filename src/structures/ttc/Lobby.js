@@ -63,8 +63,12 @@ module.exports = class Lobby {
     }
 
     teamsToString() {
+        return Lobby.teamsToString(this.teams);
+    }
+
+    static teamsToString(teams) {
         // TODO: use user objects
-        return this.teams.map(team => {
+        return teams.map(team => {
             const head = `__Team ${team.id} (${team.points | 0} points):__\n`;
             return head + team.players.map(player => {
                 const ai = player.aiDiff === User.AiDifficulty.DISABLED;
