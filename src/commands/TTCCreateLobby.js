@@ -1,20 +1,14 @@
 const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit } = require("../structures/ttc/Lobby");
 const { AiDifficulty } = require("../structures/ttc/User");
 
-const CpuReactions = {
-    EASY: "1️⃣",
-    MEDIUM: "2️⃣",
-    HARD: "3️⃣",
-    EXPERT: "4️⃣",
-    STOP: "⏹️"
-};
+const numberEmojis = [
+    "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"
+];
 
-const TeamReactions = {
-    "2v2": CpuReactions.EASY,
-    "3v3": CpuReactions.MEDIUM,
-    "4v4": CpuReactions.HARD,
-    "6v6": CpuReactions.EXPERT
-};
+const MaxRounds = 7;
+
+const CpuReactions = Object.fromEntries(["EASY", "MEDIUM", "HARD", "EXPERT", "STOP"].map((k, i) => [ k, numberEmojis[i] ]));
+const TeamReactions = Object.fromEntries(["2v2", "3v3", "4v4", "6v6"].map((k, i) => [ k, numberEmojis[i] ]));
 
 module.exports = {
     name: "ttc create",
@@ -43,114 +37,18 @@ module.exports = {
         let options = args
                 .join(" ")
                 .split(/, */g)
-                .filter(v => LobbyOptions.hasOwnProperty(v)) // To prevent access to 'constructor', 'prototype', ...
-                .map(v => LobbyOptions[v]);
+                .filter(v => Object.prototype.hasOwnProperty.call(LobbyOptions, v)); // To prevent access to 'constructor', 'prototype', ...
             
         if (options.length < 1) {
             return context.reply("Option(s) not found. Run command without arguments to get a list of available options.");
         }
-        
-        options = options.reduce((a, b) => a | b);
 
-        if (hasOption(options, LobbyOptions.Teams)) {
-            return handleTeamsOption(context, rest, options);
-        }
+        options = options.reduce((a, b) => a | LobbyOptions[b], 0);
 
-        if (hasOption(options, LobbyOptions.Bots)) {
-            return handleBotsOption(context, rest, options, null);
-        }
-
-        await createLobby(context, rest, options, []);
+        const response = await context.reply("Creating lobby...");
+        await createLobby(context, rest, response, { options });
     }
 };
-
-async function handleTeamsOption(context, rest, options) {
-    const response = await context.reply({
-        embed: {
-            color: 0x2ecc71,
-            description: `React with one of the emojis below to set the team size for this lobby\n` +
-                Object.entries(TeamReactions).map(([k, v]) => v + " " + k).join("\n")
-        }
-    });
-
-    const paginator = await context.paginator.createReactionPaginator({
-        message: context.message,
-        commandMessage: response,
-        reactions: TeamReactions
-    });
-
-    paginator.on("raw", (data) => {
-        const { emoji } = data;
-        switch (emoji.name) {
-            case TeamReactions["2v2"]:
-                options |= LobbyOptions.Teams2;
-                break;
-            case TeamReactions["3v3"]:
-                options |= LobbyOptions.Teams3;
-                break;
-            case TeamReactions["4v4"]:
-                options |= LobbyOptions.Teams4;
-                break;
-            case TeamReactions["6v6"]:
-                options |= LobbyOptions.Teams6;
-                break;              
-        }
-        paginator.stop();
-
-
-        if (hasOption(options, LobbyOptions.Bots)) {
-            return handleBotsOption(context, rest, options, response);
-        } else {
-            return createLobby(context, rest, options, [], response);
-        }
-    });
-}
-
-async function handleBotsOption(context, rest, options, resp) {
-    const botDiffs = [], embed = buildCPUMessage(0);
-
-    let response;
-
-    if (resp) {
-        response = await resp.edit(embed);
-    } else {
-        response = await context.reply(embed);
-    }
-
-    const paginator = await context.paginator.createReactionPaginator({
-        message: context.message,
-        commandMessage: response,
-        reactions: CpuReactions
-    });
-    
-    paginator.on("raw", (data) => {
-        const { emoji } = data;
-        switch (emoji.name) {
-            case CpuReactions.EASY:
-                botDiffs.push(AiDifficulty.EASY);
-                break;
-            case CpuReactions.MEDIUM:
-                botDiffs.push(AiDifficulty.MEDIUM);
-                break;
-            case CpuReactions.HARD:
-                botDiffs.push(AiDifficulty.HARD);
-                break;
-            case CpuReactions.EXPERT:
-                botDiffs.push(AiDifficulty.EXPERT);
-                break;
-            case CpuReactions.STOP:
-                createLobby(context, rest, options, botDiffs, response);
-                return;
-        }
-
-        if (botDiffs.length >= BotsLimit) {
-            paginator.stop();
-            createLobby(context, rest, options, botDiffs, response);
-            return;
-        }
-        paginator.commandMessage.edit(buildCPUMessage(botDiffs.length));
-    });
-}
 
 function buildCPUMessage(index) {
     return {
@@ -162,22 +60,156 @@ function buildCPUMessage(index) {
     };
 }
 
-async function createLobby(context, rest, options, aiDiffs, response) {
+function handleBots(context, response) {
+    return new Promise(async (resolve) => {
+        await response.edit({
+            ...buildCPUMessage(0),
+            content: null
+        });
+
+        const botDiffs = [];
+        const paginator = await context.paginator.createReactionPaginator({
+            message: context.message,
+            commandMessage: response,
+            reactions: CpuReactions
+        });
+
+        paginator.on("raw", (data) => {
+            const { emoji } = data;
+    
+            switch (emoji.name) {
+                case CpuReactions.EASY:
+                    botDiffs.push(AiDifficulty.EASY);
+                    break;
+                case CpuReactions.MEDIUM:
+                    botDiffs.push(AiDifficulty.MEDIUM);
+                    break;
+                case CpuReactions.HARD:
+                    botDiffs.push(AiDifficulty.HARD);
+                    break;
+                case CpuReactions.EXPERT:
+                    botDiffs.push(AiDifficulty.EXPERT);
+                    break;
+                case CpuReactions.STOP:
+                    paginator.stop();
+                    return resolve(botDiffs);
+            }
+    
+            if (botDiffs.length >= BotsLimit) {
+                paginator.stop();
+                return resolve(botDiffs);
+            }
+            paginator.commandMessage.edit({
+                ...buildCPUMessage(botDiffs.length),
+                content: null
+            });
+        });
+    });
+}
+
+function handleRounds(context, response) {
+    return new Promise(async (resolve) => {
+        await response.edit({
+            embed: {
+                color: 0x2ecc71,
+                description: "React with one of the emojis below to set the maximum number of rounds\n" + 
+                    new Array(MaxRounds).fill().map((_, i) => `${numberEmojis[i]} ${(1 << i) * 2} rounds`).join("\n")
+            },
+            content: null
+        });
+
+        const paginator = await context.paginator.createReactionPaginator({
+            message: context.message,
+            commandMessage: response,
+            reactions: Object.fromEntries(numberEmojis.slice(0, MaxRounds).map(v => [ v, v ]))
+        });
+
+        paginator.on("raw", (data) => {
+            const { emoji } = data;
+
+            const index = numberEmojis.indexOf(emoji.name);
+            if (index < 0 || index + 1 > MaxRounds) return;
+    
+            paginator.stop();
+            resolve(1 << (index + 1));
+        });
+    });
+}
+
+function handleTeams(context, response) {
+    return new Promise(async (resolve) => {
+        await response.edit({
+            embed: {
+                color: 0x2ecc71,
+                description: `React with one of the emojis below to set the team size for this lobby\n` +
+                    Object.entries(TeamReactions).map(([k, v]) => v + " " + k).join("\n")
+            },
+            content: null
+        });
+
+        const paginator = await context.paginator.createReactionPaginator({
+            message: context.message,
+            commandMessage: response,
+            reactions: TeamReactions
+        });
+    
+        paginator.on("raw", (data) => {
+            const { emoji } = data;
+            switch (emoji.name) {
+                case TeamReactions["2v2"]:
+                    resolve(LobbyOptions.Teams2);
+                    break;
+                case TeamReactions["3v3"]:
+                    resolve(LobbyOptions.Teams3);
+                    break;
+                case TeamReactions["4v4"]:
+                    resolve(LobbyOptions.Teams4);
+                    break;
+                case TeamReactions["6v6"]:
+                    resolve(LobbyOptions.Teams6);
+                    break;              
+            }
+            paginator.stop();
+        });
+    });
+}
+
+async function createLobby(context, rest, response, userData) {
+    let botDiffs, maxRounds;
+    if (hasOption(userData.options, LobbyOptions.Bots)) {
+        botDiffs = await handleBots(context, response); 
+    }
+
+    if (hasOption(userData.options, LobbyOptions.Teams)) {
+        userData.options |= await handleTeams(context, response);
+    }
+
+    if (!hasOption(userData.options, LobbyOptions.Elimination)) {
+        maxRounds = await handleRounds(context, response);
+    }
+
+    console.log("botDiffs %s, maxRounds %d, options %d", botDiffs, maxRounds, userData.options);
+
     let data;
+
     try {
-        data = await rest.ttc.createLobby(context.userId, context.channelId, options, aiDiffs);
+        data = await rest.ttc.createLobby(context.userId, context.channelId, {
+            options: userData.options,
+            aiDiffs: botDiffs,
+            maxRounds
+        });
     } catch(e) {
         await response.edit({
-            content: e.message,
+            content: e.stack,
             embed: null
         });
         return;
     }
     
-    await sendOrEditLobbyMessage(context, rest, data, response);
+    await sendOrEditLobbyMessage(context, rest, response, data);
 }
 
-async function sendOrEditLobbyMessage(context, rest, lobby, response) {
+async function sendOrEditLobbyMessage(context, rest, response, lobby) {
     // Attempt to send password to message author
     if (hasOption(lobby.options, LobbyOptions.Private)) {
         try {
@@ -212,7 +244,10 @@ async function sendOrEditLobbyMessage(context, rest, lobby, response) {
     }
 
     if (response) {
-        await response.edit(messageData);
+        await response.edit({
+            ...messageData,
+            content: null
+        });
     } else {
         await context.reply(messageData);
     }
