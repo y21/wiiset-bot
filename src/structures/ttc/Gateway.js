@@ -31,7 +31,8 @@ const Texts = {
     PreparationPhase: "ℹ️ Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on {track}",
     ThresholdPhase: "⏱️ Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
     IngamePhase: "🏎️ Ingame phase has started! Make sure to upload a ghost to the ghost database on the selected track within the next 15 minutes.",
-    LobbyEnd: "✅ Lobby has ended! Winner: {winner} ({rating}R)"
+    LobbyEndUser: "✅ Lobby has ended! Winner: __{winner}__ ({rating}R)",
+    LobbyEndTeams: "✅ Lobby has ended! Winner: __Team #{winner}__\n\nTeam members:\n"
 };
 
 module.exports = class TTCGateway {
@@ -144,9 +145,21 @@ module.exports = class TTCGateway {
                 break;
                 case Events.LobbyEnd:
                     const { winner } = message.data;
-                    messageData.embed.description = Texts.LobbyEnd
-                        .replace("{winner}", winner.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(winner.userid, winner.aiDiff) : "<@" + winner.userid + ">")
-                        .replace("{rating}", message.data.winner.total_rating + message.data.winner.base_rating);
+
+                    if (message.data.isTeamsMode) {
+                        messageData.embed.description = Texts.LobbyEndTeams
+                            .replace("{winner}", winner.id) + 
+                            winner.players.map(v => {
+                                const user = v.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(v.userid) : `<@${v.userid}>`;
+                                const rating = v.base_rating + v.total_rating;
+
+                                return `- ${user} (${rating}R)`;
+                            }).join("\n")
+                    } else {
+                        messageData.embed.description = Texts.LobbyEndUser
+                            .replace("{winner}", winner.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(winner.userid, winner.aiDiff) : "<@" + winner.userid + ">")
+                            .replace("{rating}", message.data.winner.total_rating + message.data.winner.base_rating);
+                    }
 
                     for (const c of message.recipients) {
                         this.bot.client.rest.createMessage(c, messageData);
