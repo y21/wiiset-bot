@@ -205,10 +205,6 @@ async function sendOrEditLobbyMessage(context, rest, lobby, response) {
     };
 
     if (hasOption(lobby.options, LobbyOptions.Teams)) {
-        console.log({
-            name: "Teams",
-            value: lobby.teamsToString() || "-"
-        })
         messageData.embed.fields.push({
             name: "Teams",
             value: lobby.teamsToString() || "-"

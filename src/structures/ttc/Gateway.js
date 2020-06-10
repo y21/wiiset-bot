@@ -109,8 +109,6 @@ module.exports = class TTCGateway {
                         .sort((a, b) => a.ghost.timeSeconds - b.ghost.timeSeconds)
                         .filter(v => v.ghost.timeSeconds > 0 && v.ghost.timeSeconds < 360); // > 0 seconds and < 6 minutes
 
-                        console.log(filteredGhosts);
-
                     for (let i = 0; i < filteredGhosts.length; ++i) {
                         const player = filteredGhosts[i];
                         let tag, finishTime;
