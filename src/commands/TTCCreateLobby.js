@@ -188,8 +188,6 @@ async function createLobby(context, rest, response, userData) {
         maxRounds = await handleRounds(context, response);
     }
 
-    console.log("botDiffs %s, maxRounds %d, options %d", botDiffs, maxRounds, userData.options);
-
     let data;
 
     try {
@@ -200,7 +198,7 @@ async function createLobby(context, rest, response, userData) {
         });
     } catch(e) {
         await response.edit({
-            content: e.stack,
+            content: e.message,
             embed: null
         });
         return;
