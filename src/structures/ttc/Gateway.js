@@ -118,7 +118,7 @@ module.exports = class TTCGateway {
 
                         if (player.aiDiff === User.AiDifficulty.DISABLED) {
                             tag = await this.bot.client.rest.fetchUser(player.userid).then(v => v.username);
-                            finishTime = player.ghost.FinishTimeSimple;
+                            finishTime = player.ghost.finishTimeSimple;
                         } else {
                             const { aiDiff } = player;
                             tag = User.buildAIName(player.userid, aiDiff);
