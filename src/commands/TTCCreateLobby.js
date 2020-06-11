@@ -13,7 +13,7 @@ const TeamReactions = Object.fromEntries(["2v2", "3v3", "4v4", "6v6"].map((k, i)
 module.exports = {
     name: "ttc create",
     guildOnly: false,
-    ownerOnly: true,
+    ownerOnly: false,
     metadata: {
         description: "Creates a TTC Lobby",
         examples: [

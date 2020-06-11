@@ -1,7 +1,7 @@
 module.exports = {
     name: "ttc leave",
     guildOnly: false,
-    ownerOnly: true,
+    ownerOnly: false,
     metadata: {
         description: "Leaves a TTC Lobby"
     },

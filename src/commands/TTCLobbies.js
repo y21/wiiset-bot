@@ -4,7 +4,7 @@ const { TierToString, GetTier } = require("../structures/ttc/Tier");
 module.exports = {
     name: "ttc lobbies",
     guildOnly: false,
-    ownerOnly: true,
+    ownerOnly: false,
     metadata: {
         description: "Displays TTC lobbies"
     },
