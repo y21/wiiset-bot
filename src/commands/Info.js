@@ -7,6 +7,8 @@ module.exports = {
     },
     run: async (context) => {
         const ping = await context.client.ping();
+        const { rss } = process.memoryUsage();
+
         return [{
             embed: {
                 title: "Information",
@@ -14,7 +16,7 @@ module.exports = {
                 fields: [
                     {
                         name: "Ping",
-                        value: "Gateway: " + ping.gateway + "\nRest: " + ping.rest
+                        value: `Gateway: ${ping.gateway}ms\nREST: ${ping.rest}ms`
                     },
                     {
                         name: "Shard",
@@ -23,6 +25,10 @@ module.exports = {
                     {
                         name: "Owner(s)",
                         value: context.client.owners.join("\n")
+                    },
+                    {
+                        name: "Memory usage",
+                        value: (rss / 1024 ** 2).toFixed(2) + "mb"
                     }
                 ]
             }
