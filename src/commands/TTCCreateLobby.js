@@ -1,4 +1,4 @@
-const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit, randomizeOptions, randomizeSingleBotDiff } = require("../structures/ttc/Lobby");
+const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit, randomizeOptions, randomizeSingleBotDiff, randomizeBotDiffs } = require("../structures/ttc/Lobby");
 const { AiDifficulty } = require("../structures/ttc/User");
 const { Version } = require("../structures/ttc/Gateway");
 
@@ -8,11 +8,19 @@ const numberEmojis = [
 
 const MaxRounds = 7;
 
-const CpuReactions = Object.fromEntries(["EASY", "MEDIUM", "HARD", "EXPERT", "RANDOM", "STOP"].map((k, i) => [ k, numberEmojis[i] ]));
+const CpuReactions = Object.fromEntries(["EASY", "MEDIUM", "HARD", "EXPERT", "RANDOM", "RANDOMIZE_ALL", "STOP"].map((k, i) => [ k, numberEmojis[i] ]));
 const TeamReactions = Object.fromEntries(["2v2", "3v3", "4v4", "6v6"].map((k, i) => [ k, numberEmojis[i] ]));
 
-function capsToNormal(str) {
-    return str[0] + str.slice(1).toLowerCase();
+function formatConstantKey(str) {
+    let ret = "";
+
+    for (let i = 0; i < str.length; ++i) {
+        if (i === 0) ret += str[i];
+        else if (str[i] === "_") ret += " ";
+        else ret += String.fromCharCode(str[i].charCodeAt() | (1 << 5));
+    }
+
+    return ret;
 }
 
 module.exports = {
@@ -67,7 +75,7 @@ function buildCPUMessage(index) {
             color: 0x2ecc71,
             title: `TT-Competition ${Version} | CPU #${index + 1}`,
             description: "React with one of the emojis below to set the difficulty for this CPU\n" +
-                Object.entries(CpuReactions).map(([k, v]) => v + " " + capsToNormal(k)).join("\n")
+                Object.entries(CpuReactions).map(([k, v]) => v + " " + formatConstantKey(k)).join("\n")
         }
     };
 }
@@ -104,6 +112,10 @@ function handleBots(context, response) {
                     break;
                 case CpuReactions.RANDOM:
                     botDiffs.push(randomizeSingleBotDiff());
+                    break;
+                case CpuReactions.RANDOMIZE_ALL:
+                    const count = Math.random() * (BotsLimit - botDiffs.length) | 0;
+                    botDiffs.push(...randomizeBotDiffs(count));
                     break;
                 case CpuReactions.STOP:
                     paginator.stop();
