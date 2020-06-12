@@ -35,6 +35,39 @@ const options = {
     }
 };
 
+/**
+ * Randomizes lobby options
+ * 
+ * @returns {number}
+ */
+
+function randomizeOptions() {
+    const incompatible = [
+        [ options["200cc"], options["150cc"] ],
+        [ options.Teams2, options.Teams3, options.Teams4, options.Teams6, 0 ],
+        [ options.RT, options.CT ]
+    ];
+    
+    const exclude = [ options.Teams, options.Private, ...incompatible.flat() ];
+
+    let localOpt = Object.values(options).reduce((prev, cur) => exclude.includes(cur) || Math.random() > .5 ? prev + 0 : prev | cur, 0);
+
+    for (const type of incompatible) {
+        if (Math.random() > .5) localOpt |= type[(Math.random() * type.length) | 0];
+    }
+
+    return localOpt;
+}
+
+/**
+ * Randomizes bot difficulties
+ * 
+ * @returns {number}
+ */
+function randomizeBotDiffs(count) {
+    return Array(count).fill().map(() => (Math.random() * User.AiDifficulty.EXPERT | 0) + 1);
+}
+
 module.exports = class Lobby {
     constructor(data) {
         this.id = data.id;
@@ -150,3 +183,5 @@ module.exports = class Lobby {
 
 module.exports.Options = options;
 module.exports.BotsLimit = 1 << 3;
+module.exports.randomizeOptions = randomizeOptions;
+module.exports.randomizeBotDiffs = randomizeBotDiffs;

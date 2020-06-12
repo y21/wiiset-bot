@@ -1,5 +1,6 @@
 const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit } = require("../structures/ttc/Lobby");
 const { AiDifficulty } = require("../structures/ttc/User");
+const { Version } = require("../structures/ttc/Gateway");
 
 const numberEmojis = [
     "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"
@@ -17,10 +18,10 @@ module.exports = {
     metadata: {
         description: "Creates a TTC Lobby",
         examples: [
-            ["w.ttc createlobby 150cc, RT, NoElimination", "150cc, Regular Tracks and no Elimination after each round"],
-            ["w.ttc createlobby 200cc", "200cc, All Tracks and Elimination"],
-            ["w.ttc createlobby 200cc, CT", "200cc, Custom Tracks and Elimination"],
-            ["w.ttc createlobby 200cc, CT, Private", "200cc, Custom Tracks, Elimination and Private (password required to join)"]
+            ["w.ttc createlobby 150cc, RT, Elimination", "150cc, Regular Tracks and Elimination after each round"],
+            ["w.ttc createlobby 200cc", "200cc and All Tracks"],
+            ["w.ttc createlobby 200cc, CT, Bots", "200cc, Custom Tracks and CPUs"],
+            ["w.ttc createlobby 200cc, CT, Private", "200cc, Custom Tracks and Private (password required to join)"]
         ]
     },
     run: async function (context, args, rest) {
@@ -54,7 +55,8 @@ function buildCPUMessage(index) {
     return {
         embed: {
             color: 0x2ecc71,
-            description: `React with one of the emojis below to set the difficulty for CPU #${index + 1}\n` +
+            title: `TT-Competition ${Version} | CPU #${index + 1}`,
+            description: "React with one of the emojis below to set the difficulty for this CPU\n" +
                 Object.entries(CpuReactions).map(([k, v]) => v + " " + k).join("\n")
         }
     };
@@ -112,6 +114,7 @@ function handleRounds(context, response) {
         await response.edit({
             embed: {
                 color: 0x2ecc71,
+                title: `TT-Competition ${Version} | Number of rounds`,
                 description: "React with one of the emojis below to set the maximum number of rounds\n" + 
                     new Array(MaxRounds).fill().map((_, i) => `${numberEmojis[i]} ${(1 << i) * 2} rounds`).join("\n")
             },
@@ -141,6 +144,7 @@ function handleTeams(context, response) {
         await response.edit({
             embed: {
                 color: 0x2ecc71,
+                title: `TT-Competition ${Version} | Team size`,
                 description: `React with one of the emojis below to set the team size for this lobby\n` +
                     Object.entries(TeamReactions).map(([k, v]) => v + " " + k).join("\n")
             },
@@ -224,7 +228,7 @@ async function sendOrEditLobbyMessage(context, rest, response, lobby) {
             description: "Successfully created lobby!",
             fields: [{
                     name: "Lobby ID",
-                    value: lobby.id
+                    value: lobby.id || "-"
                 },
                 {
                     name: "Lobby Options",
