@@ -62,10 +62,19 @@ function randomizeOptions() {
 /**
  * Randomizes bot difficulties
  * 
- * @returns {number}
+ * @returns {number[]}
  */
 function randomizeBotDiffs(count) {
-    return Array(count).fill().map(() => (Math.random() * User.AiDifficulty.EXPERT | 0) + 1);
+    return Array(count).fill().map(randomizeSingleBotDiff);
+}
+
+/**
+ * Randomizes bot difficulty
+ * 
+ * @returns {number}
+ */
+function randomizeSingleBotDiff() {
+    return (Math.random() * User.AiDifficulty.EXPERT | 0) + 1;
 }
 
 module.exports = class Lobby {
@@ -185,3 +194,4 @@ module.exports.Options = options;
 module.exports.BotsLimit = 1 << 3;
 module.exports.randomizeOptions = randomizeOptions;
 module.exports.randomizeBotDiffs = randomizeBotDiffs;
+module.exports.randomizeSingleBotDiff = randomizeSingleBotDiff;
