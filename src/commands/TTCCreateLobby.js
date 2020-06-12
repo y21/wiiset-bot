@@ -1,4 +1,4 @@
-const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit } = require("../structures/ttc/Lobby");
+const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit, randomizeOptions } = require("../structures/ttc/Lobby");
 const { AiDifficulty } = require("../structures/ttc/User");
 const { Version } = require("../structures/ttc/Gateway");
 
@@ -34,17 +34,23 @@ module.exports = {
                 this.metadata.examples.map(([cmd, expl]) => `\`${cmd}\` => ${expl}`).join("\n"));
         }
 
-        // Parse options
-        let options = args
-                .join(" ")
-                .split(/, */g)
-                .filter(v => Object.prototype.hasOwnProperty.call(LobbyOptions, v)); // To prevent access to 'constructor', 'prototype', ...
-            
-        if (options.length < 1) {
-            return context.reply("Option(s) not found. Run command without arguments to get a list of available options.");
-        }
+        let options;
 
-        options = options.reduce((a, b) => a | LobbyOptions[b], 0);
+        if (args[0].toLowerCase() === "random") {
+            options = randomizeOptions();
+        } else {
+            // Parse options
+            options = args
+                    .join(" ")
+                    .split(/, */g)
+                    .filter(v => Object.prototype.hasOwnProperty.call(LobbyOptions, v)); // To prevent access to 'constructor', 'prototype', ...
+                
+            if (options.length < 1) {
+                return context.reply("Option(s) not found. Run command without arguments to get a list of available options.");
+            }
+    
+            options = options.reduce((a, b) => a | LobbyOptions[b], 0);
+        }
 
         const response = await context.reply("Creating lobby...");
         await createLobby(context, rest, response, { options });
