@@ -1,4 +1,13 @@
-const { Options: LobbyOptions, formatOptions: formatLobbyOptions, hasOption, BotsLimit, randomizeOptions, randomizeSingleBotDiff, randomizeBotDiffs } = require("../structures/ttc/Lobby");
+const {
+    Options: LobbyOptions,
+    formatOptions: formatLobbyOptions,
+    hasOption,
+    BotsLimit,
+    randomizeOptions,
+    randomizeSingleBotDiff,
+    randomizeBotDiffs
+} = require("../structures/ttc/Lobby");
+const { formatConstantKey } = require("../structures/Constants");
 const { AiDifficulty } = require("../structures/ttc/User");
 const { Version } = require("../structures/ttc/Gateway");
 
@@ -10,18 +19,6 @@ const MaxRounds = 7;
 
 const CpuReactions = Object.fromEntries(["EASY", "MEDIUM", "HARD", "EXPERT", "RANDOM", "RANDOMIZE_ALL", "STOP"].map((k, i) => [ k, numberEmojis[i] ]));
 const TeamReactions = Object.fromEntries(["2v2", "3v3", "4v4", "6v6"].map((k, i) => [ k, numberEmojis[i] ]));
-
-function formatConstantKey(str) {
-    let ret = "";
-
-    for (let i = 0; i < str.length; ++i) {
-        if (i === 0) ret += str[i];
-        else if (str[i] === "_") ret += " ";
-        else ret += String.fromCharCode(str[i].charCodeAt() | (1 << 5));
-    }
-
-    return ret;
-}
 
 module.exports = {
     name: "ttc create",
