@@ -15,7 +15,7 @@ const numberEmojis = [
     "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"
 ];
 
-const MaxRounds = 7;
+const MaxRounds = 7; // 1 << 7 = 128
 
 const CpuReactions = Object.fromEntries(["EASY", "MEDIUM", "HARD", "EXPERT", "RANDOM", "RANDOMIZE_ALL", "STOP"].map((k, i) => [ k, numberEmojis[i] ]));
 const TeamReactions = Object.fromEntries(["2v2", "3v3", "4v4", "6v6"].map((k, i) => [ k, numberEmojis[i] ]));
