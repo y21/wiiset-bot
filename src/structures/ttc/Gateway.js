@@ -162,7 +162,7 @@ module.exports = class TTCGateway {
             }
 
             // Ugly check to see if embed has changed
-            if (messageData.embed.description) {
+            if (messageData.embed.description || messageData.embed.fields) {
                 for (const c of message.recipients) {
                     await this.bot.client.rest.createMessage(c, messageData);
                 }
