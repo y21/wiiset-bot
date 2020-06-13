@@ -10,20 +10,22 @@ const { Regexes } = require("../Constants");
 let Lobby = require("./Lobby");
 
 const Events = {
-    ThresholdReached: 0x1,
-    NewTrack: 0x2,
-    GameStart: 0x4,
-    RoundEnd: 0x8,
-    LobbyEnd: 0x10
+    ThresholdReached: 1 << 0,
+    NewTrack: 1 << 1,
+    GameStart: 1 << 2,
+    RoundEnd: 1 << 3,
+    LobbyWarning: 1 << 4,
+    LobbyEnd: 1 << 5,
+    UserRankUpdate: 1 << 6
 };
 
 const LobbyStates = {
-    Waiting: 0x1,
-    ThresholdReached: 0x2,
-    MapPick: 0x4,
-    Preparation: 0x8,
-    Ingame: 0x10,
-    Upload: 0x20
+    Waiting: 1 << 0,
+    ThresholdReached: 1 << 1,
+    MapPick: 1 << 2,
+    Preparation: 1 << 3,
+    Ingame: 1 << 4,
+    Upload: 1 << 5
 };
 
 const Medals = [ "🥇", "🥈", "🥉" ];
@@ -32,9 +34,11 @@ const Texts = {
     PreparationPhase: "ℹ️ Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on {track}",
     ThresholdPhase: "⏱️ Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...",
     IngamePhase: "🏎️ Ingame phase has started! Make sure to upload a ghost to the ghost database on the selected track within the next 15 minutes.",
+    LobbyTimeWarning: "⚠️ {time} left!",
     LobbyEndUser: "✅ Lobby has ended! Winner: __{winner}__ ({rating}R)",
     LobbyEndTeams: "✅ Lobby has ended! Winner: __Team #{winner}__\n\n"
 };
+Texts.LobbyTimeWarningLast = Texts.LobbyTimeWarning + " Please make sure to upload a ghost to the ghost database.";
 
 module.exports = class TTCGateway {
     constructor(bot) {
@@ -83,24 +87,12 @@ module.exports = class TTCGateway {
             switch(message.type) {
                 case Events.NewTrack:
                     messageData.embed.description = Texts.PreparationPhase.replace("{track}", message.data.message);
-
-                    for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, messageData);
-                    }
                 break;
                 case Events.ThresholdReached:
                     messageData.embed.description = Texts.ThresholdPhase;
-
-                    for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, messageData);
-                    }
                 break;
                 case Events.GameStart:
                     messageData.embed.description = Texts.IngamePhase;
-
-                    for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, messageData);
-                    }
                 break;
                 case Events.RoundEnd:
                     const table = new AsciiTable()
@@ -140,10 +132,6 @@ module.exports = class TTCGateway {
                                 .join("\n") || "No players have been eliminated"
                         }
                     ];
-
-                    for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, messageData);
-                    }
                 break;
                 case Events.LobbyEnd:
                     const { winner } = message.data;
@@ -157,11 +145,27 @@ module.exports = class TTCGateway {
                             .replace("{winner}", winner.aiDiff !== User.AiDifficulty.DISABLED ? User.buildAIName(winner.userid, winner.aiDiff) : "<@" + winner.userid + ">")
                             .replace("{rating}", message.data.winner.total_rating + message.data.winner.base_rating);
                     }
-
-                    for (const c of message.recipients) {
-                        this.bot.client.rest.createMessage(c, messageData);
-                    }
                 break;
+                case Events.LobbyWarning:
+                    const { remaining, warnCount } = message.data;
+                    let timeF;
+
+                    if (remaining < 60) {
+                        timeF = remaining + " seconds";
+                    } else {
+                        timeF = (remaining / 60).toFixed(1) + " minutes";
+                    }
+
+                    messageData.embed.description = Texts[warnCount >= 2 ? "LobbyTimeWarningLast" : "LobbyTimeWarning"]
+                        .replace("{time}", timeF);
+                    break;
+            }
+
+            // Ugly check to see if embed has changed
+            if (messageData.embed.description) {
+                for (const c of message.recipients) {
+                    await this.bot.client.rest.createMessage(c, messageData);
+                }
             }
         };
     }
