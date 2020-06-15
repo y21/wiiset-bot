@@ -27,9 +27,6 @@ const options = {
     get CTs() {
         return this.CT;
     },
-    get NoElim() {
-        return this.NoElimination;
-    },
     get Password() {
         return this.Private;
     }
