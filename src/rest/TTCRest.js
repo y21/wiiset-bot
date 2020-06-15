@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const Lobby = require("../structures/ttc/Lobby");
 const User = require("../structures/ttc/User");
 
-const AutoDetection = 0;
+const AutoDetection = "0";
 
 module.exports = class TTCRest {
     constructor(host, token) {
@@ -89,7 +89,7 @@ module.exports = class TTCRest {
     }
 
     addPlayerToLobby(lobbyId, userId, channelId, password) {
-        return this.request(`${this.host}/api/v1/lobbies/${lobbyId}/players`, {
+        return this.request(`${this.host}/api/v1/lobbies/${lobbyId || AutoDetection}/players`, {
             method: "POST",
             body: JSON.stringify({
                 userid: userId,
