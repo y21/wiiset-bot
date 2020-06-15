@@ -16,6 +16,7 @@ const options = {
     Teams3: 1 << 11,
     Teams4: 1 << 12,
     Teams6: 1 << 13,
+    NoGlitch: 1 << 14,
 
     // Aliases
     get AllTracks() {
@@ -124,45 +125,14 @@ module.exports = class Lobby {
     }
 
     static formatOptions(checkOptions) {
-        const allOptions = [];
-    
-        if (Lobby.hasOption(checkOptions, options["150cc"])) {
-            allOptions.push("150cc");
-        }
-    
-        if (Lobby.hasOption(checkOptions, options["200cc"])) {
-            allOptions.push("200cc");
-        }
-    
-        if (Lobby.hasOption(checkOptions, options.AT)) {
-            allOptions.push("All Tracks");
-        } else if (Lobby.hasOption(checkOptions, options.RT)) {
-            allOptions.push("RTs");
-        } else if (Lobby.hasOption(checkOptions, options.CT)) {
-            allOptions.push("CTs");
-        }
-    
-        if (Lobby.hasOption(checkOptions, options.NoElimination)) {
-            allOptions.push("No Elimination");
-        }
-    
-        if (Lobby.hasOption(checkOptions, options.Private)) {
-            allOptions.push("Private");
-        }
-    
-        if (Lobby.hasOption(checkOptions, options.Ranked)) {
-            allOptions.push("Ranked");
-        }
-
-        if (Lobby.hasOption(checkOptions, options.Teams)) {
-            allOptions.push("Teams");
-        }
-
-        if (Lobby.hasOption(checkOptions, options.Bots)) {
-            allOptions.push("Bots");
-        }
-        
-        return allOptions.join(", ");
+        const _set = new Set();
+        return Object.entries(options).filter(([, v]) => {
+            if ((checkOptions & v) === v && !_set.has(v)) {
+                _set.add(v);
+                return true;
+            }
+            return false;
+        }).map(k => k[0]).join(', ');
     }
 
     static hasOption(checkOptions, option) {
