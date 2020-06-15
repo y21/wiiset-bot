@@ -9,8 +9,8 @@ module.exports = {
         if (args[0] && isNaN(args[0])) {
             throw new Error("Invalid Lobby ID");
         }
-        await rest.ttc.addPlayerToLobby(args[0], context.userId, context.channelId, args[1]);
+        const lobby = await rest.ttc.addPlayerToLobby(args[0], context.userId, context.channelId, args[1]);
 
-        return ["Successfully joined lobby!"];
+        return [`Successfully joined lobby ${lobby.id}!`];
     }
 };
