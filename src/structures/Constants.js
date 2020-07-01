@@ -17,12 +17,14 @@ module.exports = {
      * @param {string} str
      * @returns {string?}
      */
-    resolveUser: function(str) {
+    resolveUser: function(str, target) {
         if (str.startsWith("<@") && str.endsWith(">")) {
             const match = str.match(/<@!?(\d{17,19})>/);
             if (match) return match[1];
         } else if (!isNaN(str) && str.length >= 17 && str.length <= 19) {
             return str;
+        } else if (str === "me") {
+            return target;
         }
     },
     /**
