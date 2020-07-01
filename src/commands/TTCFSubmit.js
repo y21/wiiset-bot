@@ -17,7 +17,7 @@ module.exports = {
 
         if (!Regexes.GhostFinishTime.test(time)) throw new Error(`Invalid ghost time format! Example usage: ${this.metadata.examples[0]}`);
 
-        const userId = resolveUser(user);
+        const userId = resolveUser(user, context.userId);
         if (!userId) throw new Error(`Invalid user! Example usage: ${this.metadata.examples[0]}`);
 
         const commandMessage = await context.reply({
