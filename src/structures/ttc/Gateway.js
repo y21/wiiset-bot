@@ -5,7 +5,7 @@ const { ttcToken } = require("../../../configs/bot");
 const User = require("./User");
 const Logger = require("../Logger");
 const AsciiTable = require("ascii-table");
-const Version = "1.0-beta";
+const Version = "1.1-beta";
 const { Regexes } = require("../Constants");
 let Lobby = require("./Lobby");
 
@@ -16,7 +16,8 @@ const Events = {
     RoundEnd: 1 << 3,
     LobbyWarning: 1 << 4,
     LobbyEnd: 1 << 5,
-    UserRankUpdate: 1 << 6
+    UserRankUpdate: 1 << 6,
+    InvalidGhost: 1 << 7
 };
 
 const LobbyStates = {
@@ -104,7 +105,8 @@ module.exports = class TTCGateway {
                     messageData.embed.fields = [
                         {
                             name: "Top ghosts for this round",
-                            value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```"
+                            value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```\n" +
+                                    "Note: Times marked with * were manually added."
                         },
                         {
                             name: "Eliminated",
@@ -116,7 +118,6 @@ module.exports = class TTCGateway {
                     break;
                 }
                 case Events.LobbyEnd: {
-                    const { winner } = message.data;
                     const players = !message.data.isTeamsMode ? message.data.users : Object.values(message.data.users);
                     const table = await this.generateResultsTable(players.slice(0, 10), null, {
                         end: true,
@@ -143,6 +144,33 @@ module.exports = class TTCGateway {
                     messageData.embed.description = Texts[warnCount >= 2 ? "LobbyTimeWarningLast" : "LobbyTimeWarning"]
                         .replace("{time}", timeF);
                     break;
+                }
+                case Events.InvalidGhost: {
+                    const dm = await this.bot.client.rest.fetchUser(message.recipients[0]).then(x => x.createOrGetDm());
+                    try {
+                        await dm.createMessage({
+                            embed: {
+                                title: `TT-Competition ${Version}`,
+                                description: "One of your submitted ghosts were not found and points gained from that round have been removed from your profile.",
+                                fields: [
+                                    {
+                                        name: "Track",
+                                        value: message.data.track || "?"
+                                    },
+                                    {
+                                        name: "Time",
+                                        value: timeSecondsToString(message.data.time) || "?"
+                                    },
+                                    {
+                                        name: "Lobby ID",
+                                        value: message.data.lobby || "?"
+                                    }
+                                ]
+                            }
+                        });
+                    } catch(e) {
+                        console.log(e)
+                    }
                 }
             }
 
@@ -207,6 +235,10 @@ module.exports = class TTCGateway {
                     points += " (+0)";
                 } else {
                     points += ` (+${calculatePoints(player.ghost.timeSeconds - wrTime) | 0})`;
+                }
+
+                if (player.ghost.customGhost) {
+                    finishTime += " (*)";
                 }
 
                 table.addRow(Medals[i] || i + 1, tag, finishTime, points);
