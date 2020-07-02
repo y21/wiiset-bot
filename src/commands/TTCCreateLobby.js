@@ -7,13 +7,9 @@ const {
     randomizeSingleBotDiff,
     randomizeBotDiffs
 } = require("../structures/ttc/Lobby");
-const { formatConstantKey } = require("../structures/Constants");
+const { formatConstantKey, numberEmojis } = require("../structures/Constants");
 const { AiDifficulty } = require("../structures/ttc/User");
 const { Version } = require("../structures/ttc/Gateway");
-
-const numberEmojis = [
-    "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"
-];
 
 const MaxRounds = 7; // 1 << 7 = 128
 
@@ -93,7 +89,7 @@ function handleBots(context, response) {
 
         paginator.on("raw", (data) => {
             const { emoji } = data;
-    
+
             switch (emoji.name) {
                 case CpuReactions.EASY:
                     botDiffs.push(AiDifficulty.EASY);
