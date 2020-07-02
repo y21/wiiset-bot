@@ -129,4 +129,12 @@ module.exports = class TTCRest {
             })
         });
     }
+
+    forceTrack(lobbyId, track) {
+        console.log(lobbyId, track);
+        return this.request(`${this.host}/api/v1/lobbies/${lobbyId}/track`, {
+            method: "POST",
+            body: JSON.stringify({ track })
+        });
+    }
 }
