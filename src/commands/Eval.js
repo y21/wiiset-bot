@@ -15,6 +15,6 @@ module.exports = {
             res = e.message;
         }
 
-        return ["```js\n" + (typeof res === "string" ? res : inspect(res).substr(0, 1980)) + "\n```"];
+        return ["```js\n" + (typeof res === "string" ? res : inspect(res, { depth: 0 }).substr(0, 1980)) + "\n```"];
     }
 };

@@ -118,4 +118,23 @@ module.exports = class TTCRest {
             })
         }); // TODO: create ghost class
     }
+
+    forceSubmitGhost(userId, requesterId, finishTime, proof) {
+        return this.request(`${this.host}/api/v1/lobbies/${AutoDetection}/players/${userId}/ghosts/force`, {
+            method: "POST",
+            body: JSON.stringify({
+                requester: requesterId,
+                proof,
+                finishTime
+            })
+        });
+    }
+
+    forceTrack(lobbyId, track) {
+        console.log(lobbyId, track);
+        return this.request(`${this.host}/api/v1/lobbies/${lobbyId}/track`, {
+            method: "POST",
+            body: JSON.stringify({ track })
+        });
+    }
 }

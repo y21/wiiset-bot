@@ -21,7 +21,8 @@ module.exports = {
                         "The bot will then display a table that shows all submitted ghosts.\n" +
                         "This help command will guide you through everything you need to know including creating customised lobbies, joining lobbies, leaving lobbies and more...\n" +
                         "Below this message, you should see reactions (⬅️, ➡️, ...) which lets you navigate through pages. " +
-                        "You can also jump to a specific page by reacting with 🔢.",
+                        "You can also jump to a specific page by reacting with 🔢.\n" +
+                        "Note: Always make sure to enable DMs in at least one server this bot shares with you, so it can notify you if a ghost has failed to upload",
                     fields: [{
                         name: "Contents",
                         value: "Page 1: Introduction\n" +

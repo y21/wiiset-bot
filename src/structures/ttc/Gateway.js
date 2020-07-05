@@ -5,18 +5,20 @@ const { ttcToken } = require("../../../configs/bot");
 const User = require("./User");
 const Logger = require("../Logger");
 const AsciiTable = require("ascii-table");
-const Version = "1.0-beta";
-const { Regexes } = require("../Constants");
+const Version = "1.1-beta";
+const { Regexes, numberEmojis } = require("../Constants");
 let Lobby = require("./Lobby");
 
 const Events = {
     ThresholdReached: 1 << 0,
-    NewTrack: 1 << 1,
-    GameStart: 1 << 2,
-    RoundEnd: 1 << 3,
-    LobbyWarning: 1 << 4,
-    LobbyEnd: 1 << 5,
-    UserRankUpdate: 1 << 6
+    TrackSelection: 1 << 1,
+    NewTrack: 1 << 2,
+    GameStart: 1 << 3,
+    RoundEnd: 1 << 4,
+    LobbyWarning: 1 << 5,
+    LobbyEnd: 1 << 6,
+    UserRankUpdate: 1 << 7,
+    InvalidGhost: 1 << 8
 };
 
 const LobbyStates = {
@@ -84,6 +86,58 @@ module.exports = class TTCGateway {
             }
 
             switch(message.type) {
+                case Events.TrackSelection:
+                    const tracks = message.data.tracks.map(x => x.name);
+                    const reactions = Object.fromEntries(tracks.map((k, i) => [ k, numberEmojis[i] ]));
+
+                    messageData.embed.description = "Please vote for a track within the next 60 seconds\n" + tracks
+                        .map((k, i) => `${numberEmojis[i]} ${k}`)
+                        .join("\n");
+
+                    const voteMessages = await Promise.all(
+                        message.recipients.map(x => this.bot.client.rest.createMessage(x, messageData))
+                    );
+
+                    const paginator = await this.bot.paginator.createReactionPaginator({
+                        message: {
+                            // ugly, but since we don't have a message here and we need a unique identifier for the listener
+                            // we use the current timestamp
+                            id: Date.now()
+                        },
+                        reactions,
+                        targetUser: new Set(message.data.users.map(x => x.userid)),
+                        commandMessage: new Map(voteMessages.map(x => [x.id, x])),
+                        maxTime: 60000
+                    });
+
+                    const votes = Object.fromEntries(tracks.map(x => [ x, [] ]));
+
+                    paginator.on("raw", data => {
+                        const { emoji } = data;
+
+                        const u = votes[tracks[numberEmojis.indexOf(emoji.name)]];
+                        if (u.includes(data.user_id)) return;
+
+                        u.push(data.user_id);
+                    });
+
+                    paginator.on("stop", async () => {
+                        const [track, users] = Object.entries(votes).sort((a, b) => b[1].length - a[1].length)[0];
+                        try {
+                            await this.bot.rest.ttc.forceTrack(message.data.lobbyID, track);
+                            await paginator.update({
+                                embed: null,
+                                content: `Track: ${track} (${users.length} votes)`
+                            });
+                        } catch(e) {
+                            await paginator.update({
+                                embed: null,
+                                content: e.message
+                            });
+                        }
+                    });
+                    
+                    return;
                 case Events.NewTrack:
                     messageData.embed.description = Texts.PreparationPhase
                         .replace("{track}", message.data.message)
@@ -104,7 +158,8 @@ module.exports = class TTCGateway {
                     messageData.embed.fields = [
                         {
                             name: "Top ghosts for this round",
-                            value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```"
+                            value: "```js\n" + (table.toString().trim() || "No ghosts found") + "\n```\n" +
+                                    "Note: Times marked with * were manually added."
                         },
                         {
                             name: "Eliminated",
@@ -116,7 +171,6 @@ module.exports = class TTCGateway {
                     break;
                 }
                 case Events.LobbyEnd: {
-                    const { winner } = message.data;
                     const players = !message.data.isTeamsMode ? message.data.users : Object.values(message.data.users);
                     const table = await this.generateResultsTable(players.slice(0, 10), null, {
                         end: true,
@@ -143,6 +197,34 @@ module.exports = class TTCGateway {
                     messageData.embed.description = Texts[warnCount >= 2 ? "LobbyTimeWarningLast" : "LobbyTimeWarning"]
                         .replace("{time}", timeF);
                     break;
+                }
+                case Events.InvalidGhost: {
+                    const dm = await this.bot.client.rest.fetchUser(message.recipients[0]).then(x => x.createOrGetDm());
+                    try {
+                        await dm.createMessage({
+                            embed: {
+                                title: `TT-Competition ${Version}`,
+                                description: "One of your submitted ghosts were not found and points gained from that round have been removed from your profile.\n" +
+                                            "If you think this is a mistake, please join the [TTC Server](https://discord.gg/BnFax3Z)\n",
+                                fields: [
+                                    {
+                                        name: "Track",
+                                        value: message.data.track || "?"
+                                    },
+                                    {
+                                        name: "Time",
+                                        value: timeSecondsToString(message.data.time) || "?"
+                                    },
+                                    {
+                                        name: "Lobby ID",
+                                        value: message.data.lobby || "?"
+                                    }
+                                ]
+                            }
+                        });
+                    } catch(e) {
+                        console.log(e)
+                    }
                 }
             }
 
@@ -179,7 +261,7 @@ module.exports = class TTCGateway {
             fastestGhosts = fastestGhosts.sort((a, b) => b.points - a.points);
             table.setHeading("#", playersHeading, "Pts");
         } else {
-            fastestGhosts = fastestGhosts.sort((a, b) => b.points - a.points);
+            fastestGhosts = fastestGhosts.sort((a, b) => a.ghost.timeSeconds - b.ghost.timeSeconds);
             table.setHeading("#", playersHeading, "Time", "Pts");
         }
 
@@ -207,6 +289,10 @@ module.exports = class TTCGateway {
                     points += " (+0)";
                 } else {
                     points += ` (+${calculatePoints(player.ghost.timeSeconds - wrTime) | 0})`;
+                }
+
+                if (player.ghost.customGhost) {
+                    finishTime += " (*)";
                 }
 
                 table.addRow(Medals[i] || i + 1, tag, finishTime, points);
