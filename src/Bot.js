@@ -21,13 +21,7 @@ function stripSensitiveLink(str) {
 class Bot {
     constructor(config, database) {
         this.config = config;
-        this.pool = new pg.Pool({
-            host: database.host,
-            port: database.port,
-            user: database.user,
-            password: database.password,
-            database: database.database
-        });
+        this.pool = new pg.Pool(database);
         this.db = new Database(this.pool);
         this.client = new Detritus.CommandClient(config.token, {
             prefix: config.prefix,
@@ -37,6 +31,7 @@ class Bot {
             activateOnEdits: true,
             cache: false,
             gateway: {
+                intents: (1 << 9) || (1 << 12),
                 autoReconnect: true,
                 identifyProperties: {
                     $browser: "Discord iOS"
