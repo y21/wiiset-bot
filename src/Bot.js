@@ -31,7 +31,7 @@ class Bot {
             activateOnEdits: true,
             cache: false,
             gateway: {
-                intents: (1 << 9) || (1 << 12),
+                intents: (1 << 9) || (1 << 12) || (1 << 10),
                 autoReconnect: true,
                 identifyProperties: {
                     $browser: "Discord iOS"
