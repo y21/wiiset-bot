@@ -5,9 +5,6 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=y21_wiiset-bot&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=y21_wiiset-bot)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=y21_wiiset-bot&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=y21_wiiset-bot)
 
-The Wiiset Discord Bot
-Join our <a href="https://discord.gg/6DPWSmK">Discord Server</a> for support.
-
 ## Contributing
 If you're planning to contribute to this repository, feel free to fork and submit a pull request, but please follow these rules:
 - Accurate commit names/pull request description/title
