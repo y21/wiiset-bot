@@ -1,8 +1,8 @@
 {
   "name": "wiiset-bot",
   "version": "1.0.0",
-  "description": "A Discord bot",
-  "main": "run.js",
+  "description": "",
+  "main": "dist/src/run.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,25 +10,20 @@
     "type": "git",
     "url": "git+https://github.com/y21/wiiset-bot.git"
   },
-  "author": "y21",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/y21/wiiset-bot/issues"
   },
   "homepage": "https://github.com/y21/wiiset-bot#readme",
   "dependencies": {
-    "ascii-table": "0.0.9",
-    "detritus-client": "^0.10.5",
-    "detritus-pagination": "^1.1.2",
-    "node-fetch": "*",
-    "pg": "^7.17.0",
-    "pws": "^4.3.0",
-    "ws": "^7.2.3"
-  },
-  "devDependencies": {
-    "typescript": "^3.7.4",
-    "eslint": "^6.8.0",
-    "@typescript-eslint/eslint-plugin": "^2.14.0",
-    "@typescript-eslint/parser": "^2.14.0"
+    "@types/pg": "^7.14.4",
+    "@types/ws": "^7.2.6",
+    "ctgp-rest": "^1.0.3",
+    "detritus-client": "^0.11.1",
+    "detritus-pagination": "^1.2.2",
+    "node-fetch": "^2.6.0",
+    "pg": "^8.3.2",
+    "ws": "^7.3.1"
   }
 }
