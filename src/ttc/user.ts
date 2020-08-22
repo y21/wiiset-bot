@@ -1,3 +1,5 @@
+import { Ghost } from "./types";
+
 export const AiDifficulty = Object.freeze({
     DISABLED: 0,
     EASY: 1,
@@ -12,9 +14,13 @@ export interface UserData {
     base_rating: number;
     total_rating: number;
     pid: string;
-    ghost: string;
+    ghost: Ghost;
     tier: string;
     aiDiff: number;
+}
+
+export interface Player extends UserData {
+    points: number
 }
 
 export default class User {
@@ -23,7 +29,7 @@ export default class User {
     public baseRating: number;
     public totalRating: number;
     public pid: string;
-    public ghost: string;
+    public ghost: Ghost;
     public tier: string;
     public aiDiff: number;
 

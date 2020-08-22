@@ -7,7 +7,8 @@ import * as Types from './types';
 import {
     messageSystemContent,
     Message,
-    ChannelDM
+    ChannelDM,
+    UserWithFlags
 } from 'detritus-client/lib/structures';
 import {
     SNOWFLAKE_REGEX, TTC_VERSION, NUMBER_EMOJIS, MEDALS
@@ -61,7 +62,7 @@ export class Gateway {
         this.makeConnection();
     }
 
-    private async handleTrackSelection(payload: Types.GatewayPayload) {
+    private async handleTrackSelection(payload: Types.GatewayPayload<Types.LobbyTrackSelectionData>) {
         const tracks: Array<string> = payload.data.tracks.map(x => x.name);
         const reactions = Object.fromEntries(
             tracks.map((x, i) => [ x, NUMBER_EMOJIS[i] ])
@@ -126,7 +127,7 @@ export class Gateway {
         });
     }
 
-    private async handleNewTrack(payload: Types.GatewayPayload) {
+    private async handleNewTrack(payload: Types.GatewayPayload<Types.LobbyStateChangeData>) {
         return {
             embed: {
                 description: Types.Texts.PREPARATION
@@ -152,8 +153,8 @@ export class Gateway {
         };
     }
 
-    private async handleRoundEnd(payload: Types.GatewayPayload) {
-        const table = this.generateResultsTable(
+    private async handleRoundEnd(payload: Types.GatewayPayload<Types.RoundEndData>) {
+        const table = await this.generateResultsTable(
             payload.data.remainingPlayers.concat(payload.data.eliminated),
             payload.data.wrTime,
             {
@@ -305,7 +306,7 @@ export class Gateway {
     }
 
     public async generateResultsTable(
-        players: Array<any>,
+        players: Array<User.Player | Types.Team>,
         wrTime: number | null,
         data: { end: boolean, isTeamsMode: boolean }
     ): Promise<string> {
@@ -321,48 +322,51 @@ export class Gateway {
         let fastestGhosts = players;
 
         if (data.end && !data.isTeamsMode) {
-            fastestGhosts = fastestGhosts.sort((a, b) => b.points - a.points);
+            fastestGhosts = fastestGhosts
+                .sort((a, b) => b.points - a.points);
+
             tableData.header.push('Pts');
         } else if (data.end && data.isTeamsMode) {
             for (const team of fastestGhosts) {
-                team.points = team.players.reduce((prev, cur) => prev + cur.points, 0);
+                team.points = (<Types.Team>team).players
+                    .reduce((prev, cur) => prev + cur.points, 0);
             }
             
             fastestGhosts = fastestGhosts.sort((a, b) => b.points - a.points);
             tableData.header.push('Pts');
         } else {
-            fastestGhosts = fastestGhosts.sort((a, b) => a.ghost.timeSeconds - b.ghost.timeSeconds);
+            fastestGhosts = (<Array<User.Player>>fastestGhosts)
+                .sort((a, b) => a.ghost.timeSeconds - b.ghost.timeSeconds);
             tableData.header.push('Time', 'Pts');
         }
 
         for (let i = 0; i < fastestGhosts.length; ++i) {
-            const cur = fastestGhosts[i];
+            const cur = fastestGhosts[i], curUser = <User.Player>cur;
             let tag: string, finishTime = '', points = String(cur.points | 0);
 
             if (!data.isTeamsMode) {
-                if (cur.aiDiff === User.AiDifficulty.DISABLED) {
-                    tag = await this.client.rest.fetchUser(cur.userid)
+                if (curUser.aiDiff === User.AiDifficulty.DISABLED) {
+                    tag = await this.client.rest.fetchUser(curUser.userid)
                         .then(x => x.username);
-                    finishTime = timeSecondsToString(cur.ghost.timeSeconds);
+                    finishTime = timeSecondsToString(curUser.ghost.timeSeconds);
                 } else {
-                    const { aiDiff } = cur;
-                    tag = User.default.buildAIName(cur.userid, aiDiff);
+                    tag = User.default.buildAIName(curUser.userid, curUser.aiDiff);
                 }
             } else {
-                tag = `Team ${cur.id}`;
+                tag = `Team ${(<Types.Team>cur).id}`;
                 // points = cur.points;
             }
 
             if (!data.end) {
-                if (cur.ghost.timeSeconds > 360) {
+                if (curUser.ghost.timeSeconds > 360) {
                     // No ghost submitted
                     finishTime = '-';
                     points += ' (+0)';
                 } else {
-                    points += ` (+${calculatePoints(cur.ghost.timeSeconds - (wrTime ?? 0))})`;
+                    points += ` (+${calculatePoints(curUser.ghost.timeSeconds - (wrTime ?? 0))})`;
                 }
 
-                if (cur.ghost.customGhost) {
+                if (curUser.ghost.customGhost) {
                     // Add * if this is a custom ghost
                     finishTime += ' (*)';
                 }

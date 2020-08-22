@@ -1,7 +1,78 @@
+import User, { UserData, Player } from "./user";
+
 export interface GatewayPayload<T = any> {
     recipients?: Array<string>;
     type: number;
     data: T
+}
+
+export interface LobbyWarningData {
+    remaining: number,
+    warnCount: number,
+    lobbyID: number
+}
+
+export interface Ghost {
+    round: number,
+    finishTime: string,
+    finishTimeSimple: string,
+    dateSet: string,
+    '200cc': boolean,
+    trackName: string,
+    timeSeconds: number,
+    customGhost: boolean
+}
+
+export interface Track {
+    name: string,
+    authors: Array<string>,
+    slotId: number,
+    defaultTrack: boolean,
+    '200cc': boolean,
+    trackId: string,
+    ghostCount: number,
+    fastestTime: string
+}
+
+export interface Team {
+    id: number,
+    players: Array<Player>,
+    points: number;
+}
+
+export interface LobbyTrackSelectionData {
+    tracks: Array<Track>,
+    users: Array<UserData>,
+    lobbyID: number
+}
+
+export interface LobbyStateChangeData {
+    newState: number,
+    message: string,
+    wrTime: number,
+    lobbyID: number
+}
+
+export interface RoundEndData {
+    eliminated: Array<Player>,
+    remainingPlayers: Array<Player>,
+    lobbyID: number,
+    originalPlayerCount: number,
+    wrTime: number
+}
+
+export interface LobbyEndData {
+    isTeamsMode: boolean,
+    winner: UserData | Array<Team>,
+    users: UserData | Array<Team>,
+    wrTime: number,
+    lobbyID: number
+}
+
+export interface GhostExpiredData {
+    track: string,
+    time: number,
+    lobby: number
 }
 
 export const enum EventType {
