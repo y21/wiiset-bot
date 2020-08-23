@@ -1,0 +1,88 @@
+import fetch from "node-fetch";
+
+export namespace Endpoints {
+    export const SSBB_STATS = '/rsbj/overview';
+    export const MKW_USERS = '/stats/mkw?m=json';
+}
+
+export interface SsbbResult {
+    data: {
+        totalProfiles: number,
+        online: number,
+        logins: number
+    }
+}
+
+export interface MkwRoom {
+    type: string,
+    room_id: number,
+    room_name: string,
+    game_id4: string,
+    is_mkw: number,
+    ol_status: number,
+    ol_status_x: string,
+    room_start: number,
+    race_start: number,
+    n_races: number,
+    n_members: number,
+    n_players: number,
+    track: [number, string],
+    conn_fail: number,
+    conn_fail2: number,
+    conn_fail_cat: string,
+    conn_success: number,
+    mask_active: number,
+    members: Array<MkwRoomMember>
+}
+
+export interface MkwRoomMember {
+
+}
+
+export interface MkwStat {
+    type: string,
+    time_sec: number,
+    time_usec: number,
+    debug: number,
+    admin: number,
+    mod: number,
+    owner_id: number
+}
+
+export default class Wiimmfi {
+    public static originHost = 'https://wiimmfi.de';
+    public static host = 'https://wiimmfi-api--y21-.repl.co/api/v2';
+
+    public static get<T = any>(endpoint: string, useOrigin = false): Promise<T> {
+        return fetch((useOrigin ? Wiimmfi.originHost : Wiimmfi.host) + endpoint)
+            .then(x => x.json());
+    }
+
+    public static getSsbbStats() {
+        return Wiimmfi.get<SsbbResult>(Endpoints.SSBB_STATS);
+    }
+
+    public static getMkwRooms(roomsOnly = true) {
+        return Wiimmfi.get<Array<MkwRoom | MkwStat>>(Endpoints.MKW_USERS)
+            .then(x => {
+                if (roomsOnly) {
+                    return x.filter(v => v.type === 'room');
+                } else {
+                    return x;
+                }
+            });
+    }
+
+    public static getMkwRoom(room: string | number) {
+        return Wiimmfi.getMkwRooms()
+            .then((x) => {
+                const rooms = <Array<MkwRoom>>(x);
+                return rooms.find(x => x.room_id === room || x.room_name === room);
+            });
+    }
+
+    public static async getMkwUsers(room: string | number, limit = 10) {
+        return Wiimmfi.getMkwRoom(room)
+            .then(x => x?.members.slice(0, limit));
+    }
+}
