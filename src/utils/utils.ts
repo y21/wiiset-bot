@@ -1,3 +1,7 @@
+import { Message } from 'detritus-client/lib/structures';
+import { Context } from 'detritus-client/lib/command';
+import { Types } from 'ctgp-rest';
+
 export function timeSecondsToString(time: number): string {
     const min = time / 60 | 0;
     const sec = time % 60;
@@ -38,3 +42,25 @@ export function generateTable(data: TableData): string {
 
     return value;
 }
+
+export function hasOption(options: number, lookFor: number) {
+    return (options & lookFor) === lookFor;
+}
+
+export function makeTypedNullPrototype<T = any, V = string | number>(obj: T): T & {
+    [key: string]: V
+} {
+    return Object.setPrototypeOf(obj, null);
+}
+
+export function getAttachmentUrl(ctx: Context | Message) {
+    return (ctx instanceof Context ? ctx.message : ctx).attachments.first()?.url;
+}
+
+export function getCorrectTrackHash(track: Types.Responses.Leaderboard, includeSeparator = false) {
+    return track.slotId.toString(16).padStart(2, '0') + 
+        (includeSeparator ? '/' : '') +
+        track.trackId;
+}
+
+export type Maybe<T> = T | undefined;

@@ -2,6 +2,7 @@ import CTGP from 'ctgp-rest';
 import Rex from './rex';
 import Wiimmfi from './wiimmfi';
 import TTC from './ttc';
+import fetch from 'node-fetch';
 
 export class RestClient {
     public ctgp: typeof CTGP;
@@ -14,5 +15,24 @@ export class RestClient {
         this.rex = Rex;
         this.wiimmfi = Wiimmfi;
         this.ttc = TTC;
+    }
+
+    public caption(url: string) {
+        return fetch('https://captionbot.azurewebsites.net/api/messages?language=en-US', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                Type: 'CaptionRequest',
+                Content: url
+            })
+        }).then(x => x.text());
+    }
+
+    public cat(): Promise<string> {
+        return fetch('http://aws.random.cat/meow')
+            .then(x => x.json())
+            .then(x => x.file);
     }
 }
