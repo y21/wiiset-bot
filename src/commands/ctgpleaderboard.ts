@@ -2,7 +2,19 @@ import BaseCommand from '../structures/basecommand';
 import { Context } from 'detritus-client/lib/command';
 import { Client } from '../client';
 import Cmd from '../structures/basecommand';
-import { getCorrectTrackHash } from '../utils/utils';
+import { getCorrectTrackHash, flat } from '../utils/utils';
+import { Paginator } from 'detritus-pagination';
+
+interface Page {
+    embed: {
+        title: string,
+        fields: Array<{
+            name: string,
+            value: string
+        }>,
+        inline?: boolean
+    }
+}
 
 export default <Cmd>{
     name: 'ctgp leaderboard',
@@ -17,21 +29,15 @@ export default <Cmd>{
 
         const { ghosts } = await client.restClient.ctgp.getTrack(getCorrectTrackHash(track));
         
-        let pages = [];
-
-        // TODO: Only display unique players
-        // TODO2: Add abstract function to paginator
-        for (let i = 0; i < ghosts.length; i += 5) {
-            pages.push({
-                embed: {
-                    title: `Top ghosts for ${track.name}`,
-                    fields: ghosts.slice(i, i + 5).map((x, j) => ({
-                        name: `#${j + 1} ${x.player}`,
-                        value: `Time: ${x.finishTimeSimple}\n`
-                    }))
-                }
-            });
-        }
+        const pages = flat<Page>(ghosts, 5, (_, i) => ({
+            embed: {
+                title: `Top ghosts for ${track.name}`,
+                fields: ghosts.slice(i, i + 5).map((x, j) => ({
+                    name: `#${j + 1} ${x.player}`,
+                    value: `Time: ${x.finishTimeSimple}\n`
+                }))
+            }
+        }));
 
         client.paginator.createReactionPaginator({
             pages,
