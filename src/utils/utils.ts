@@ -63,4 +63,16 @@ export function getCorrectTrackHash(track: Types.Responses.Leaderboard, includeS
         track.trackId;
 }
 
+export function flat<T, U = any>(
+    arr: Array<U>,
+    entriesPerPage: number,
+    pageCb: (el: U, i: number) => T
+): Array<T> {
+    const res: Array<T> = [];
+
+    for (let i = 0; i < arr.length; i += entriesPerPage) res.push(pageCb(arr[i], i));
+
+    return res;
+}
+
 export type Maybe<T> = T | undefined;
