@@ -2,7 +2,10 @@ import fetch from "node-fetch";
 
 export namespace Endpoints {
     export const SSBB_STATS = '/rsbj/overview';
+    export const MKW_STATS = '/rmcj/overview';
     export const MKW_USERS = '/stats/mkw?m=json';
+    export const MKW_REGIONS = '/mkw/regions';
+    export const MKW_LIST = '/mkw/rooms';
 }
 
 export interface SsbbResult {
@@ -49,6 +52,28 @@ export interface MkwStat {
     owner_id: number
 }
 
+export interface MkwDataResult {
+    data: {
+        totalProfiles: number,
+        online: number,
+        logins: number
+    }
+}
+
+export interface MkwRegionsResult {
+    ctgp: number,
+    ame: number,
+    jap: number,
+    eur: number
+}
+
+export interface MkwListResult {
+    worldwides: number,
+    continentals: number,
+    privates: number,
+    players: number
+}
+
 export default class Wiimmfi {
     public static originHost = 'https://wiimmfi.de';
     public static host = 'https://wiimmfi-api--y21-.repl.co/api/v2';
@@ -81,8 +106,20 @@ export default class Wiimmfi {
             });
     }
 
-    public static async getMkwUsers(room: string | number, limit = 10) {
+    public static getMkwUsers(room: string | number, limit = 10) {
         return Wiimmfi.getMkwRoom(room)
             .then(x => x?.members.slice(0, limit));
+    }
+
+    public static getMkwLoginRegions() {
+        return Wiimmfi.get<MkwRegionsResult>(Endpoints.MKW_REGIONS);
+    }
+
+    public static getMkwData() {
+        return Wiimmfi.get<MkwDataResult>(Endpoints.MKW_STATS);
+    }
+
+    public static getMkwList() {
+        return Wiimmfi.get<MkwListResult>(Endpoints.MKW_LIST);
     }
 }

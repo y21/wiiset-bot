@@ -24,7 +24,7 @@ export class Client {
     public database: Database;
     public paginator: Paginator;
     public trackHelper: TrackHelper;
-    // public ttcGateway: Gateway;
+    public ttcGateway: Gateway;
     public commandClient: CommandClient;
     public restClient: RestClient;
 
@@ -35,7 +35,7 @@ export class Client {
         this.trackHelper = new TrackHelper;
         this.restClient = new RestClient;
 
-        // this.ttcGateway = new Gateway(this);
+        this.ttcGateway = new Gateway(this);
         this.paginator = new Paginator(this.commandClient.client, {
             maxTime: Constants.PAGINATOR_TIME_LIMIT,
             pageNumber: true,
@@ -55,6 +55,11 @@ export class Client {
 
         for (const file of files.filter(x => x.endsWith('.js'))) {
             const command: Cmd = await import(`./commands/${file}`).then(x => x.default);
+
+            if (command.disabled) {
+                console.log(`! ${command.name} not loaded due to being disabled`);
+                continue;
+            };
 
             this.commandClient.add(Object.assign(<Command.Command>{
                 onBefore: (context: Context) => command.ownerOnly ? context.client.isOwner(context.userId) : true,
@@ -76,6 +81,12 @@ export class Client {
             }, command));
 
             console.log(`- Loaded command ${command.name + (command.ownerOnly ? ' (owner only)' : '')}`);
+        }
+    }
+
+    ping() {
+        if (this.commandClient.client instanceof ShardClient) {
+            return this.commandClient.client.ping();
         }
     }
 }

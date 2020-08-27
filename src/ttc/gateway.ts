@@ -76,7 +76,7 @@ export class Gateway {
         };
 
         const voteMessages = await Promise.all(
-            payload.recipients?.map(x => this.client.rest.createMessage(x, data)) ?? []
+            payload.recipients?.map(x => this.client.commandClient.rest.createMessage(x, data)) ?? []
         );
 
         const paginator = this.client.paginator.createReactionPaginator({
@@ -243,7 +243,7 @@ export class Gateway {
 
     private async handleInvalidGhost(payload: Types.GatewayPayload) {
         if (!payload.recipients) return;
-        const dmChannel: ChannelDM = await this.client.rest.fetchUser(payload.recipients[0])
+        const dmChannel: ChannelDM = await this.client.commandClient.rest.fetchUser(payload.recipients[0])
             .then(x => x.createOrGetDm());
 
         try {
@@ -346,7 +346,7 @@ export class Gateway {
 
             if (!data.isTeamsMode) {
                 if (curUser.aiDiff === User.AiDifficulty.DISABLED) {
-                    tag = await this.client.rest.fetchUser(curUser.userid)
+                    tag = await this.client.commandClient.rest.fetchUser(curUser.userid)
                         .then(x => x.username);
                     finishTime = timeSecondsToString(curUser.ghost.timeSeconds);
                 } else {

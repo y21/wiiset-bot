@@ -35,4 +35,10 @@ export class RestClient {
             .then(x => x.json())
             .then(x => x.file);
     }
+
+    public dog(): Promise<string> {
+        return fetch('https://dog.ceo/api/breeds/image/random')
+            .then(x => x.json())
+            .then(x => x.message);
+    }
 }

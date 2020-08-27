@@ -75,4 +75,41 @@ export function flat<T, U = any>(
     return res;
 }
 
+export function normalize(str: any) {
+    if (typeof str !== 'string') str = String(str);
+
+    let ret = str.charAt(0).toUpperCase();
+
+    for (let i = 1; i < str.length; ++i) {
+        const tc = str.charAt(i);
+
+        if (tc >= 'A' && tc <= 'Z') {
+            ret += ` ${tc}`
+        } else {
+            ret += tc;
+        }
+    }
+
+    return ret;
+}
+
+interface NormalizeOptions {
+    prettyNumbers?: boolean,
+    excludeKeys?: Set<string>
+}
+
+export function makeNormalizedFields<T = any>(data: T, options?: NormalizeOptions): Array<{
+    name: string,
+    value: string
+}> {
+    return Object.entries(data)
+        .filter(([k]) => !options?.excludeKeys?.has(k))
+        .map(([k, v]) => ({
+            name: normalize(k),
+            value: normalize(
+                typeof v === 'number' && options?.prettyNumbers ? v.toLocaleString() : v
+            )
+        }));
+}
+
 export type Maybe<T> = T | undefined;
