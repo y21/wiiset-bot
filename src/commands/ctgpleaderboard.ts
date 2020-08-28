@@ -4,17 +4,7 @@ import { Client } from '../client';
 import Cmd from '../structures/basecommand';
 import { getCorrectTrackHash, flat } from '../utils/utils';
 import { Paginator } from 'detritus-pagination';
-
-interface Page {
-    embed: {
-        title: string,
-        fields: Array<{
-            name: string,
-            value: string
-        }>,
-        inline?: boolean
-    }
-}
+import { Page } from '../utils/constants';
 
 export default <Cmd>{
     name: 'ctgp leaderboard',
