@@ -112,4 +112,12 @@ export function makeNormalizedFields<T = any>(data: T, options?: NormalizeOption
         }));
 }
 
+export function formatDate(b: number) {
+    return ~~(b / (60000 * 60)) + " hours, " + ~~(b / (60000) - 60 * ~~(b / (60000 * 60))) + " minutes and " + ~~(b / (1000) - 60 * ~~(b / (60000))) + " seconds ago";
+}
+
+export function randomFrom<T>(arr: Array<T>): T | undefined {
+    return arr[Math.random() * arr.length | 0];
+}
+
 export type Maybe<T> = T | undefined;
