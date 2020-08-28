@@ -59,7 +59,7 @@ export class Gateway {
     }
 
     private onclose() {
-        this.makeConnection();
+        setTimeout(() => this.makeConnection(), 10000);
     }
 
     private async handleTrackSelection(payload: Types.GatewayPayload<Types.LobbyTrackSelectionData>) {
