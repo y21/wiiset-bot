@@ -3,6 +3,7 @@ import Rex from './rex';
 import Wiimmfi from './wiimmfi';
 import TTC from './ttc';
 import fetch from 'node-fetch';
+import { wrNotifier } from '../../configs/bot.json';
 
 export class RestClient {
     public ctgp: typeof CTGP;
@@ -40,5 +41,23 @@ export class RestClient {
         return fetch('https://dog.ceo/api/breeds/image/random')
             .then(x => x.json())
             .then(x => x.message);
+    }
+
+    public registerWrNotifier(
+        webhookId: string, 
+        webhookToken: string
+    ) {
+        return fetch(`${wrNotifier.host}/register/${webhookId}/${webhookToken}?key=${wrNotifier.key}`, {
+            method: 'POST'
+        }).then(x => x.status, () => false);
+    }
+
+    public removeWrNotifier(
+        webhookId: string,
+        webhookToken: string
+    ) {
+        return fetch(`${wrNotifier.host}/unregister/${webhookId}/${webhookToken}?key=${wrNotifier.key}`, {
+            method: 'POST'
+        }).then(x => x.status, () => false);
     }
 }
