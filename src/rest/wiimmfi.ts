@@ -39,7 +39,8 @@ export interface MkwRoom {
 }
 
 export interface MkwRoomMember {
-
+    names?: Array<string>,
+    ev: number
 }
 
 export interface MkwStat {
@@ -88,7 +89,7 @@ export default class Wiimmfi {
     }
 
     public static getMkwRooms(roomsOnly = true) {
-        return Wiimmfi.get<Array<MkwRoom | MkwStat>>(Endpoints.MKW_USERS)
+        return Wiimmfi.get<Array<MkwRoom | MkwStat>>(Endpoints.MKW_USERS, true)
             .then(x => {
                 if (roomsOnly) {
                     return x.filter(v => v.type === 'room');
@@ -106,9 +107,17 @@ export default class Wiimmfi {
             });
     }
 
-    public static getMkwUsers(room: string | number, limit = 10) {
+    public static getMkwUsers(room: string | number, limit = 10, sortVr = true) {
         return Wiimmfi.getMkwRoom(room)
-            .then(x => x?.members.slice(0, limit));
+            .then((x) => {
+                let arr: Array<MkwRoomMember> = x?.members ?? [];
+
+                if (sortVr) {
+                    arr = arr.sort((a, b) => b.ev - a.ev);
+                }
+
+                return arr;
+            });
     }
 
     public static getMkwLoginRegions() {
