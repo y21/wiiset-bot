@@ -1,6 +1,7 @@
 import { Message } from 'detritus-client/lib/structures';
 import { Context } from 'detritus-client/lib/command';
 import { Types } from 'ctgp-rest';
+import { SNOWFLAKE_REGEX, MENTION_REGEX } from './constants';
 
 export function timeSecondsToString(time: number): string {
     const min = time / 60 | 0;
@@ -41,6 +42,11 @@ export function generateTable(data: TableData): string {
     }).join('\n');
 
     return value;
+}
+
+export function generateTableWithBorder(data: TableData, delim = '---') {
+    data.rows.unshift(Array(data.header.length).fill(delim));
+    return generateTable(data);
 }
 
 export function hasOption(options: number, lookFor: number) {
@@ -118,6 +124,29 @@ export function formatDate(b: number) {
 
 export function randomFrom<T>(arr: Array<T>): T | undefined {
     return arr[Math.random() * arr.length | 0];
+}
+
+export function resolveUser(str: string, me?: string) {
+    if (str.startsWith('<@') && str.endsWith('>')) {
+        const [, match] = str.match(MENTION_REGEX) ?? [];
+        return match;
+    } else if (SNOWFLAKE_REGEX.test(str)) {
+        return str;
+    } else if (str === 'me') {
+        return me;
+    }
+}
+
+export function formatConstantKey(str: string) {
+    let ret = '';
+
+    for (let i = 0; i < str.length; ++i) {
+        if (i === 0) ret += str[i];
+        else if (str[i] === '_') ret += ' ';
+        else ret += String.fromCharCode(str[i].charCodeAt(0) | (1 << 5));
+    }
+
+    return ret;
 }
 
 export type Maybe<T> = T | undefined;

@@ -3,6 +3,8 @@ import fetch from 'node-fetch';
 import { hasOption, Maybe } from '../utils/utils';
 import Lobby, {LobbyOptions} from '../ttc/lobby';
 import { TTC_AUTO_DETECT } from '../utils/constants';
+import { isValidPid } from 'ctgp-rest/dist/src/util';
+
 
 export namespace Endpoints {
     export const API_VERSION = 'v1';
@@ -35,6 +37,10 @@ export default class TTC {
     }
 
     public static registerUser(userId: string, pid: string) {
+        if (!isValidPid(pid)) {
+            throw new Error('invalid pid');
+        }
+
         return this.get(Endpoints.USER, { pid });
     }
 

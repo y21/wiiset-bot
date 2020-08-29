@@ -87,6 +87,15 @@ export const enum EventType {
     InvalidGhost = 1 << 8
 }
 
+export const enum LobbyStates {
+    Waiting = 1 << 0,
+    ThresholdReached = 1 << 1,
+    MapPick = 1 << 2,
+    Preparation = 1 << 3,
+    Ingame = 1 << 4,
+    Upload = 1 << 5
+}
+
 export namespace Texts {
     export const PREPARATION = 'ℹ️ Preparation phase has started. Boot up Mario Kart Wii and complete a ghost on {track}.\nWorld Record: {time}';
     export const THRESHOLD_REACHED = '⏱️ Minimum number of players for this lobby has been reached, waiting 30 more seconds for more players to join...';
