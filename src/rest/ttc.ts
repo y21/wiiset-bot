@@ -4,7 +4,7 @@ import { hasOption, Maybe } from '../utils/utils';
 import Lobby, {LobbyOptions} from '../ttc/lobby';
 import { TTC_AUTO_DETECT } from '../utils/constants';
 import { isValidPid } from 'ctgp-rest/dist/src/util';
-
+import User, { Player } from '../ttc/user';
 
 export namespace Endpoints {
     export const API_VERSION = 'v1';
@@ -49,7 +49,12 @@ export default class TTC {
     }
 
     public static getUsers() {
-        return this.get(Endpoints.USER); // TODO: construct user objects
+        return this.get(Endpoints.USER)
+            .then(x => {
+                const arr: Array<User> = [];
+                for (const player of x) arr.push(new User(player));
+                return arr;
+            });
     }
 
     public static createLobby(userId: string, channelId: string, data: LobbyData) {
@@ -72,11 +77,21 @@ export default class TTC {
     }
 
     public static getLobbies() {
-        return this.get(Endpoints.LOBBY); // TODO: construct lobby objects
+        return this.get(Endpoints.LOBBY)
+            .then(x => {
+                const arr: Array<Lobby> = [];
+                for (const lobby of x) arr.push(new Lobby(lobby));
+                return arr;
+            });
     }
 
     public static getPlayersInLobby(lobbyId: number) {
-        return this.get(Endpoints.LOBBY + '/' + lobbyId + '/players'); // TODO: construct user objects
+        return this.get(Endpoints.LOBBY + '/' + lobbyId + '/players')
+            .then(x => {
+                const arr: Array<User> = [];
+                for (const player of x) arr.push(new User(player));
+                return arr;
+            });
     }
 
     public static addPlayerToLobby(lobbyId: Maybe<number>, userId: string, channelId: string, password?: string | number) {
@@ -86,14 +101,14 @@ export default class TTC {
             userid: userId,
             channel: channelId,
             password: password
-        });
+        }).then(x => new Lobby(x));
     }
 
     public static removePlayerFromLobby(lobbyId: Maybe<number>, userId: string, channelId: string) {
         return this.get(Endpoints.LOBBY + '/' + (lobbyId ?? TTC_AUTO_DETECT) + '/players', {
             userid: userId,
             channel: channelId
-        }, 'DELETE');
+        }, 'DELETE').then(x => new Lobby(x));
     }
 
     public static submitGhost(lobbyId: Maybe<number>, userId: string, channelId: string) {
