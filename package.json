@@ -19,7 +19,7 @@
   "dependencies": {
     "@types/pg": "^7.14.4",
     "@types/ws": "^7.2.6",
-    "ctgp-rest": "^1.0.4",
+    "ctgp-rest": "^1.0.5",
     "detritus-client": "^0.10.5",
     "detritus-pagination": "^1.2.2",
     "node-fetch": "^2.6.0",
