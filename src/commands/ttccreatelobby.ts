@@ -7,6 +7,7 @@ import { hasOption, formatConstantKey } from '../utils/utils';
 import { Message } from 'detritus-client/lib/structures';
 import { TTC_VERSION, NUMBER_EMOJIS } from '../utils/constants';
 import { AiDifficulty } from '../ttc/user';
+import { Response } from 'node-fetch';
 
 interface UserData {
     options: number;
@@ -53,7 +54,7 @@ export default <Cmd>{
         let options: number;
 
         if (fargs[0] === 'random') {
-            options = randomizeOptions();
+            options = Lobby.randomizeOptions();
         } else {
             const fmtOptions = fargs
                 .join('')
@@ -83,7 +84,7 @@ function buildCpuMessage(idx: number) {
     };
 }
 
-function handleBots(client: Client, context: Context, response: Message): Promise<Array<number>> {
+function handleBots({ client, context, response }: UserData): Promise<Array<number>> {
     return new Promise(async (resolve) => {
         await response.edit({
             ...buildCpuMessage(0),
@@ -138,7 +139,7 @@ function handleBots(client: Client, context: Context, response: Message): Promis
     });
 }
 
-function handleTeams(client: Client, context: Context, response: Message): Promise<number> {
+function handleTeams({ client, context, response }: UserData): Promise<number> {
     return new Promise(async (resolve) => {
         await response.edit({
             embed: {
@@ -146,7 +147,8 @@ function handleTeams(client: Client, context: Context, response: Message): Promi
                 title: `TT-Competition ${TTC_VERSION} | Team size`,
                 description: 'React with one of the emojis below to set the team size for this lobby\n' +
                     Object.entries(TEAM_REACTIONS).map(([k, v]) => `${v} ${k}`).join('\n')
-            }
+            },
+            content: undefined
         });
 
         const paginator = await client.paginator.createReactionPaginator({
@@ -159,28 +161,142 @@ function handleTeams(client: Client, context: Context, response: Message): Promi
             const { emoji } = data;
 
             switch (emoji.name) {
-
+                case TEAM_REACTIONS['2v2']:
+                    resolve(LobbyOptions.Teams2);
+                    break;
+                case TEAM_REACTIONS['3v3']:
+                    resolve(LobbyOptions.Teams3);
+                    break;
+                case TEAM_REACTIONS['4v4']:
+                    resolve(LobbyOptions.Teams4);
+                    break;
+                case TEAM_REACTIONS['6v6']:
+                    resolve(LobbyOptions.Teams6);
+                    break;
             }
+
+            paginator.stop();
         });
     });
 }
 
+function handleRounds({ client, context, response }: UserData) {
+    return new Promise<number>(async (resolve) => {
+        await response.edit({
+            embed: {
+                color: 0x2ecc71,
+                title: `TT-Competition ${TTC_VERSION} | Number of rounds`,
+                description: 'React with one of the emojis below to set the maximum number of rounds\n' +
+                    Object.entries(TEAM_REACTIONS).map(([k, v]) => `${v} ${k}`).join('\n')
+            },
+            content: undefined
+        });
+
+        const paginator = await client.paginator.createReactionPaginator({
+            message: context.message,
+            commandMessage: response,
+            reactions: Object.fromEntries(
+                NUMBER_EMOJIS.slice(0, MAX_ROUNDS)
+                    .map(x => [x, x])
+            )
+        });
+
+        paginator.on('raw', (data) => {
+            const { emoji } = data;
+            
+            const idx = NUMBER_EMOJIS.indexOf(emoji.name);
+            if (idx < 0 || idx + 1 > MAX_ROUNDS) return;
+
+            resolve(1 << (idx + 1));
+            paginator.stop();
+        });
+    });
+}
+
+async function sendOrEditLobbyMessage(lobby: Lobby, data: UserData) {
+    const { context, client } = data;
+
+    // Attempt to send password to message author (if private)
+    if (hasOption(data.options, LobbyOptions.Private)) {
+        try {
+            await context.message.author.createMessage(
+                `🔒 Password for lobby: __${lobby.password}__. This is required for people to join this lobby because it has been marked as **private**.`
+            );
+        } catch {
+            await client.restClient.ttc.removePlayerFromLobby(lobby.id, context.userId, context.channelId);
+            return context.reply(`<@${context.userId}> could not send the lobby password in direct messages. Please enable \`Allow direct messages from server members\`. https://i.imgur.com/7N0zBK0.gif`);
+        }
+    }
+
+    const messageData = {
+        embed: {
+            color: 0x2ecc71,
+            description: 'Successfully created lobby!',
+            fields: [
+                {
+                    name: 'Lobby ID',
+                    value: String(lobby.id) || '-'
+                },
+                {
+                    name: 'Lobby Options',
+                    value: Lobby.formatOptions(lobby.options) || '-'
+                }
+            ]
+        }
+    };
+
+    if (hasOption(lobby.options, LobbyOptions.Teams)) {
+        messageData.embed.fields.push({
+            name: 'Teams',
+            value: lobby.teamsToString() || '-'
+        });
+    }
+
+    if (data.response) {
+        await data.response.edit({
+            ...messageData,
+            content: undefined
+        });
+    } else {
+        await context.reply(messageData)
+    }
+}
+
 async function createLobby(userData: UserData) {
-    let botDiffs: Array<number>, maxRounds: number;
+    const { context, client } = userData;
+
+    let botDiffs: Array<number> | undefined = undefined, maxRounds = undefined;
 
     if (hasOption(userData.options, LobbyOptions.Bots)) {
-        botDiffs = await handleBots(
-            userData.client,
-            userData.context,
-            userData.response
-        );
+        botDiffs = await handleBots(userData);
     }
 
     if (hasOption(userData.options, LobbyOptions.Teams)) {
-        userData.options |= await handleTeams(
-            userData.client,
-            userData.context,
-            userData.response
-        );
+        userData.options |= await handleTeams(userData);
     }
+
+    if (hasOption(userData.options, LobbyOptions.Elimination)) {
+        maxRounds = await handleRounds(userData);
+    }
+
+    let data;
+
+    try {
+        data = await client.restClient.ttc.createLobby(
+            context.userId,
+            context.channelId,
+            {
+                options: userData.options,
+                aiDiffs: botDiffs,
+                maxRounds: maxRounds
+            }
+        );
+    } catch(e) {
+        await userData.response.edit({
+            content: e.message,
+            embed: null
+        })
+    }
+
+    
 }
