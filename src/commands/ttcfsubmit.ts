@@ -42,6 +42,7 @@ export default <Cmd>{
         const paginator = await client.paginator.createReactionPaginator({
             message: context.message,
             reactions: {
+                // @ts-ignore
                 OK: ConfirmationReactions.OK,
                 NO: ConfirmationReactions.NO
             },
