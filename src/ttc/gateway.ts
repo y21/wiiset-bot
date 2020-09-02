@@ -1,15 +1,8 @@
-import {
-    Client
-} from '../client';
+import { Client } from '../client';
 import * as ttcConfig from '../../configs/ttc.json';
 import WebSocket from 'ws';
 import * as Types from './types';
-import {
-    messageSystemContent,
-    Message,
-    ChannelDM,
-    UserWithFlags
-} from 'detritus-client/lib/structures';
+import { ChannelDM } from 'detritus-client/lib/structures';
 import {
     SNOWFLAKE_REGEX, TTC_VERSION, NUMBER_EMOJIS, MEDALS
 } from '../utils/constants';
@@ -23,9 +16,18 @@ function makeWebSocketUrl() {
     return (ttcConfig.ssl ? 'wss' : 'ws') + '://' + ttcConfig.host + ttcConfig.wsRoute;
 }
 
+function isValidMessageData(obj: {
+    content?: string,
+    embed?: any
+}) {
+    const hop = Object.prototype.hasOwnProperty.bind(obj);
+    
+    return hop('content') || hop('embed');
+}
+
 export class Gateway {
     private client: Client;
-    private connection ? : WebSocket;
+    private connection?: WebSocket;
 
     constructor(client: Client) {
         this.client = client;
@@ -72,6 +74,7 @@ export class Gateway {
             embed: {
                 description: Types.Texts.VOTE_FOR_TRACK + tracks
                     .map((x, i) => `${NUMBER_EMOJIS[i]} ${x}`)
+                    .join('\n')
             }
         };
 
@@ -79,7 +82,7 @@ export class Gateway {
             payload.recipients?.map(x => this.client.commandClient.rest.createMessage(x, data)) ?? []
         );
 
-        const paginator = this.client.paginator.createReactionPaginator({
+        const paginator = await this.client.paginator.createReactionPaginator({
             // @ts-ignore
             message: {
                 // Hacky solution
@@ -112,7 +115,10 @@ export class Gateway {
                 .sort((a, b) => b[1].length - a[1].length)[0];
 
             try {
-                // TODO: rest.ttc.forceTrack()
+                await this.client.restClient.ttc.forceTrack(
+                    payload.data.lobbyID,
+                    track
+                );
 
                 await paginator.update({
                     embed: null,
@@ -250,19 +256,19 @@ export class Gateway {
             await dmChannel.createMessage({
                 embed: {
                     title: `TT-Competition ${TTC_VERSION}`,
-                    description: "One of your submitted ghosts were not found and points gained from that round have been removed from your profile.\n" +
-                        "If you think this is a mistake, please join the [TTC Server](https://discord.gg/BnFax3Z)\n",
+                    description: 'One of your submitted ghosts were not found and points gained from that round have been removed from your profile.\n' +
+                        'If you think this is a mistake, please join the [TTC Server](https://discord.gg/BnFax3Z)\n',
                     fields: [{
-                            name: "Track",
-                            value: payload.data.track ?? "?"
+                            name: 'Track',
+                            value: payload.data.track ?? '?'
                         },
                         {
-                            name: "Time",
-                            value: timeSecondsToString(payload.data.time) ?? "?"
+                            name: 'Time',
+                            value: timeSecondsToString(payload.data.time) ?? '?'
                         },
                         {
-                            name: "Lobby ID",
-                            value: payload.data.lobby ?? "?"
+                            name: 'Lobby ID',
+                            value: payload.data.lobby ?? '?'
                         }
                     ]
                 }
@@ -283,25 +289,42 @@ export class Gateway {
             payload.recipients = payload.recipients.filter(x => SNOWFLAKE_REGEX.test(x));
         }
 
+        let messageData;
+
         switch (payload.type) {
             case Types.EventType.TrackSelection:
-                this.handleTrackSelection(payload);
+                messageData = await this.handleTrackSelection(payload);
                 break;
             case Types.EventType.NewTrack:
+                messageData = await this.handleNewTrack(payload);
                 break;
             case Types.EventType.ThresholdReached:
+                messageData = await this.handleThresholdReached();
                 break;
             case Types.EventType.GameStart:
+                messageData = await this.handleGameStart();
                 break;
             case Types.EventType.RoundEnd:
+                messageData = await this.handleRoundEnd(payload);
                 break;
             case Types.EventType.LobbyEnd:
+                messageData = await this.handleLobbbyEnd(payload);
                 break;
             case Types.EventType.LobbyWarning:
+                messageData = await this.handleLobbyWarning(payload);
                 break;
             case Types.EventType.InvalidGhost:
+                messageData = await this.handleInvalidGhost(payload);
                 break;
+        }
 
+        if (messageData && payload.recipients && isValidMessageData(messageData)) {
+            for (const recipient of payload.recipients) {
+                await this.client.commandClient.rest.createMessage(
+                    recipient,
+                    messageData
+                );
+            }
         }
     }
 
