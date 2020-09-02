@@ -46,7 +46,7 @@ export default <Cmd>{
         description: 'Creates a TTC Lobby'
     },
     onrun: async function(client, context, args) {
-        const fargs: Array<string> = args[this.name].split(' ');
+        const fargs: Array<string> = args[this.name]?.split(' ') ?? [];
         if (args.length < 1) {
             throw new Error('Invalid lobby options.');
         }
@@ -258,28 +258,32 @@ async function sendOrEditLobbyMessage(lobby: Lobby, data: UserData) {
             content: undefined
         });
     } else {
-        await context.reply(messageData)
+        await context.reply(messageData);
     }
 }
 
 async function createLobby(userData: UserData) {
+    console.log(userData.options);
     const { context, client } = userData;
 
     let botDiffs: Array<number> | undefined = undefined, maxRounds = undefined;
 
     if (hasOption(userData.options, LobbyOptions.Bots)) {
+        console.log('bots', userData.options);
         botDiffs = await handleBots(userData);
     }
 
     if (hasOption(userData.options, LobbyOptions.Teams)) {
+        console.log('teams', userData.options);
         userData.options |= await handleTeams(userData);
     }
 
     if (hasOption(userData.options, LobbyOptions.Elimination)) {
+        console.log('elimination', userData.options);
         maxRounds = await handleRounds(userData);
     }
 
-    let data;
+    let data: Lobby;
 
     try {
         data = await client.restClient.ttc.createLobby(
@@ -292,11 +296,15 @@ async function createLobby(userData: UserData) {
             }
         );
     } catch(e) {
+        console.log('error', e);
         await userData.response.edit({
             content: e.message,
             embed: null
-        })
+        });
+        return;
     }
 
     
+    console.log('end');
+    await sendOrEditLobbyMessage(data, userData);
 }
