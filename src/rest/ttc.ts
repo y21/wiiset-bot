@@ -27,13 +27,24 @@ export default class TTC {
 
     // TODO: rename to `request`?
     public static get<T = any, U = any>(endpoint: string, body?: U, overrideMethod?: string): Promise<T> {
+        console.log('a');
         return fetch(TTC.host + endpoint, {
             method: overrideMethod || (body ? 'POST' : 'GET'),
             headers: {
                 Authorization: ttcConfig.token
             },
             body: body ? JSON.stringify(body) : undefined
-        }).then(x => x.json());
+        }).then(async (x) => {
+            const contentType = x.headers.get('content-type');
+
+            if (contentType === 'application/json') {
+                return x.json();
+            } else if (x.status >= 400) {
+                throw new Error(await x.text());
+            } else {
+                return x.text();
+            }
+        });
     }
 
     public static registerUser(userId: string, pid: string) {
@@ -48,12 +59,12 @@ export default class TTC {
         return this.get(Endpoints.USER + '/' + userId);
     }
 
-    public static getUsers() {
+    public static getUsers(sort = true) {
         return this.get(Endpoints.USER)
             .then(x => {
                 const arr: Array<User> = [];
                 for (const player of x) arr.push(new User(player));
-                return arr;
+                return sort ? arr.sort((a, b) => b.rating - a.rating) : arr;
             });
     }
 
@@ -126,7 +137,7 @@ export default class TTC {
         }); // TODO: construct ghost object?
     }
 
-    public static forceTrack(lobbyId: string, track: string) {
+    public static forceTrack(lobbyId: number, track: string) {
         return this.get(Endpoints.LOBBY + '/' + lobbyId + '/track', { track });
     }
 }
