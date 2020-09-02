@@ -36,10 +36,10 @@ export function generateTable(data: TableData): string {
     }
 
     let value = fd.map((x) => {
-        return x.map((x, i) => {
-            if (data.truncDouble && typeof x === 'number') x = ~~x;
+        return x.map((y, i) => {
+            if (data.truncDouble && typeof y === 'number') y = ~~y;
             const padding = longest[i] + (data.offset ?? 2);
-            return String(x).padEnd(padding, ' ');
+            return String(y).padEnd(padding, ' ');
         }).join('');
     }).join('\n');
 

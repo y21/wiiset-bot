@@ -1,4 +1,3 @@
-import BaseCommand from '../structures/basecommand';
 import { Context } from 'detritus-client/lib/command';
 import { Client } from '../client';
 import Cmd from '../structures/basecommand';
@@ -7,8 +6,6 @@ import { hasOption, formatConstantKey } from '../utils/utils';
 import { Message } from 'detritus-client/lib/structures';
 import { TTC_VERSION, NUMBER_EMOJIS } from '../utils/constants';
 import { AiDifficulty } from '../ttc/user';
-import { Response } from 'node-fetch';
-
 interface UserData {
     options: number;
     response: Message,

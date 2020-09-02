@@ -1,6 +1,3 @@
-import BaseCommand from '../structures/basecommand';
-import { Context } from 'detritus-client/lib/command';
-import { Client } from '../client';
 import Cmd from '../structures/basecommand';
 import { execSync } from 'child_process';
 import { Markup } from 'detritus-client/lib/utils';

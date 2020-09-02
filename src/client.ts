@@ -1,7 +1,6 @@
 import {
     CommandClient,
     CommandClientOptions,
-    ClusterClient,
     Command,
     ShardClient
 } from 'detritus-client';
@@ -15,10 +14,8 @@ import * as Constants from './utils/constants';
 import { TrackHelper } from './utils/trackhelper';
 import { Gateway } from './ttc/gateway';
 import * as fs from 'fs';
-import Cmd from './structures/basecommand';
-import { Context } from 'detritus-client/lib/command';
+import Cmd, { onBefore, onCancel } from './structures/basecommand';
 import { RestClient } from './rest/restclient';
-import { messageSystemContent } from 'detritus-client/lib/structures';
 
 export class Client {
     public database: Database;
@@ -59,11 +56,11 @@ export class Client {
             if (command.disabled) {
                 console.log(`! ${command.name} not loaded due to being disabled`);
                 continue;
-            };
+            }
 
             this.commandClient.add(Object.assign(<Command.Command>{
-                onBefore: (context: Context) => command.ownerOnly ? context.client.isOwner(context.userId) : true,
-                onCancel: (context: Context) => context.reply(Constants.UNKNOWN_CMD_ERROR),
+                onBefore: onBefore.bind(null, command),
+                onCancel,
                 responseOptional: true,
                 ratelimits: [{
                     type: "user",

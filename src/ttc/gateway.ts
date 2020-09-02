@@ -97,17 +97,17 @@ export class Gateway {
 
         const votes: Map<string, Array<string>> = new Map;
 
-        paginator.on('raw', data => {
-            const { emoji } = data;
+        paginator.on('raw', paginatorData => {
+            const { emoji } = paginatorData;
 
             const vote = tracks[NUMBER_EMOJIS.indexOf(emoji.name)];
 
             const users = votes.get(vote) ?? [];
 
             // User has already voted for this track, ignore
-            if (users.includes(data.user_id)) return;
+            if (users.includes(paginatorData.user_id)) return;
 
-            votes.set(vote, users.concat(data));
+            votes.set(vote, users.concat(paginatorData));
         });
 
         paginator.on('stop', async () => {
@@ -190,6 +190,8 @@ export class Gateway {
                                 } else {
                                     displayName = `<@${x.userid}>`;
                                 }
+
+                                return displayName;
                             })
                             .join('\n') || 'No players have been eliminated'
                     }

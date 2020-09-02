@@ -1,9 +1,5 @@
-import BaseCommand from '../structures/basecommand';
-import { Context } from 'detritus-client/lib/command';
-import { Client } from '../client';
 import Cmd from '../structures/basecommand';
 import { getCorrectTrackHash, flat } from '../utils/utils';
-import { Paginator } from 'detritus-pagination';
 import { Page } from '../utils/constants';
 
 export default <Cmd>{

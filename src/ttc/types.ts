@@ -1,4 +1,4 @@
-import User, { UserData, Player } from "./user";
+import { UserData, Player } from "./user";
 
 export interface GatewayPayload<T = any> {
     recipients?: Array<string>;
