@@ -1,6 +1,3 @@
-import BaseCommand from '../structures/basecommand';
-import { Context } from 'detritus-client/lib/command';
-import { Client } from '../client';
 import Cmd from '../structures/basecommand';
 import { resolveUser } from '../utils/utils';
 import { ConfirmationReactions } from '../utils/constants';
@@ -14,13 +11,13 @@ export default <Cmd>{
         description: 'Force submit a ghost (can only be used by lobby creators)'
     },
     onrun: async function(client, context, args) {
-        const fargs = args[this.name].split(' ');
+        const fargs = args[this.name]?.split(' ') ?? [];
 
         if (fargs.length < 2) {
             throw new Error('Missing arguments! Example usage: ' + EXAMPLE);
         }
 
-        const [user, time] = args;
+        const [user, time] = fargs;
 
         const userId = resolveUser(user, context.userId);
         if (!userId) {
