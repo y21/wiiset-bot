@@ -11,7 +11,7 @@ export function timeSecondsToString(time: number): string {
 }
 
 export function calculatePoints(timeOffWr: number) {
-    return Math.max(15 - (1.5 * timeOffWr), 3);
+    return ~~Math.max(15 - (1.5 * timeOffWr), 3);
 }
 
 export type Serializable = string | number | boolean;
@@ -20,6 +20,7 @@ export interface TableData {
     header: Array<Serializable>;
     rows: Array<Array<Serializable>>;
     offset?: number;
+    truncDouble?: boolean
 }
 
 export function generateTable(data: TableData): string {
@@ -36,6 +37,7 @@ export function generateTable(data: TableData): string {
 
     let value = fd.map((x) => {
         return x.map((x, i) => {
+            if (data.truncDouble && typeof x === 'number') x = ~~x;
             const padding = longest[i] + (data.offset ?? 2);
             return String(x).padEnd(padding, ' ');
         }).join('');
