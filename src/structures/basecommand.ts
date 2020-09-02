@@ -18,3 +18,12 @@ export function onBefore(command: Cmd, context: Context) {
 export function onCancel(context: Context) {
     return context.reply(Constants.UNKNOWN_CMD_ERROR);
 }
+
+export async function run<T = any>(client: Client, command: Cmd, context: Context, args: T) {
+    try {
+        await command.onrun(client, context, args);
+    } catch(e) {
+        // TODO: sanitize error message (hide IPs)
+        await context.reply(e.message);
+    }
+}

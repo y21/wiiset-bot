@@ -1,11 +1,5 @@
-import {
-    Client
-} from './client';
+import { Client } from './client';
 import * as botConfig from '../configs/bot.json';
-
-import {
-    TrackHelper
-} from './utils/trackhelper';
 
 (async () => {
     const client = new Client(botConfig.token, {

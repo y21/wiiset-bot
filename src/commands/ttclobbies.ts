@@ -9,13 +9,15 @@ export default <Cmd>{
         description: 'Displays TTC lobbies'
     },
     onrun: async function(client, context, args) {
-        const lobbies = await client.restClient.ttc.getLobbies()
-            .then(x => x.sort((a, b) => b.players.length - a.players.length).slice(0, 10));
+        const lobbies = await client.restClient.ttc.getLobbies();
+
+        // Sort by player count
+        lobbies.sort((a, b) => b.players.length - a.players.length);
 
         await context.editOrReply({
             embed: {
                 color: 0x2ecc71,
-                fields: lobbies.map(x => ({
+                fields: lobbies.slice(0, 10).map(x => ({
                     name: String(x.id),
                     value: `State: ${Lobby.stateToString(x.state)}\n` +
                         `Players: ${x.players.length} | Round: ${x.round}\n` +

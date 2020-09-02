@@ -14,7 +14,7 @@ import * as Constants from './utils/constants';
 import { TrackHelper } from './utils/trackhelper';
 import { Gateway } from './ttc/gateway';
 import * as fs from 'fs';
-import Cmd, { onBefore, onCancel } from './structures/basecommand';
+import Cmd, { onBefore, onCancel, run } from './structures/basecommand';
 import { RestClient } from './rest/restclient';
 
 export class Client {
@@ -60,6 +60,7 @@ export class Client {
 
             this.commandClient.add(Object.assign(<Command.Command>{
                 onBefore: onBefore.bind(null, command),
+                run: run.bind(null, this, command),
                 onCancel,
                 responseOptional: true,
                 ratelimits: [{
@@ -67,14 +68,6 @@ export class Client {
                     duration: 1000,
                     limit: 1
                 }],
-                run: async (context, args) => {
-                    try {
-                        await command.onrun(this, context, args);
-                    } catch(e) {
-                        // TODO: sanitize error message (hide IPs)
-                        await context.reply(e.message);
-                    }
-                }
             }, command));
 
             console.log(`- Loaded command ${command.name + (command.ownerOnly ? ' (owner only)' : '')}`);

@@ -15,7 +15,7 @@ export default <Cmd>{
         }
 
         const webhook = await context.rest.fetchGuildWebhooks(context.guildId!)
-            .then(x => x.find(webhook => webhook.name.toLowerCase() === args[this.name]));
+            .then(x => x.find(w => w.name.toLowerCase() === args[this.name]));
         if (!webhook || !webhook.token) {
             throw new Error('Webhook not found!')
         }

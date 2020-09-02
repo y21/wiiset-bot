@@ -11,6 +11,9 @@ export default <Cmd>{
     onrun: async function(client, context, args) {
         const lobby = await client.restClient.ttc.getLobby(args[this.name]);
 
+        // Sort players by their rating
+        lobby.players.sort((a, b) => b.rating - a.rating);
+
         const fields = [
             {
                 name: 'ID',
@@ -23,7 +26,6 @@ export default <Cmd>{
             {
                 name: 'Players',
                 value: lobby.players
-                    .sort((a, b) => b.rating - a.rating)
                     .slice(0, 10)
                     .map(x => `<@${x.id}> (Rating: ${x.rating})`).join('\n') || '-'
             },

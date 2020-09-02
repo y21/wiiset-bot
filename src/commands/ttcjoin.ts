@@ -13,7 +13,7 @@ export default <Cmd>{
             throw new Error('Invalid Lobby ID');
         }
 
-        const lobby = await client.restClient.ttc.addPlayerToLobby(
+        await client.restClient.ttc.addPlayerToLobby(
             id,
             context.userId,
             context.channelId,

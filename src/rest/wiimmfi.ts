@@ -103,7 +103,7 @@ export default class Wiimmfi {
         return Wiimmfi.getMkwRooms()
             .then((x) => {
                 const rooms = <Array<MkwRoom>>(x);
-                return rooms.find(x => x.room_id === room || x.room_name === room);
+                return rooms.find(y => y.room_id === room || y.room_name === room);
             });
     }
 

@@ -4,7 +4,7 @@ import { hasOption, Maybe } from '../utils/utils';
 import Lobby, {LobbyOptions} from '../ttc/lobby';
 import { TTC_AUTO_DETECT } from '../utils/constants';
 import { isValidPid } from 'ctgp-rest/dist/src/util';
-import User, { Player } from '../ttc/user';
+import User from '../ttc/user';
 
 export namespace Endpoints {
     export const API_VERSION = 'v1';
